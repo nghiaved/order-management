@@ -1,0 +1,435 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "username": "admin",
+      "password": "admin123",
+      "name": "Admin User",
+      "note": "Full system access",
+      "role": "admin",
+      "permissions": [
+        "orders:create",
+        "orders:read",
+        "orders:update",
+        "orders:delete",
+        "orders:list",
+        "products:create",
+        "products:read",
+        "products:update",
+        "products:delete",
+        "products:list",
+        "inventory:create",
+        "inventory:read",
+        "inventory:update",
+        "inventory:delete",
+        "inventory:list",
+        "customers:create",
+        "customers:read",
+        "customers:update",
+        "customers:delete",
+        "customers:list",
+        "users:create",
+        "users:read",
+        "users:update",
+        "users:delete",
+        "users:list",
+        "dashboard:read"
+      ],
+      "hierarchyLevel": 75,
+      "roleDisplayName": "Admin",
+      "roleColor": "purple"
+    },
+    {
+      "id": "u2",
+      "username": "manager",
+      "password": "manager123",
+      "name": "Sales Manager",
+      "note": "Manage orders and customers",
+      "role": "user",
+      "permissions": [
+        "orders:create",
+        "orders:read",
+        "orders:update",
+        "orders:list",
+        "products:read",
+        "products:list",
+        "inventory:read",
+        "inventory:list",
+        "customers:create",
+        "customers:read",
+        "customers:update",
+        "customers:list",
+        "dashboard:read"
+      ],
+      "hierarchyLevel": 50,
+      "roleDisplayName": "Manager",
+      "roleColor": "blue"
+    },
+    {
+      "id": "u3",
+      "username": "viewer",
+      "password": "viewer123",
+      "name": "Read-Only Viewer",
+      "note": "View-only access",
+      "role": "readonly",
+      "permissions": [
+        "orders:read",
+        "orders:list",
+        "products:read",
+        "products:list",
+        "inventory:read",
+        "inventory:list",
+        "customers:read",
+        "customers:list",
+        "dashboard:read"
+      ],
+      "hierarchyLevel": 25,
+      "roleDisplayName": "Viewer",
+      "roleColor": "gray"
+    }
+  ],
+  "customers": [
+    {
+      "id": "1",
+      "full_name": "Nguyen Van A",
+      "phone": "0901234567",
+      "address": "123 Le Loi, Q1, HCM",
+      "created_at": "2026-01-15T08:00:00Z"
+    },
+    {
+      "id": "2",
+      "full_name": "Tran Thi B",
+      "phone": "0912345678",
+      "address": "456 Nguyen Hue, Q1, HCM",
+      "created_at": "2026-02-01T10:30:00Z"
+    },
+    {
+      "id": "3",
+      "full_name": "Le Van C",
+      "phone": "0923456789",
+      "address": "789 Tran Hung Dao, Q5, HCM",
+      "created_at": "2026-02-20T14:15:00Z"
+    },
+    {
+      "id": "4",
+      "full_name": "Pham Thi D",
+      "phone": "0934567890",
+      "address": "321 Vo Van Tan, Q3, HCM",
+      "created_at": "2026-03-01T09:00:00Z"
+    },
+    {
+      "id": "8acc",
+      "full_name": "full name updated",
+      "phone": "phone updated",
+      "address": "address updated",
+      "created_at": "2026-03-15T12:51:13.180Z"
+    },
+    {
+      "id": "826e",
+      "full_name": "test",
+      "phone": "test",
+      "address": "test",
+      "created_at": "2026-03-15T12:52:51.813Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "sku": "SP-001",
+      "name": "Widget A",
+      "base_price": 150000,
+      "category": "Electronics"
+    },
+    {
+      "id": "2",
+      "sku": "SP-002",
+      "name": "Widget B",
+      "base_price": 250000,
+      "category": "Electronics"
+    },
+    {
+      "id": "3",
+      "sku": "SP-003",
+      "name": "Gadget X",
+      "base_price": 500000,
+      "category": "Accessories"
+    },
+    {
+      "id": "4",
+      "sku": "SP-004",
+      "name": "Gadget Y",
+      "base_price": 350000,
+      "category": "Accessories"
+    },
+    {
+      "id": "5",
+      "sku": "SP-005",
+      "name": "Part Z",
+      "base_price": 75000,
+      "category": "Parts"
+    }
+  ],
+  "inventory": [
+    {
+      "id": "1",
+      "product_id": 1,
+      "stock_quantity": 200,
+      "location": "Warehouse A",
+      "last_updated": "2026-03-15T14:06:20.947Z"
+    },
+    {
+      "id": "2",
+      "product_id": 2,
+      "stock_quantity": 138,
+      "location": "Warehouse A",
+      "last_updated": "2026-03-15T15:40:51.465Z"
+    },
+    {
+      "id": "4",
+      "product_id": 4,
+      "stock_quantity": 120,
+      "location": "Warehouse B",
+      "last_updated": "2026-03-14T10:00:00Z"
+    },
+    {
+      "id": "5",
+      "product_id": 5,
+      "stock_quantity": 500,
+      "location": "Warehouse A",
+      "last_updated": "2026-03-14T10:00:00Z"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-20260310-001",
+      "customer_id": 1,
+      "delivery_date": "2026-03-15",
+      "shipping_unit": "GHN",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 30000,
+      "has_vat": true,
+      "status": "Done",
+      "note": "Deliver before noon",
+      "total_amount": 1830000,
+      "created_at": "2026-03-10T09:00:00Z"
+    },
+    {
+      "id": "ORD-20260312-001",
+      "customer_id": 2,
+      "delivery_date": "2026-03-18",
+      "shipping_unit": "GHTK",
+      "payment_method": "Transfer",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"Vietcombank\",\"account_number\":\"1234567890\"}",
+      "prepaid_amount": 500000,
+      "shipping_fee": 25000,
+      "has_vat": false,
+      "status": "Cancel",
+      "note": "",
+      "total_amount": 775000,
+      "created_at": "2026-03-12T14:30:00Z"
+    },
+    {
+      "id": "ORD-20260314-001",
+      "customer_id": "4",
+      "delivery_date": "2026-03-20",
+      "shipping_unit": "Ninja Van",
+      "payment_method": "Credit",
+      "debt_days": 30,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 35000,
+      "has_vat": true,
+      "status": "Done",
+      "note": "Credit customer - 30 day terms",
+      "total_amount": 2015000,
+      "created_at": "2026-03-14T16:00:00Z"
+    },
+    {
+      "id": "ORD-20260314-002",
+      "customer_id": 1,
+      "delivery_date": "2026-03-19",
+      "shipping_unit": "GHN",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 150000,
+      "shipping_fee": 20000,
+      "has_vat": false,
+      "status": "Cancel",
+      "note": "Customer cancelled",
+      "total_amount": 320000,
+      "created_at": "2026-03-14T17:00:00Z"
+    },
+    {
+      "id": "ORD-20260315-001",
+      "customer_id": "826e",
+      "delivery_date": "2026-03-15",
+      "shipping_unit": "VNPost",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 100,
+      "shipping_fee": 100,
+      "has_vat": true,
+      "note": "note",
+      "total_amount": 2300,
+      "status": "Cancel",
+      "created_at": "2026-03-15T12:52:51.828Z"
+    },
+    {
+      "id": "ORD-20260315-002",
+      "customer_id": "8acc",
+      "delivery_date": "2026-03-15",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 800000,
+      "status": "Done",
+      "created_at": "2026-03-15T13:19:59.510Z"
+    },
+    {
+      "id": "ORD-20260315-003",
+      "customer_id": "2",
+      "delivery_date": "",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 1000,
+      "status": "Cancel",
+      "created_at": "2026-03-15T13:24:47.159Z"
+    },
+    {
+      "id": "ORD-20260315-004",
+      "customer_id": "2",
+      "delivery_date": "",
+      "shipping_unit": "",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 100,
+      "status": "Done",
+      "created_at": "2026-03-15T15:11:28.588Z"
+    },
+    {
+      "id": "ORD-20260315-005",
+      "customer_id": "1",
+      "delivery_date": "",
+      "shipping_unit": "GHTK",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 1000000,
+      "status": "New",
+      "created_at": "2026-03-15T15:40:51.450Z"
+    }
+  ],
+  "order_details": [
+    {
+      "id": "1",
+      "order_id": "ORD-20260310-001",
+      "product_id": 1,
+      "quantity": 5,
+      "unit_price": 150000
+    },
+    {
+      "id": "2",
+      "order_id": "ORD-20260310-001",
+      "product_id": 3,
+      "quantity": 2,
+      "unit_price": 500000
+    },
+    {
+      "id": "3",
+      "order_id": "ORD-20260312-001",
+      "product_id": 2,
+      "quantity": 3,
+      "unit_price": 250000
+    },
+    {
+      "id": "6",
+      "order_id": "ORD-20260314-002",
+      "product_id": 4,
+      "quantity": 1,
+      "unit_price": 300000
+    },
+    {
+      "id": "2b88",
+      "order_id": "ORD-20260315-001",
+      "product_id": 2,
+      "quantity": 1,
+      "unit_price": 2000
+    },
+    {
+      "id": "36c7",
+      "order_id": "ORD-20260314-001",
+      "product_id": 3,
+      "quantity": 3,
+      "unit_price": 500000
+    },
+    {
+      "id": "bcd7",
+      "order_id": "ORD-20260314-001",
+      "product_id": 5,
+      "quantity": 4,
+      "unit_price": 75000
+    },
+    {
+      "id": "ae44",
+      "order_id": "ORD-20260315-002",
+      "product_id": 3,
+      "quantity": 80,
+      "unit_price": 10000
+    },
+    {
+      "id": "a274",
+      "order_id": "ORD-20260315-003",
+      "product_id": 3,
+      "quantity": 10,
+      "unit_price": 100
+    },
+    {
+      "id": "4603",
+      "order_id": "ORD-20260315-004",
+      "product_id": 2,
+      "quantity": 1,
+      "unit_price": 100
+    },
+    {
+      "id": "8046",
+      "order_id": "ORD-20260315-005",
+      "product_id": 3,
+      "quantity": 10,
+      "unit_price": 100000
+    },
+    {
+      "id": "47a6",
+      "order_id": "ORD-20260315-005",
+      "product_id": 5,
+      "quantity": 1,
+      "unit_price": 0
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
