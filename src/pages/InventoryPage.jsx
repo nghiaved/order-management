@@ -100,18 +100,18 @@ export default function InventoryPage() {
 
     const columns = [
         { header: 'SKU', key: 'sku', render: (item) => <span className="font-mono text-xs text-gray-300">{productMap[item.product_id]?.sku || '—'}</span> },
-        { header: 'Product', key: 'product', render: (item) => <span className="font-medium text-gray-200">{productMap[item.product_id]?.name || '—'}</span> },
-        { header: 'Category', key: 'category', render: (item) => <span className="text-gray-400">{productMap[item.product_id]?.category || '—'}</span> },
-        { header: 'Base Price', key: 'price', render: (item) => { const p = productMap[item.product_id]; return <span className="text-gray-200">{p ? fmt(p.base_price) + ' đ' : '—'}</span>; } },
-        { header: 'Stock', key: 'stock_quantity', render: (item) => <span className={`font-semibold ${stockColor(item.stock_quantity)}`}>{item.stock_quantity}</span> },
-        { header: 'Location', key: 'location', render: (item) => <span className="text-gray-400">{item.location}</span> },
-        { header: 'Last Updated', key: 'last_updated', render: (item) => <span className="text-gray-500 text-xs">{fmtDateTime(item.last_updated)}</span> },
+        { header: 'Sản phẩm', key: 'product', render: (item) => <span className="font-medium text-gray-200">{productMap[item.product_id]?.name || '—'}</span> },
+        { header: 'Danh mục', key: 'category', render: (item) => <span className="text-gray-400">{productMap[item.product_id]?.category || '—'}</span> },
+        { header: 'Giá gốc', key: 'price', render: (item) => { const p = productMap[item.product_id]; return <span className="text-gray-200">{p ? fmt(p.base_price) + ' VNĐ' : '—'}</span>; } },
+        { header: 'Tồn kho', key: 'stock_quantity', render: (item) => <span className={`font-semibold ${stockColor(item.stock_quantity)}`}>{item.stock_quantity}</span> },
+        { header: 'Vị trí', key: 'location', render: (item) => <span className="text-gray-400">{item.location}</span> },
+        { header: 'Cập nhật', key: 'last_updated', render: (item) => <span className="text-gray-500 text-xs">{fmtDateTime(item.last_updated)}</span> },
         ...((canEdit || canDelete) ? [{
-            header: 'Actions', key: 'actions', width: '140px',
+            header: 'Thao tác', key: 'actions', width: '140px',
             render: (item) => (
                 <div className="flex items-center justify-center gap-1.5">
-                    {canEdit && <button onClick={() => openEdit(item)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Edit</button>}
-                    {canDelete && <button onClick={() => setDeleteTarget(item)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Delete</button>}
+                    {canEdit && <button onClick={() => openEdit(item)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Sửa</button>}
+                    {canDelete && <button onClick={() => setDeleteTarget(item)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Xóa</button>}
                 </div>
             ),
         }] : []),
@@ -120,10 +120,10 @@ export default function InventoryPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Inventory</h1>
+                <h1 className="text-2xl font-bold text-white">Kho hàng</h1>
                 {canCreate && (
                     <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors">
-                        + New Inventory
+                        + Thêm tồn kho
                     </button>
                 )}
             </div>
@@ -131,47 +131,47 @@ export default function InventoryPage() {
             <SearchFilter
                 search={search}
                 onSearchChange={(v) => { setSearch(v); setPage(1); }}
-                placeholder="Search by product name or SKU…"
+                placeholder="Tìm theo tên sản phẩm hoặc SKU…"
                 filters={[{
                     value: locationFilter,
                     onChange: (v) => { setLocationFilter(v); setPage(1); },
-                    options: [{ value: '', label: 'All Locations' }, ...locations.map((l) => ({ value: l, label: l }))],
+                    options: [{ value: '', label: 'Tất cả vị trí' }, ...locations.map((l) => ({ value: l, label: l }))],
                 }]}
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="No inventory found." />
+            <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy tồn kho." />
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
             {/* ── Create Modal ────────────────────────────────── */}
-            <CrudFormModal open={showCreate} onClose={() => { setShowCreate(false); setCreateForm(EMPTY); }} onSubmit={handleCreate} title="New Inventory" saving={saving}>
-                <FormField label="Product" colSpan={2}>
+            <CrudFormModal open={showCreate} onClose={() => { setShowCreate(false); setCreateForm(EMPTY); }} onSubmit={handleCreate} title="Thêm tồn kho" saving={saving}>
+                <FormField label="Sản phẩm" colSpan={2}>
                     <select required className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-1.5 text-white focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
                         value={createForm.product_id} onChange={(e) => setCreateForm({ ...createForm, product_id: e.target.value })}>
-                        <option value="">Select product…</option>
+                        <option value="">Chọn sản phẩm…</option>
                         {products.map((p) => <option key={p.id} value={p.id}>{p.sku} — {p.name}</option>)}
                     </select>
                 </FormField>
-                <FormField label="Stock Quantity">
+                <FormField label="Số lượng tồn">
                     <FormInput type="number" value={createForm.stock_quantity} onChange={(e) => setCreateForm({ ...createForm, stock_quantity: e.target.value })} />
                 </FormField>
-                <FormField label="Location">
-                    <FormInput value={createForm.location} onChange={(e) => setCreateForm({ ...createForm, location: e.target.value })} placeholder="e.g. Warehouse A" />
+                <FormField label="Vị trí">
+                    <FormInput value={createForm.location} onChange={(e) => setCreateForm({ ...createForm, location: e.target.value })} placeholder="Ví dụ: Kho A" />
                 </FormField>
             </CrudFormModal>
 
             {/* ── Edit Modal ──────────────────────────────────── */}
-            <CrudFormModal open={!!editing} onClose={closeEdit} onSubmit={saveEdit} title={`Edit Inventory — ${productMap[editing?.product_id]?.name || ''}`} saving={false}>
-                <FormField label="Stock Quantity">
+            <CrudFormModal open={!!editing} onClose={closeEdit} onSubmit={saveEdit} title={`Sửa tồn kho — ${productMap[editing?.product_id]?.name || ''}`} saving={false}>
+                <FormField label="Số lượng tồn">
                     <FormInput type="number" value={editForm.stock_quantity} onChange={(e) => setEditForm({ ...editForm, stock_quantity: e.target.value })} />
                 </FormField>
-                <FormField label="Location">
+                <FormField label="Vị trí">
                     <FormInput value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} />
                 </FormField>
             </CrudFormModal>
 
-            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Delete Inventory"
-                message={`Are you sure you want to delete inventory for "${productMap[deleteTarget?.product_id]?.name || ''}"? This action cannot be undone.`} />
+            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa tồn kho"
+                message={`Bạn có chắc chắn muốn xóa tồn kho của "${productMap[deleteTarget?.product_id]?.name || ''}"? Thao tác này không thể hoàn tác.`} />
         </div>
     );
 }

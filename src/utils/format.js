@@ -4,11 +4,20 @@
 
 export const fmt = (v) => Number(v).toLocaleString('vi-VN');
 
-export const fmtCurrency = (n) =>
-    new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
+export const fmtVND = (v) => `${fmt(v)} VNĐ`;
 
-export const fmtDate = (dateStr) =>
-    dateStr ? new Date(dateStr).toLocaleDateString('vi-VN') : '—';
+export const fmtCurrency = (n) => `${fmt(n)} VNĐ`;
 
-export const fmtDateTime = (dateStr) =>
-    dateStr ? new Date(dateStr).toLocaleString('vi-VN') : '—';
+export const fmtDate = (dateStr) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+};
+
+export const fmtDateTime = (dateStr) => {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr);
+    const date = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return `${date} ${time}`;
+};

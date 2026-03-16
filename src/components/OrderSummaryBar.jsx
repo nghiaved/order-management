@@ -36,9 +36,9 @@ export default function OrderSummaryBar({ refreshKey }) {
     return (
         <div className="space-y-2.5">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <StatChip label="Revenue (excl. cancelled)" value={fmtCurrency(stats.revenue)} accent="border-emerald-700/40" />
-                <StatChip label="Total Orders" value={stats.total} accent="border-blue-700/40" />
-                <StatChip label="Active (New + Processing)" value={stats.active} accent="border-amber-700/40" />
+                <StatChip label="Doanh thu (trừ hủy)" value={fmtCurrency(stats.revenue)} accent="border-emerald-700/40" />
+                <StatChip label="Tổng đơn hàng" value={stats.total} accent="border-blue-700/40" />
+                <StatChip label="Đang hoạt động (Mới + Xử lý)" value={stats.active} accent="border-amber-700/40" />
             </div>
             {stats.lowStock.length > 0 && (
                 <div className="flex items-start gap-2.5 bg-red-500/[0.08] border border-red-500/25 rounded-xl px-4 py-2.5">
@@ -46,9 +46,9 @@ export default function OrderSummaryBar({ refreshKey }) {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                     </svg>
                     <div className="text-sm">
-                        <span className="font-medium text-red-400">Low stock alert · </span>
+                        <span className="font-medium text-red-400">Cảnh báo tồn kho thấp · </span>
                         <span className="text-red-300">
-                            {stats.lowStock.map((i) => `${i.productName} (${i.stock_quantity} left)`).join(' · ')}
+                            {stats.lowStock.map((i) => `${i.productName} (còn ${i.stock_quantity})`).join(' · ')}
                         </span>
                     </div>
                 </div>

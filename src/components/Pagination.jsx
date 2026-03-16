@@ -17,7 +17,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
     return (
         <div className="flex items-center justify-between pt-2">
             <p className="text-xs text-gray-500">
-                Page {page} of {totalPages}
+                Trang {page} / {totalPages}
             </p>
             <div className="flex items-center gap-1">
                 <button
@@ -37,8 +37,8 @@ export default function Pagination({ page, totalPages, onPageChange }) {
                             key={p}
                             onClick={() => onPageChange(p)}
                             className={`min-w-[32px] h-8 rounded-lg text-sm font-medium transition-colors ${page === p
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                                    : 'text-gray-400 hover:bg-gray-700/50'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                                : 'text-gray-400 hover:bg-gray-700/50'
                                 }`}
                         >
                             {p}

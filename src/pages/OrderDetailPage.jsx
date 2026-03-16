@@ -9,7 +9,7 @@ import Allow from '../components/Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 import { ConfirmModal } from '../components/Modal';
 import CancelReasonModal from '../components/CancelReasonModal';
-import { STATUS_CONFIG, VAT_RATE } from '../constants';
+import { STATUS_CONFIG, VAT_RATE, PAYMENT_LABEL } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
 import { printInvoice } from '../utils/printInvoice';
 
@@ -53,9 +53,9 @@ export default function OrderDetailPage() {
         try {
             await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
             setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
-            toast.success(`Order moved to ${statusTarget.newStatus}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Hoàn thành'}.`);
         } catch (err) {
-            toast.error(err.message || 'Failed to update status.');
+            toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
             setStatusTarget(null);
         }
@@ -70,9 +70,9 @@ export default function OrderDetailPage() {
                 ...(reason && { cancel_reason: reason }),
             });
             setOrder((prev) => ({ ...prev, status: 'Cancel' }));
-            toast.success('Order cancelled. Inventory restored.');
+            toast.success('Đơn hàng đã hủy. Tồn kho đã hoàn trả.');
         } catch (err) {
-            toast.error(err.message || 'Failed to cancel order.');
+            toast.error(err.message || 'Không thể hủy đơn hàng.');
         } finally {
             setCancelTarget(null);
         }
@@ -82,10 +82,10 @@ export default function OrderDetailPage() {
         if (!deleteTarget) return;
         try {
             await orderService.remove(deleteTarget.id);
-            toast.success('Order deleted.');
+            toast.success('Đã xóa đơn hàng.');
             navigate('/orders');
         } catch (err) {
-            toast.error(err.message || 'Failed to delete order.');
+            toast.error(err.message || 'Không thể xóa đơn hàng.');
             setDeleteTarget(null);
         }
     };
@@ -113,8 +113,8 @@ export default function OrderDetailPage() {
     if (!order) {
         return (
             <div className="flex flex-col items-center justify-center h-48 gap-3">
-                <p className="text-gray-400">Order not found.</p>
-                <button onClick={() => navigate('/orders')} className="text-blue-400 hover:underline text-sm">← Back to Orders</button>
+                <p className="text-gray-400">Không tìm thấy đơn hàng.</p>
+                <button onClick={() => navigate('/orders')} className="text-blue-400 hover:underline text-sm">← Quay lại đơn hàng</button>
             </div>
         );
     }
@@ -142,9 +142,9 @@ export default function OrderDetailPage() {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Back
+                    Quay lại
                 </button>
-                <h1 className="text-2xl font-bold text-white">Order Detail</h1>
+                <h1 className="text-2xl font-bold text-white">Chi tiết đơn hàng</h1>
                 <span className="font-mono text-blue-400 text-lg">{order.id}</span>
                 <span className={`ml-auto inline-flex px-3 py-1 rounded-full text-sm font-semibold ${statusCfg.bg}`}>
                     {statusCfg.label}
@@ -159,24 +159,24 @@ export default function OrderDetailPage() {
                             <button
                                 onClick={() => navigate(`/orders/update?id=${order.id}`)}
                                 className="px-4 py-1.5 rounded-xl text-sm font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
-                            >Edit Order</button>
+                            >Sửa đơn</button>
                             <button
-                                onClick={() => setStatusTarget({ order, newStatus: 'Processing', title: 'Process Order', message: `Move order "${order.id}" to Processing?`, confirmText: 'Process' })}
+                                onClick={() => setStatusTarget({ order, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${order.id}" sang Đang xử lý?`, confirmText: 'Xử lý' })}
                                 className="px-4 py-1.5 rounded-xl text-sm font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
-                            >Process</button>
+                            >Xử lý</button>
                         </>
                     )}
                     {order.status === 'Processing' && (
                         <button
-                            onClick={() => setStatusTarget({ order, newStatus: 'Done', title: 'Complete Order', message: `Mark order "${order.id}" as complete?`, confirmText: 'Complete' })}
+                            onClick={() => setStatusTarget({ order, newStatus: 'Done', title: 'Hoàn thành đơn', message: `Đánh dấu đơn "${order.id}" là Hoàn thành?`, confirmText: 'Hoàn thành' })}
                             className="px-4 py-1.5 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/20 transition-colors"
-                        >Complete</button>
+                        >Hoàn thành</button>
                     )}
                     {(order.status === 'New' || order.status === 'Processing') && (
                         <button
                             onClick={() => setCancelTarget(order)}
                             className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 border border-red-500/20 transition-colors"
-                        >Cancel</button>
+                        >Hủy</button>
                     )}
                     <button
                         onClick={() => printInvoice({ order, details, customer, productMap })}
@@ -185,7 +185,7 @@ export default function OrderDetailPage() {
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                         </svg>
-                        Print Invoice
+                        In hóa đơn
                     </button>
                 </div>
             </Allow>
@@ -195,7 +195,7 @@ export default function OrderDetailPage() {
 
                 {/* Customer */}
                 <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 space-y-2">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Customer</h2>
+                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Khách hàng</h2>
                     {customer ? (
                         <>
                             <p className="text-white font-semibold">{customer.full_name}</p>
@@ -209,18 +209,18 @@ export default function OrderDetailPage() {
 
                 {/* Shipping */}
                 <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Shipping</h2>
+                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Vận chuyển</h2>
                     <dl className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                            <dt className="text-gray-500">Shipping Unit</dt>
+                            <dt className="text-gray-500">Đơn vị vận chuyển</dt>
                             <dd className="text-gray-300">{order.shipping_unit || '—'}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-gray-500">Delivery Date</dt>
+                            <dt className="text-gray-500">Ngày giao hàng</dt>
                             <dd className="text-gray-300">{order.delivery_date || '—'}</dd>
                         </div>
                         <div className="flex justify-between">
-                            <dt className="text-gray-500">Created At</dt>
+                            <dt className="text-gray-500">Ngày tạo</dt>
                             <dd className="text-gray-300 text-xs">
                                 {fmtDateTime(order.created_at)}
                             </dd>
@@ -230,26 +230,26 @@ export default function OrderDetailPage() {
 
                 {/* Payment */}
                 <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment</h2>
+                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Thanh toán</h2>
                     <dl className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                            <dt className="text-gray-500">Method</dt>
-                            <dd className="text-gray-300 font-medium">{order.payment_method}</dd>
+                            <dt className="text-gray-500">Phương thức</dt>
+                            <dd className="text-gray-300 font-medium">{PAYMENT_LABEL[order.payment_method] || order.payment_method}</dd>
                         </div>
-                        {order.payment_method === 'Credit' && (
+                        {(order.payment_method === 'Credit' || order.payment_method === 'Công nợ') && (
                             <div className="flex justify-between">
-                                <dt className="text-gray-500">Debt Days</dt>
-                                <dd className="text-gray-300">{order.debt_days} days</dd>
+                                <dt className="text-gray-500">Số ngày nợ</dt>
+                                <dd className="text-gray-300">{order.debt_days} ngày</dd>
                             </div>
                         )}
-                        {order.payment_method === 'Transfer' && bankInfo && (
+                        {(order.payment_method === 'Transfer' || order.payment_method === 'Chuyển khoản') && bankInfo && (
                             <>
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-500">Bank</dt>
+                                    <dt className="text-gray-500">Ngân hàng</dt>
                                     <dd className="text-gray-300">{bankInfo.bank_name}</dd>
                                 </div>
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-500">Account</dt>
+                                    <dt className="text-gray-500">Số tài khoản</dt>
                                     <dd className="text-gray-300 font-mono text-xs">{bankInfo.account_number}</dd>
                                 </div>
                             </>
@@ -257,7 +257,7 @@ export default function OrderDetailPage() {
                         <div className="flex justify-between">
                             <dt className="text-gray-500">VAT</dt>
                             <dd className={order.has_vat ? 'text-emerald-400' : 'text-gray-500'}>
-                                {order.has_vat ? 'Included (10%)' : 'None'}
+                                {order.has_vat ? 'Có (10%)' : 'Không'}
                             </dd>
                         </div>
                     </dl>
@@ -268,21 +268,21 @@ export default function OrderDetailPage() {
             <div className="bg-[#111827] rounded-2xl border border-gray-700/50 overflow-hidden">
                 <div className="px-5 py-4 border-b border-gray-700/50">
                     <h2 className="text-sm font-semibold text-gray-300">
-                        Order Items
-                        <span className="ml-2 text-xs text-gray-500 font-normal">({details.length} item{details.length !== 1 && 's'})</span>
+                        Sản phẩm
+                        <span className="ml-2 text-xs text-gray-500 font-normal">({details.length} dòng)</span>
                     </h2>
                 </div>
                 {details.length === 0 ? (
-                    <p className="text-gray-500 text-sm px-5 py-8 text-center">No items in this order.</p>
+                    <p className="text-gray-500 text-sm px-5 py-8 text-center">Không có sản phẩm nào.</p>
                 ) : (
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-[#1a2035] text-xs text-gray-500 uppercase tracking-wider">
-                                <th className="text-left px-5 py-3">Product</th>
+                                <th className="text-left px-5 py-3">Sản phẩm</th>
                                 <th className="text-left px-5 py-3">SKU</th>
-                                <th className="text-right px-5 py-3">Unit Price</th>
-                                <th className="text-right px-5 py-3">Qty</th>
-                                <th className="text-right px-5 py-3">Subtotal</th>
+                                <th className="text-right px-5 py-3">Đơn giá</th>
+                                <th className="text-right px-5 py-3">SL</th>
+                                <th className="text-right px-5 py-3">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -292,10 +292,10 @@ export default function OrderDetailPage() {
                                     <tr key={d.id} className="border-t border-gray-800/50 hover:bg-white/[0.015] transition-colors">
                                         <td className="px-5 py-3.5 text-gray-200">{prod?.name || `Product #${d.product_id}`}</td>
                                         <td className="px-5 py-3.5 text-gray-500 font-mono text-xs">{prod?.sku || '—'}</td>
-                                        <td className="px-5 py-3.5 text-right text-gray-400">{fmt(d.unit_price)} đ</td>
+                                        <td className="px-5 py-3.5 text-right text-gray-400">{fmt(d.unit_price)} VNĐ</td>
                                         <td className="px-5 py-3.5 text-right text-gray-400">{d.quantity}</td>
                                         <td className="px-5 py-3.5 text-right text-white font-medium">
-                                            {fmt(Number(d.unit_price) * Number(d.quantity))} đ
+                                            {fmt(Number(d.unit_price) * Number(d.quantity))} VNĐ
                                         </td>
                                     </tr>
                                 );
@@ -311,14 +311,14 @@ export default function OrderDetailPage() {
                     {/* Note */}
                     {order.note ? (
                         <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
-                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Note</h2>
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Ghi chú</h2>
                             <p className="text-gray-300 text-sm leading-relaxed">{order.note}</p>
                         </div>
                     ) : <div />}
                     {/* Cancel Reason */}
                     {order.cancel_reason ? (
                         <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
-                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cancel Reason</h2>
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Lý do hủy</h2>
                             <p className="text-gray-300 text-sm leading-relaxed">{order.cancel_reason}</p>
                         </div>
                     ) : <div />}
@@ -327,33 +327,33 @@ export default function OrderDetailPage() {
                 {/* Totals */}
                 <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 w-72 space-y-2 text-sm">
                     <div className="flex justify-between text-gray-400">
-                        <span>Subtotal</span>
-                        <span>{fmt(subtotal)} đ</span>
+                        <span>Tạm tính</span>
+                        <span>{fmt(subtotal)} VNĐ</span>
                     </div>
                     {order.has_vat && (
                         <div className="flex justify-between text-emerald-400">
                             <span>VAT (10%)</span>
-                            <span>+{fmt(vatAmount)} đ</span>
+                            <span>+{fmt(vatAmount)} VNĐ</span>
                         </div>
                     )}
                     <div className="flex justify-between text-gray-400">
-                        <span>Shipping Fee</span>
-                        <span>+{fmt(order.shipping_fee || 0)} đ</span>
+                        <span>Phí vận chuyển</span>
+                        <span>+{fmt(order.shipping_fee || 0)} VNĐ</span>
                     </div>
                     <hr className="border-gray-700/50" />
                     <div className="flex justify-between text-white font-semibold text-base">
-                        <span>Total</span>
-                        <span>{fmt(order.total_amount)} đ</span>
+                        <span>Tổng cộng</span>
+                        <span>{fmt(order.total_amount)} VNĐ</span>
                     </div>
                     {Number(order.prepaid_amount) > 0 && (
                         <>
                             <div className="flex justify-between text-blue-400">
-                                <span>Prepaid</span>
-                                <span>−{fmt(order.prepaid_amount)} đ</span>
+                                <span>Trả trước</span>
+                                <span>−{fmt(order.prepaid_amount)} VNĐ</span>
                             </div>
                             <div className="flex justify-between text-orange-400 font-semibold">
-                                <span>Amount Due</span>
-                                <span>{fmt(amountDue)} đ</span>
+                                <span>Còn lại</span>
+                                <span>{fmt(amountDue)} VNĐ</span>
                             </div>
                         </>
                     )}
@@ -379,7 +379,7 @@ export default function OrderDetailPage() {
                 onConfirm={confirmStatusChange}
                 title={statusTarget?.title || ''}
                 message={statusTarget?.message || ''}
-                confirmText={statusTarget?.confirmText || 'Confirm'}
+                confirmText={statusTarget?.confirmText || 'Xác nhận'}
                 variant={statusTarget?.variant || 'confirm'}
             />
 
@@ -396,9 +396,9 @@ export default function OrderDetailPage() {
                 open={!!deleteTarget}
                 onClose={() => setDeleteTarget(null)}
                 onConfirm={confirmDelete}
-                title="Delete Order"
-                message={`Are you sure you want to permanently delete order "${deleteTarget?.id}"? This action cannot be undone.`}
-                confirmText="Delete"
+                title="Xóa đơn hàng"
+                message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
+                confirmText="Xóa"
                 variant="danger"
             />
         </div>

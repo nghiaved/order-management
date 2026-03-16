@@ -40,16 +40,16 @@ export default function CustomersPage() {
     });
 
     const columns = [
-        { header: 'Full Name', key: 'full_name', render: (c) => <span className="font-medium text-gray-200">{c.full_name}</span> },
-        { header: 'Phone', key: 'phone', render: (c) => <span className="text-gray-300">{c.phone}</span> },
-        { header: 'Address', key: 'address', render: (c) => <span className="text-gray-400">{c.address}</span> },
-        { header: 'Created', key: 'created_at', render: (c) => <span className="text-gray-500 text-xs">{fmtDateTime(c.created_at)}</span> },
+        { header: 'Họ tên', key: 'full_name', render: (c) => <span className="font-medium text-gray-200">{c.full_name}</span> },
+        { header: 'SĐT', key: 'phone', render: (c) => <span className="text-gray-300">{c.phone}</span> },
+        { header: 'Địa chỉ', key: 'address', render: (c) => <span className="text-gray-400">{c.address}</span> },
+        { header: 'Ngày tạo', key: 'created_at', render: (c) => <span className="text-gray-500 text-xs">{fmtDateTime(c.created_at)}</span> },
         ...((canEdit || canDelete) ? [{
-            header: 'Actions', key: 'actions', width: '140px',
+            header: 'Thao tác', key: 'actions', width: '140px',
             render: (c) => (
                 <div className="flex items-center justify-center gap-1.5">
-                    {canEdit && <button onClick={() => openEdit(c)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Edit</button>}
-                    {canDelete && <button onClick={() => setDeleteTarget(c)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Delete</button>}
+                    {canEdit && <button onClick={() => openEdit(c)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Sửa</button>}
+                    {canDelete && <button onClick={() => setDeleteTarget(c)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Xóa</button>}
                 </div>
             ),
         }] : []),
@@ -58,10 +58,10 @@ export default function CustomersPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Customers</h1>
+                <h1 className="text-2xl font-bold text-white">Khách hàng</h1>
                 {canCreate && (
                     <button onClick={openNew} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors">
-                        + New Customer
+                        + Thêm khách hàng
                     </button>
                 )}
             </div>
@@ -69,27 +69,27 @@ export default function CustomersPage() {
             <SearchFilter
                 search={search}
                 onSearchChange={(v) => { setSearch(v); setPage(1); }}
-                placeholder="Search by name, phone, or address…"
+                placeholder="Tìm theo tên, SĐT hoặc địa chỉ…"
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="No customers found." />
+            <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy khách hàng." />
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
-            <CrudFormModal open={!!editing} onClose={close} onSubmit={handleSave} title={editing?.id ? 'Edit Customer' : 'New Customer'} saving={saving}>
-                <FormField label="Full Name">
+            <CrudFormModal open={!!editing} onClose={close} onSubmit={handleSave} title={editing?.id ? 'Sửa khách hàng' : 'Thêm khách hàng'} saving={saving}>
+                <FormField label="Họ tên">
                     <FormInput value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} />
                 </FormField>
-                <FormField label="Phone">
+                <FormField label="SĐT">
                     <FormInput value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </FormField>
-                <FormField label="Address" colSpan={2}>
+                <FormField label="Địa chỉ" colSpan={2}>
                     <FormInput value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} />
                 </FormField>
             </CrudFormModal>
 
-            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Delete Customer"
-                message={`Are you sure you want to delete "${deleteTarget?.full_name}"? This action cannot be undone.`} />
+            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa khách hàng"
+                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.full_name}"? Thao tác này không thể hoàn tác.`} />
         </div>
     );
 }

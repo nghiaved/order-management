@@ -165,27 +165,27 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
     // ── Validation ──────────────────────────────────────────────────
     const validate = () => {
         const errs = {};
-        if (!form.customer_id && !isNewCustomer) errs.customer = 'Select or add a customer';
-        if (isNewCustomer && !newCustomer.full_name) errs.customer = 'Customer name is required';
+        if (!form.customer_id && !isNewCustomer) errs.customer = 'Vui lòng chọn hoặc thêm khách hàng';
+        if (isNewCustomer && !newCustomer.full_name) errs.customer = 'Tên khách hàng là bắt buộc';
         if (isNewCustomer && newCustomer.phone && !/^\d{10}$/.test(String(newCustomer.phone).replace(/\s/g, '')))
-            errs.phone = 'Phone must be exactly 10 digits';
-        if (items.length === 0) errs.items = 'Add at least one product';
+            errs.phone = 'Số điện thoại phải đúng 10 chữ số';
+        if (items.length === 0) errs.items = 'Thêm ít nhất một sản phẩm';
         items.forEach((item, i) => {
-            if (!item.product_id) errs[`item_${i}`] = 'Select a product';
-            if (!item.quantity || item.quantity < 1) errs[`qty_${i}`] = 'Qty must be >= 1';
+            if (!item.product_id) errs[`item_${i}`] = 'Vui lòng chọn sản phẩm';
+            if (!item.quantity || item.quantity < 1) errs[`qty_${i}`] = 'Số lượng phải >= 1';
             // Inventory pre-check (new orders only)
             if (!editingOrder && item.product_id && Number(item.quantity) >= 1) {
                 const inv = inventoryMap[item.product_id];
                 if (inv && Number(item.quantity) > inv.stock_quantity) {
                     const prod = products.find((p) => String(p.id) === String(item.product_id));
-                    errs[`qty_${i}`] = `Insufficient stock — only ${inv.stock_quantity} available${prod ? ` for ${prod.name}` : ''}`;
+                    errs[`qty_${i}`] = `Không đủ tồn kho — chỉ còn ${inv.stock_quantity}${prod ? ` cho ${prod.name}` : ''}`;
                 }
             }
         });
-        if (form.payment_method === 'Credit' && !form.debt_days) errs.debt_days = 'Debt days required';
-        if (form.payment_method === 'Transfer') {
-            if (!form.bank_name) errs.bank_name = 'Bank name required';
-            if (!form.bank_account) errs.bank_account = 'Account number required';
+        if (form.payment_method === 'Công nợ' && !form.debt_days) errs.debt_days = 'Số ngày nợ là bắt buộc';
+        if (form.payment_method === 'Chuyển khoản') {
+            if (!form.bank_name) errs.bank_name = 'Tên ngân hàng là bắt buộc';
+            if (!form.bank_account) errs.bank_account = 'Số tài khoản là bắt buộc';
         }
         setErrors(errs);
         return Object.keys(errs).length === 0;
@@ -207,7 +207,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             }
 
             const bankInfo =
-                form.payment_method === 'Transfer'
+                form.payment_method === 'Chuyển khoản'
                     ? JSON.stringify({ bank_name: form.bank_name, account_number: form.bank_account })
                     : '';
 
@@ -216,7 +216,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                 delivery_date: form.delivery_date,
                 shipping_unit: form.shipping_unit,
                 payment_method: form.payment_method,
-                debt_days: form.payment_method === 'Credit' ? Number(form.debt_days) : 0,
+                debt_days: form.payment_method === 'Công nợ' ? Number(form.debt_days) : 0,
                 bank_info: bankInfo,
                 prepaid_amount: Number(form.prepaid_amount) || 0,
                 shipping_fee: Number(form.shipping_fee) || 0,
@@ -265,10 +265,10 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             setCustomerSearch('');
             setIsNewCustomer(false);
             setNewCustomer({ full_name: '', phone: '', address: '' });
-            toast.success(editingOrder ? 'Order updated successfully!' : 'Order created successfully!');
+            toast.success(editingOrder ? 'Cập nhật đơn hàng thành công!' : 'Tạo đơn hàng thành công!');
             onSaved?.();
         } catch (err) {
-            toast.error(err.message || 'Failed to save order.');
+            toast.error(err.message || 'Không thể lưu đơn hàng.');
         } finally {
             setSaving(false);
         }
@@ -277,18 +277,18 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
     return (
         <form onSubmit={handleSubmit} className="bg-[#111827] rounded-xl border border-gray-700/50 p-6 space-y-6">
             <h2 className="text-lg font-semibold text-white">
-                {editingOrder ? `Edit Order: ${editingOrder.id}` : 'Create New Order'}
+                {editingOrder ? `Sửa đơn hàng: ${editingOrder.id}` : 'Tạo đơn hàng mới'}
             </h2>
 
             {/* ── Customer ──────────────────────────────────────────── */}
             <fieldset className="space-y-3">
-                <legend className="text-sm font-medium text-gray-300">Customer</legend>
+                <legend className="text-sm font-medium text-gray-300">Khách hàng</legend>
 
                 {!isNewCustomer ? (
                     <div className="relative" ref={dropdownRef}>
                         <input
                             type="text"
-                            placeholder="Search customer by name or phone…"
+                            placeholder="Tìm khách hàng theo tên hoặc số điện thoại…"
                             className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 outline-none"
                             value={customerSearch}
                             onChange={(e) => {
@@ -321,20 +321,20 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                             className="mt-1 text-sm text-blue-600 hover:underline"
                             onClick={() => setIsNewCustomer(true)}
                         >
-                            + Add new customer
+                            + Thêm khách hàng mới
                         </button>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         <input
-                            placeholder="Full name *"
+                            placeholder="Họ tên *"
                             className="bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500"
                             value={newCustomer.full_name}
                             onChange={(e) => setNewCustomer((n) => ({ ...n, full_name: e.target.value }))}
                         />
                         <div>
                             <input
-                                placeholder="Phone (10 digits)"
+                                placeholder="SĐT (10 số)"
                                 className={`w-full bg-[#1a2035] border rounded-lg px-3 py-2 text-white placeholder-gray-500 ${errors.phone ? 'border-red-500' : 'border-gray-700'}`}
                                 value={newCustomer.phone}
                                 onChange={(e) => setNewCustomer((n) => ({ ...n, phone: e.target.value }))}
@@ -342,7 +342,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                             {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
                         </div>
                         <input
-                            placeholder="Address"
+                            placeholder="Địa chỉ"
                             className="bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500"
                             value={newCustomer.address}
                             onChange={(e) => setNewCustomer((n) => ({ ...n, address: e.target.value }))}
@@ -355,7 +355,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                 setNewCustomer({ full_name: '', phone: '', address: '' });
                             }}
                         >
-                            ← Select existing customer
+                            ← Chọn khách hàng cũ
                         </button>
                     </div>
                 )}
@@ -365,7 +365,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             {/* ── Shipping & Payment ────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Delivery Date</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Ngày giao hàng</label>
                     <input
                         type="date"
                         className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
@@ -374,7 +374,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Shipping Unit</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Đơn vị vận chuyển</label>
                     <select
                         className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
                         value={form.shipping_unit}
@@ -389,7 +389,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                     </select>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Payment Method</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Phương thức thanh toán</label>
                     <select
                         className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
                         value={form.payment_method}
@@ -405,9 +405,9 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             </div>
 
             {/* ── Conditional: Credit → Debt Days ───────────────────── */}
-            {form.payment_method === 'Credit' && (
+            {form.payment_method === 'Công nợ' && (
                 <div className="max-w-xs">
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Debt Days</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Số ngày nợ</label>
                     <input
                         type="number"
                         min="1"
@@ -420,10 +420,10 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             )}
 
             {/* ── Conditional: Transfer → Bank Info ─────────────────── */}
-            {form.payment_method === 'Transfer' && (
+            {form.payment_method === 'Chuyển khoản' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Bank Name</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Tên ngân hàng</label>
                         <input
                             className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
                             value={form.bank_name}
@@ -432,7 +432,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         {errors.bank_name && <p className="text-red-400 text-xs mt-1">{errors.bank_name}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Account Number</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Số tài khoản</label>
                         <input
                             className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
                             value={form.bank_account}
@@ -445,18 +445,18 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
 
             {/* ── Product Lines ─────────────────────────────────────── */}
             <fieldset className="space-y-3">
-                <legend className="text-sm font-medium text-gray-300">Products</legend>
+                <legend className="text-sm font-medium text-gray-300">Sản phẩm</legend>
                 {errors.items && <p className="text-red-400 text-xs">{errors.items}</p>}
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-[#1a2035] text-left text-gray-400">
-                                <th className="px-3 py-2">Product</th>
-                                <th className="px-3 py-2 w-24">Qty</th>
-                                <th className="px-3 py-2 w-32">Unit Price</th>
-                                <th className="px-3 py-2 w-24">Stock</th>
-                                <th className="px-3 py-2 w-32">Subtotal</th>
+                                <th className="px-3 py-2">Sản phẩm</th>
+                                <th className="px-3 py-2 w-24">SL</th>
+                                <th className="px-3 py-2 w-32">Đơn giá</th>
+                                <th className="px-3 py-2 w-24">Tồn kho</th>
+                                <th className="px-3 py-2 w-32">Thành tiền</th>
                                 <th className="px-3 py-2 w-12"></th>
                             </tr>
                         </thead>
@@ -473,12 +473,12 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                                 value={item.product_id}
                                                 onChange={(e) => updateItem(idx, 'product_id', e.target.value)}
                                             >
-                                                <option value="">-- Select --</option>
+                                                <option value="">-- Chọn --</option>
                                                 {products.map((p) => {
                                                     const stock = inventoryMap[p.id];
                                                     return (
                                                         <option disabled={!stock || !stock.stock_quantity} key={p.id} value={p.id}>
-                                                            {p.sku} – {p.name} - {fmt(p.base_price)} đ ({stock ? `${stock.stock_quantity} in stock` : 'Out of stock'})
+                                                            {p.sku} – {p.name} - {fmt(p.base_price)} đ ({stock ? `còn ${stock.stock_quantity}` : 'Hết hàng'})
                                                         </option>
                                                     )
                                                 })}
@@ -505,7 +505,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                                 onChange={(e) => updateItem(idx, 'unit_price', e.target.value)}
                                             />
                                             {baseProd && (
-                                                <p className="text-xs text-gray-500 mt-0.5">Base: {fmt(baseProd.base_price)} đ</p>
+                                                <p className="text-xs text-gray-500 mt-0.5">Gốc: {fmt(baseProd.base_price)} VNĐ</p>
                                             )}
                                         </td>
                                         <td className="px-3 py-2 text-center">
@@ -544,7 +544,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                 </div>
 
                 <button type="button" onClick={addItem} className="text-sm text-blue-600 hover:underline">
-                    + Add product line
+                    + Thêm dòng sản phẩm
                 </button>
             </fieldset>
 
@@ -561,7 +561,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Shipping Fee</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Phí vận chuyển</label>
                         <input
                             type="number"
                             min="0"
@@ -571,7 +571,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Prepaid Amount</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Tiền trả trước</label>
                         <input
                             type="number"
                             min="0"
@@ -581,7 +581,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-1">Note</label>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Ghi chú</label>
                         <textarea
                             rows={2}
                             className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
@@ -593,33 +593,33 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
 
                 <div className="bg-[#1a2035] rounded-lg p-4 space-y-2 text-sm self-start border border-gray-700/50">
                     <div className="flex justify-between text-gray-300">
-                        <span>Subtotal</span>
-                        <span className="font-medium">{fmt(subtotal)} đ</span>
+                        <span>Tạm tính</span>
+                        <span className="font-medium">{fmt(subtotal)} VNĐ</span>
                     </div>
                     {form.has_vat && (
                         <div className="flex justify-between text-green-400">
                             <span>VAT (10%)</span>
-                            <span>+{fmt(vatAmount)} đ</span>
+                            <span>+{fmt(vatAmount)} VNĐ</span>
                         </div>
                     )}
                     <div className="flex justify-between text-gray-300">
-                        <span>Shipping Fee</span>
-                        <span>+{fmt(Number(form.shipping_fee) || 0)} đ</span>
+                        <span>Phí vận chuyển</span>
+                        <span>+{fmt(Number(form.shipping_fee) || 0)} VNĐ</span>
                     </div>
                     <hr className="border-gray-700" />
                     <div className="flex justify-between font-semibold text-base text-white">
-                        <span>Total</span>
-                        <span>{fmt(totalAmount)} đ</span>
+                        <span>Tổng cộng</span>
+                        <span>{fmt(totalAmount)} VNĐ</span>
                     </div>
                     {Number(form.prepaid_amount) > 0 && (
                         <>
                             <div className="flex justify-between text-blue-400">
-                                <span>Prepaid</span>
-                                <span>−{fmt(form.prepaid_amount)} đ</span>
+                                <span>Trả trước</span>
+                                <span>−{fmt(form.prepaid_amount)} VNĐ</span>
                             </div>
                             <div className="flex justify-between font-semibold text-orange-400">
-                                <span>Amount Due</span>
-                                <span>{fmt(amountDue)} đ</span>
+                                <span>Còn lại</span>
+                                <span>{fmt(amountDue)} VNĐ</span>
                             </div>
                         </>
                     )}
@@ -633,7 +633,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                     disabled={saving}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-lg font-medium disabled:opacity-50"
                 >
-                    {saving ? 'Saving…' : editingOrder ? 'Update Order' : 'Create Order'}
+                    {saving ? 'Đang lưu…' : editingOrder ? 'Cập nhật' : 'Tạo đơn'}
                 </button>
                 {onCancel && (
                     <button
@@ -641,7 +641,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         onClick={onCancel}
                         className="border border-gray-600 text-gray-300 px-6 py-1.5 rounded-lg hover:bg-gray-700/50"
                     >
-                        Cancel
+                        Hủy
                     </button>
                 )}
             </div>

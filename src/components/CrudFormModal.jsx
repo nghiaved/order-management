@@ -22,14 +22,14 @@ export default function CrudFormModal({ open, onClose, onSubmit, title, saving, 
                         onClick={onClose}
                         className="px-4 py-1.5 border border-gray-600/50 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors"
                     >
-                        Cancel
+                        Hủy
                     </button>
                     <button
                         type="submit"
                         disabled={saving}
                         className="px-5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium disabled:opacity-50 transition-colors"
                     >
-                        {saving ? 'Saving…' : 'Save'}
+                        {saving ? 'Đang lưu…' : 'Lưu'}
                     </button>
                 </div>
             </form>

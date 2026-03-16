@@ -13,13 +13,13 @@ export default function OrdersPage() {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Orders</h1>
+                <h1 className="text-2xl font-bold text-white">Đơn hàng</h1>
                 <Allow permission={PERMISSIONS.ORDERS_CREATE}>
                     <button
                         onClick={() => navigate('/orders/create')}
                         className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors"
                     >
-                        + New Order
+                        + Tạo đơn hàng
                     </button>
                 </Allow>
             </div>

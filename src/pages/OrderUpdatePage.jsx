@@ -20,7 +20,7 @@ export default function OrderUpdatePage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-48">
-                <p className="text-gray-500">Loading…</p>
+                <p className="text-gray-500">Đang tải…</p>
             </div>
         );
     }
@@ -28,8 +28,8 @@ export default function OrderUpdatePage() {
     if (!order) {
         return (
             <div className="flex flex-col items-center justify-center h-48 gap-3">
-                <p className="text-gray-400">Order not found.</p>
-                <button onClick={() => navigate('/orders')} className="text-blue-400 hover:underline text-sm">← Back to Orders</button>
+                <p className="text-gray-400">Không tìm thấy đơn hàng.</p>
+                <button onClick={() => navigate('/orders')} className="text-blue-400 hover:underline text-sm">← Quay lại đơn hàng</button>
             </div>
         );
     }
@@ -44,10 +44,10 @@ export default function OrderUpdatePage() {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                     </svg>
-                    Back
+                    Quay lại
                 </button>
                 <h1 className="text-2xl font-bold text-white">
-                    Edit Order: <span className="text-blue-400">{id}</span>
+                    Sửa đơn hàng: <span className="text-blue-400">{id}</span>
                 </h1>
             </div>
             <OrderForm

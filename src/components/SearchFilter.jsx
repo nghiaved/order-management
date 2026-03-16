@@ -45,7 +45,7 @@ export default function SearchFilter({ search, onSearchChange, placeholder, filt
                     </select>
                 )
             )}
-            <span className="text-xs text-gray-500 ml-auto">{resultCount} result{resultCount !== 1 && 's'}</span>
+            <span className="text-xs text-gray-500 ml-auto">Kết quả: {resultCount}</span>
         </div>
     );
 }

@@ -9,10 +9,10 @@ import SearchFilter from '../components/SearchFilter';
 import CrudFormModal, { FormField, FormInput } from '../components/CrudFormModal';
 import { fmt } from '../utils/format';
 
-const EMPTY = { sku: '', name: '', base_price: '', category: '' };
+const EMPTY = { sku: '', name: '', base_price: '', category: '', unit: '' };
 
 const loadData = () => productService.getAll();
-const formFromItem = (p) => ({ sku: p.sku, name: p.name, base_price: p.base_price, category: p.category });
+const formFromItem = (p) => ({ sku: p.sku, name: p.name, base_price: p.base_price, category: p.category, unit: p.unit || '' });
 const payloadFromForm = (form) => ({ ...form, base_price: Number(form.base_price) });
 
 export default function ProductsPage() {
@@ -44,15 +44,16 @@ export default function ProductsPage() {
 
     const columns = [
         { header: 'SKU', key: 'sku', render: (p) => <span className="font-mono text-xs text-gray-300">{p.sku}</span> },
-        { header: 'Name', key: 'name', render: (p) => <span className="font-medium text-gray-200">{p.name}</span> },
-        { header: 'Category', key: 'category', render: (p) => <span className="text-gray-400">{p.category}</span> },
-        { header: 'Base Price', key: 'base_price', render: (p) => <span className="text-gray-200 font-semibold">{fmt(p.base_price)} đ</span> },
+        { header: 'Tên', key: 'name', render: (p) => <span className="font-medium text-gray-200">{p.name}</span> },
+        { header: 'Danh mục', key: 'category', render: (p) => <span className="text-gray-400">{p.category}</span> },
+        { header: 'ĐVT', key: 'unit', render: (p) => <span className="text-gray-400">{p.unit}</span> },
+        { header: 'Giá gốc', key: 'base_price', render: (p) => <span className="text-gray-200 font-semibold">{fmt(p.base_price)} VNĐ</span> },
         ...((canEdit || canDelete) ? [{
-            header: 'Actions', key: 'actions', width: '140px',
+            header: 'Thao tác', key: 'actions', width: '140px',
             render: (p) => (
                 <div className="flex items-center justify-center gap-1.5">
-                    {canEdit && <button onClick={() => openEdit(p)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Edit</button>}
-                    {canDelete && <button onClick={() => setDeleteTarget(p)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Delete</button>}
+                    {canEdit && <button onClick={() => openEdit(p)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Sửa</button>}
+                    {canDelete && <button onClick={() => setDeleteTarget(p)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Xóa</button>}
                 </div>
             ),
         }] : []),
@@ -60,18 +61,19 @@ export default function ProductsPage() {
 
     const formFields = [
         { label: 'SKU', key: 'sku' },
-        { label: 'Name', key: 'name' },
-        { label: 'Base Price (đ)', key: 'base_price', type: 'number' },
-        { label: 'Category', key: 'category' },
+        { label: 'Tên', key: 'name' },
+        { label: 'Giá gốc (VNĐ)', key: 'base_price', type: 'number' },
+        { label: 'Danh mục', key: 'category' },
+        { label: 'Đơn vị tính', key: 'unit' },
     ];
 
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Products</h1>
+                <h1 className="text-2xl font-bold text-white">Sản phẩm</h1>
                 {canCreate && (
                     <button onClick={openNew} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors">
-                        + New Product
+                        + Thêm sản phẩm
                     </button>
                 )}
             </div>
@@ -79,19 +81,19 @@ export default function ProductsPage() {
             <SearchFilter
                 search={search}
                 onSearchChange={(v) => { setSearch(v); setPage(1); }}
-                placeholder="Search by name or SKU…"
+                placeholder="Tìm theo tên hoặc SKU…"
                 filters={[{
                     value: categoryFilter,
                     onChange: (v) => { setCategoryFilter(v); setPage(1); },
-                    options: [{ value: '', label: 'All Categories' }, ...categories.map((c) => ({ value: c, label: c }))],
+                    options: [{ value: '', label: 'Tất cả danh mục' }, ...categories.map((c) => ({ value: c, label: c }))],
                 }]}
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="No products found." />
+            <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy sản phẩm." />
             <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
 
-            <CrudFormModal open={!!editing} onClose={close} onSubmit={handleSave} title={editing?.id ? 'Edit Product' : 'New Product'} saving={saving}>
+            <CrudFormModal open={!!editing} onClose={close} onSubmit={handleSave} title={editing?.id ? 'Sửa sản phẩm' : 'Thêm sản phẩm'} saving={saving}>
                 {formFields.map((f) => (
                     <FormField key={f.key} label={f.label}>
                         <FormInput type={f.type || 'text'} value={form[f.key]} onChange={(e) => setForm({ ...form, [f.key]: e.target.value })} />
@@ -99,8 +101,8 @@ export default function ProductsPage() {
                 ))}
             </CrudFormModal>
 
-            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Delete Product"
-                message={`Are you sure you want to delete "${deleteTarget?.name}"? This action cannot be undone.`} />
+            <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa sản phẩm"
+                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.name}"? Thao tác này không thể hoàn tác.`} />
         </div>
     );
 }

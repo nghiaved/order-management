@@ -11,7 +11,7 @@ import CancelReasonModal from './CancelReasonModal';
 import Pagination from './Pagination';
 import DataTable from './DataTable';
 import SearchFilter from './SearchFilter';
-import { STATUS_CONFIG, PAGE_SIZE } from '../constants';
+import { STATUS_CONFIG, PAGE_SIZE, PAYMENT_LABEL } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
 
 export default function OrderList({ refreshKey, onRefresh }) {
@@ -72,10 +72,10 @@ export default function OrderList({ refreshKey, onRefresh }) {
         if (!statusTarget) return;
         try {
             await updateStatus(statusTarget.order, statusTarget.newStatus);
-            toast.success(`Order moved to ${statusTarget.newStatus}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Hoàn thành'}.`);
             onRefresh?.();
         } catch (err) {
-            toast.error(err.message || 'Failed to update status.');
+            toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
             setStatusTarget(null);
         }
@@ -92,10 +92,10 @@ export default function OrderList({ refreshKey, onRefresh }) {
             setOrders((prev) =>
                 prev.map((o) => (o.id === cancelTarget.id ? { ...o, status: 'Cancel' } : o))
             );
-            toast.success(`Order ${cancelTarget.id} cancelled. Inventory restored.`);
+            toast.success(`Đơn ${cancelTarget.id} đã hủy. Tồn kho đã hoàn trả.`);
             onRefresh?.();
         } catch (err) {
-            toast.error(err.message || 'Failed to cancel order.');
+            toast.error(err.message || 'Không thể hủy đơn hàng.');
         } finally {
             setCancelTarget(null);
         }
@@ -106,10 +106,10 @@ export default function OrderList({ refreshKey, onRefresh }) {
         try {
             await orderService.remove(deleteTarget.id);
             setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
-            toast.success('Order deleted.');
+            toast.success('Đã xóa đơn hàng.');
             onRefresh?.();
         } catch (err) {
-            toast.error(err.message || 'Failed to delete order.');
+            toast.error(err.message || 'Không thể xóa đơn hàng.');
         } finally {
             setDeleteTarget(null);
         }
@@ -117,64 +117,64 @@ export default function OrderList({ refreshKey, onRefresh }) {
 
     const columns = [
         {
-            header: 'Order ID', key: 'id',
+            header: 'Mã đơn', key: 'id',
             render: (o) => <span className="font-medium text-blue-400">{o.id}</span>,
         },
         {
-            header: 'Customer', key: 'customer',
+            header: 'Khách hàng', key: 'customer',
             render: (o) => <span className="text-gray-300">{customerMap[o.customer_id]?.full_name || o.customer_id}</span>,
         },
         {
-            header: 'Payment', key: 'payment_method',
-            render: (o) => <span className="text-gray-400">{o.payment_method}</span>,
+            header: 'Thanh toán', key: 'payment_method',
+            render: (o) => <span className="text-gray-400">{PAYMENT_LABEL[o.payment_method] || o.payment_method}</span>,
         },
         {
-            header: 'Total', key: 'total_amount',
-            render: (o) => <span className="font-semibold text-gray-200">{fmt(o.total_amount)} đ</span>,
+            header: 'Tổng tiền', key: 'total_amount',
+            render: (o) => <span className="font-semibold text-gray-200">{fmt(o.total_amount)} VNĐ</span>,
         },
         {
-            header: 'Status', key: 'status',
+            header: 'Trạng thái', key: 'status',
             render: (o) => {
                 const cfg = STATUS_CONFIG[o.status] || STATUS_CONFIG.New;
                 return <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.bg}`}>{cfg.label}</span>;
             },
         },
         {
-            header: 'Date', key: 'created_at',
+            header: 'Ngày tạo', key: 'created_at',
             render: (o) => <span className="text-gray-500 text-xs">{fmtDateTime(o.created_at)}</span>,
         },
         {
-            header: 'Actions', key: 'actions',
+            header: '', key: 'actions',
             render: (o) => (
                 <div className="flex items-center gap-2 flex-wrap">
                     <button onClick={() => navigate(`/orders/detail?id=${o.id}`)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 transition-colors">
-                        Detail
+                        Chi tiết
                     </button>
                     <Allow permission={PERMISSIONS.ORDERS_UPDATE}>
                         {o.status === 'New' && (
                             <>
-                                <button onClick={() => navigate(`/orders/update?id=${o.id}`)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Edit</button>
+                                <button onClick={() => navigate(`/orders/update?id=${o.id}`)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Sửa</button>
                                 <button
-                                    onClick={() => setStatusTarget({ order: o, newStatus: 'Processing', title: 'Process Order', message: `Move order "${o.id}" to Processing?`, confirmText: 'Process' })}
+                                    onClick={() => setStatusTarget({ order: o, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${o.id}" sang Đang xử lý?`, confirmText: 'Xử lý' })}
                                     className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors"
-                                >Process</button>
+                                >Xử lý</button>
                             </>
                         )}
                         {o.status === 'Processing' && (
                             <button
-                                onClick={() => setStatusTarget({ order: o, newStatus: 'Done', title: 'Complete Order', message: `Mark order "${o.id}" as complete?`, confirmText: 'Complete' })}
+                                onClick={() => setStatusTarget({ order: o, newStatus: 'Done', title: 'Hoàn thành đơn', message: `Đánh dấu đơn "${o.id}" là Hoàn thành?`, confirmText: 'Hoàn thành' })}
                                 className="px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-colors"
-                            >Complete</button>
+                            >Hoàn thành</button>
                         )}
                         {(o.status === 'New' || o.status === 'Processing') && (
                             <button
                                 onClick={() => setCancelTarget(o)}
                                 className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors"
-                            >Cancel</button>
+                            >Hủy</button>
                         )}
                     </Allow>
                     <Allow permission={PERMISSIONS.ORDERS_DELETE}>
-                        <button onClick={() => setDeleteTarget(o)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Delete</button>
+                        <button onClick={() => setDeleteTarget(o)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors">Xóa</button>
                     </Allow>
                 </div>
             ),
@@ -186,16 +186,16 @@ export default function OrderList({ refreshKey, onRefresh }) {
             <SearchFilter
                 search={search}
                 onSearchChange={(v) => { setSearch(v); setPage(1); }}
-                placeholder="Search by order ID or customer…"
+                placeholder="Tìm theo mã đơn hoặc khách hàng…"
                 filters={[
                     {
                         value: statusFilter,
                         onChange: (v) => { setStatusFilter(v); setPage(1); },
-                        options: [{ value: '', label: 'All Status' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ value: k, label: v.label }))],
+                        options: [{ value: '', label: 'Tất cả trạng thái' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ value: k, label: v.label }))],
                     },
                     {
                         type: 'date',
-                        label: 'Filter by delivery date',
+                        label: 'Lọc theo ngày giao',
                         value: dateFilter,
                         onChange: (v) => { setDateFilter(v); setPage(1); },
                     },
@@ -219,7 +219,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 </div>
             ) : (
                 <>
-                    <DataTable columns={columns} data={paginated} emptyText="No orders found." />
+                    <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy đơn hàng." />
                     <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
                 </>
             )}
@@ -248,8 +248,8 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 open={!!deleteTarget}
                 onClose={() => setDeleteTarget(null)}
                 onConfirm={confirmDelete}
-                title="Delete Order"
-                message={`Are you sure you want to delete order "${deleteTarget?.id}"? This action cannot be undone.`}
+                title="Xóa đơn hàng"
+                message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
             />
         </div>
     );
