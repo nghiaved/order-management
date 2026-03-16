@@ -401,7 +401,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         value={form.shipping_unit}
                         onChange={(e) => setForm((f) => ({ ...f, shipping_unit: e.target.value }))}
                     >
-                        <option value="">-- Select --</option>
+                        <option value="">-- Chọn --</option>
                         {SHIPPING_UNITS.map((u) => (
                             <option key={u} value={u}>
                                 {u}
