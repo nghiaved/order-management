@@ -104,6 +104,11 @@ export default function OrderList({ refreshKey, onRefresh }) {
     const confirmDelete = async () => {
         if (!deleteTarget) return;
         try {
+            // Restore inventory if order was not already cancelled
+            if (deleteTarget.status !== 'Cancel') {
+                await restoreOrderInventory(deleteTarget.id);
+            }
+            await orderService.deleteOrderDetails(deleteTarget.id);
             await orderService.remove(deleteTarget.id);
             setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
             toast.success('Đã xóa đơn hàng.');

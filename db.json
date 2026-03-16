@@ -4,7 +4,7 @@
       "id": "u1",
       "username": "admin",
       "password": "admin123",
-      "name": "Nguyễn Quản Trị",
+      "name": "Nhân viên quản trị",
       "note": "Quyền truy cập toàn hệ thống",
       "role": "admin",
       "permissions": [
@@ -43,7 +43,7 @@
       "id": "u2",
       "username": "manager",
       "password": "manager123",
-      "name": "Trần Thị Hương",
+      "name": "Nhân viên bán hàng",
       "note": "Quản lý đơn hàng và khách hàng",
       "role": "user",
       "permissions": [
@@ -69,7 +69,7 @@
       "id": "u3",
       "username": "viewer",
       "password": "viewer123",
-      "name": "Lê Văn Đức",
+      "name": "Nhân viên mới",
       "note": "Chỉ xem dữ liệu",
       "role": "readonly",
       "permissions": [
@@ -137,6 +137,20 @@
       "phone": "0387890123",
       "address": "34 Hai Bà Trưng, P. Tân Định, Q.1, TP.HCM",
       "created_at": "2026-03-01T07:20:00Z"
+    },
+    {
+      "full_name": "Nguyễn Thành Nghĩa",
+      "phone": "0902641448",
+      "address": "Cần Thơ",
+      "created_at": "2026-03-16T06:39:50.603Z",
+      "id": "zXzH-ra"
+    },
+    {
+      "full_name": "Nguyễn Thành Lộc",
+      "phone": "0987654321",
+      "address": "Hậu Giang",
+      "created_at": "2026-03-16T06:42:59.012Z",
+      "id": "Nrxxo7N"
     }
   ],
   "products": [
@@ -291,14 +305,14 @@
       "product_id": "1",
       "stock_quantity": 85,
       "location": "Kệ A1",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-16T07:10:18.894Z"
     },
     {
       "id": "2",
       "product_id": "2",
-      "stock_quantity": 120,
+      "stock_quantity": 117,
       "location": "Kệ A2",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-16T07:08:12.309Z"
     },
     {
       "id": "3",
@@ -494,6 +508,39 @@
       "note": "Giao tận nhà",
       "total_amount": 232000,
       "created_at": "2026-03-12T08:20:00Z"
+    },
+    {
+      "customer_id": "zXzH-ra",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Chuyển khoản",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"MB Bank\",\"account_number\":\"0902641448\"}",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 352000,
+      "id": "ORD-20260316-001",
+      "status": "Cancel",
+      "created_at": "2026-03-16T06:39:50.647Z",
+      "cancel_reason": "Nợ dai, khó đòi"
+    },
+    {
+      "customer_id": "Nrxxo7N",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 85000,
+      "id": "ORD-20260316-002",
+      "status": "New",
+      "created_at": "2026-03-16T06:54:44.014Z"
     }
   ],
   "order_details": [
@@ -615,6 +662,20 @@
       "product_id": "15",
       "quantity": 1,
       "unit_price": 115000
+    },
+    {
+      "order_id": "ORD-20260316-001",
+      "product_id": "1",
+      "quantity": 1,
+      "unit_price": 320000,
+      "id": "rYx4KgC"
+    },
+    {
+      "order_id": "ORD-20260316-002",
+      "product_id": "2",
+      "quantity": 1,
+      "unit_price": 85000,
+      "id": "eqMTgFD"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

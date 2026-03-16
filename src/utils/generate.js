@@ -5,8 +5,14 @@ export function generateOrderId(orders) {
         String(today.getMonth() + 1).padStart(2, '0') +
         String(today.getDate()).padStart(2, '0');
 
-    const todayOrders = orders.filter((o) => o.id && o.id.includes(date));
-    const seq = String(todayOrders.length + 1).padStart(3, '0');
+    const prefix = `ORD-${date}-`;
+    let maxSeq = 0;
+    for (const o of orders) {
+        if (o.id && o.id.startsWith(prefix)) {
+            const seq = parseInt(o.id.slice(prefix.length), 10);
+            if (seq > maxSeq) maxSeq = seq;
+        }
+    }
 
-    return `ORD-${date}-${seq}`;
+    return `${prefix}${String(maxSeq + 1).padStart(3, '0')}`;
 }

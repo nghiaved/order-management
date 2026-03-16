@@ -81,6 +81,10 @@ export default function OrderDetailPage() {
     const confirmDelete = async () => {
         if (!deleteTarget) return;
         try {
+            if (deleteTarget.status !== 'Cancel') {
+                await restoreOrderInventory(deleteTarget.id);
+            }
+            await orderService.deleteOrderDetails(deleteTarget.id);
             await orderService.remove(deleteTarget.id);
             toast.success('Đã xóa đơn hàng.');
             navigate('/orders');
@@ -367,7 +371,7 @@ export default function OrderDetailPage() {
                         onClick={() => setDeleteTarget(order)}
                         className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
                     >
-                        Delete Order
+                        Xoá đơn hàng
                     </button>
                 </div>
             </Allow>

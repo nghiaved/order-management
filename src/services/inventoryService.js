@@ -38,19 +38,19 @@ export const inventoryService = {
     },
 
     async deductStock(productId, quantity) {
-        const item = await this.getByProductId(productId);
-        if (!item) throw new Error(`No inventory record for product ${productId}`);
+        const item = await this.getByProductId(String(productId));
+        if (!item) throw new Error(`Không tìm thấy tồn kho cho sản phẩm ${productId}`);
         if (item.stock_quantity < quantity) {
             throw new Error(
-                `Insufficient stock for product ${productId}. Available: ${item.stock_quantity}, Requested: ${quantity}`
+                `Không đủ tồn kho cho sản phẩm ${productId}. Hiện có: ${item.stock_quantity}, Yêu cầu: ${quantity}`
             );
         }
         return this.updateStock(item.id, item.stock_quantity - quantity);
     },
 
     async restoreStock(productId, quantity) {
-        const item = await this.getByProductId(productId);
-        if (!item) return null; // No inventory record — silently skip
+        const item = await this.getByProductId(String(productId));
+        if (!item) return null;
         return this.updateStock(item.id, item.stock_quantity + quantity);
     },
 

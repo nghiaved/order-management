@@ -35,6 +35,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
     const dropdownRef = useRef(null);
+    const savingRef = useRef(false);
 
     // ── Load reference data ─────────────────────────────────────────
     useEffect(() => {
@@ -86,8 +87,6 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             has_vat: editingOrder.has_vat || false,
             note: editingOrder.note || '',
         });
-        const cust = customers.find((c) => c.id === editingOrder.customer_id);
-        setCustomerSearch(cust ? cust.full_name : String(editingOrder.customer_id));
         // Load line items
         orderService.getOrderDetails(editingOrder.id).then((details) => {
             setItems(
@@ -98,6 +97,14 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                 }))
             );
         });
+    }, [editingOrder]);
+
+    // Set customer search name when customers load for editing
+    useEffect(() => {
+        if (editingOrder && customers.length > 0) {
+            const cust = customers.find((c) => c.id === editingOrder.customer_id);
+            if (cust) setCustomerSearch(cust.full_name);
+        }
     }, [editingOrder, customers]);
 
     // ── Close dropdown on outside click ─────────────────────────────
@@ -194,8 +201,13 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
     // ── Submit ──────────────────────────────────────────────────────
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (savingRef.current) return;
         if (!validate()) return;
+        savingRef.current = true;
         setSaving(true);
+
+        // Snapshot items to prevent stale closure issues
+        const currentItems = [...items];
 
         try {
             let customerId = form.customer_id;
@@ -226,37 +238,45 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             };
 
             if (editingOrder) {
+                // Restore old inventory before applying new quantities
+                const oldDetails = await orderService.getOrderDetails(editingOrder.id);
+                for (const old of oldDetails) {
+                    await inventoryService.restoreStock(old.product_id, Number(old.quantity));
+                }
+
+                // Deduct new quantities
+                for (const item of currentItems) {
+                    await inventoryService.deductStock(item.product_id, Number(item.quantity));
+                }
+
                 await orderService.update(editingOrder.id, orderPayload);
                 await orderService.deleteOrderDetails(editingOrder.id);
-                await Promise.all(
-                    items.map((item) =>
-                        orderService.createOrderDetail({
-                            order_id: editingOrder.id,
-                            product_id: Number(item.product_id),
-                            quantity: Number(item.quantity),
-                            unit_price: Number(item.unit_price),
-                        })
-                    )
-                );
+                for (const item of currentItems) {
+                    await orderService.createOrderDetail({
+                        order_id: editingOrder.id,
+                        product_id: String(item.product_id),
+                        quantity: Number(item.quantity),
+                        unit_price: Number(item.unit_price),
+                    });
+                }
             } else {
+                // Deduct inventory first — abort if insufficient stock
+                for (const item of currentItems) {
+                    await inventoryService.deductStock(item.product_id, Number(item.quantity));
+                }
+
                 const existingOrders = await orderService.getAll();
                 const orderId = generateOrderId(existingOrders);
 
                 await orderService.create({ ...orderPayload, id: orderId, status: 'New' });
-                await Promise.all(
-                    items.map((item) =>
-                        orderService.createOrderDetail({
-                            order_id: orderId,
-                            product_id: Number(item.product_id),
-                            quantity: Number(item.quantity),
-                            unit_price: Number(item.unit_price),
-                        })
-                    )
-                );
-
-                // Deduct inventory
-                for (const item of items) {
-                    await inventoryService.deductStock(Number(item.product_id), Number(item.quantity));
+                await orderService.deleteOrderDetails(orderId);
+                for (const item of currentItems) {
+                    await orderService.createOrderDetail({
+                        order_id: orderId,
+                        product_id: String(item.product_id),
+                        quantity: Number(item.quantity),
+                        unit_price: Number(item.unit_price),
+                    });
                 }
             }
 
@@ -270,6 +290,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
         } catch (err) {
             toast.error(err.message || 'Không thể lưu đơn hàng.');
         } finally {
+            savingRef.current = false;
             setSaving(false);
         }
     };

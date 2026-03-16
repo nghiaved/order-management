@@ -35,6 +35,11 @@ export const orderService = {
         return data;
     },
 
+    async getAllOrderDetails() {
+        const { data } = await api.get('/order_details');
+        return data;
+    },
+
     async createOrderDetail(detail) {
         const { data } = await api.post('/order_details', detail);
         return data;
@@ -44,6 +49,8 @@ export const orderService = {
         const { data: details } = await api.get('/order_details', {
             params: { order_id: orderId },
         });
-        await Promise.all(details.map((d) => api.delete(`/order_details/${d.id}`)));
+        for (const d of details) {
+            await api.delete(`/order_details/${d.id}`);
+        }
     },
 };

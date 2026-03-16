@@ -1,6 +1,6 @@
-# Order Management
+# Order Management System
 
-A full-featured **Order Management System** built with React, Tailwind CSS, and JSON Server. Features a dark-themed UI, role-based access control (RBAC), and complete CRUD operations for orders, products, inventory, and customers.
+Hệ thống quản lý đơn hàng đầy đủ tính năng, xây dựng bằng React, Tailwind CSS và JSON Server. Giao diện dark theme, phân quyền RBAC, CRUD hoàn chỉnh cho đơn hàng, sản phẩm, kho hàng và khách hàng. Toàn bộ UI đã được Việt hóa.
 
 ## Tech Stack
 
@@ -9,6 +9,7 @@ A full-featured **Order Management System** built with React, Tailwind CSS, and 
 | Frontend    | React 19, React Router 7, Tailwind CSS 3         |
 | Charts      | Recharts 3                                       |
 | HTTP Client | Axios                                            |
+| Toasts      | react-hot-toast                                  |
 | Backend API | JSON Server (mock REST API on port 8080)         |
 | Build       | Create React App (react-scripts 5)               |
 
@@ -27,112 +28,152 @@ npm start
 
 ## Test Accounts
 
-| Username  | Password     | Role       | Access                         |
-| --------- | ------------ | ---------- | ------------------------------ |
-| `admin`   | `admin123`   | Admin      | Full system access             |
-| `manager` | `manager123` | Manager    | Orders + Customers (no delete) |
-| `viewer`  | `viewer123`  | Read-Only  | View-only access               |
+| Username  | Password     | Role               | Access                         |
+| --------- | ------------ | ------------------ | ------------------------------ |
+| `admin`   | `admin123`   | Quản trị viên      | Toàn quyền hệ thống           |
+| `manager` | `manager123` | Quản lý            | Đơn hàng + Khách hàng         |
+| `viewer`  | `viewer123`  | Xem                | Chỉ xem                       |
+
+## Features
+
+### Core
+- **CRUD hoàn chỉnh** cho Đơn hàng, Sản phẩm, Kho hàng, Khách hàng
+- **Phân quyền RBAC** theo mô hình `resource:action` ở cấp route và component
+- **Dashboard analytics** với biểu đồ doanh thu theo tháng, trạng thái đơn hàng (pie chart), top sản phẩm tồn kho
+- **Dashboard filters** theo khoảng ngày, sản phẩm, trạng thái — tất cả thống kê và biểu đồ phản hồi theo bộ lọc
+- **Form đơn hàng phức tạp** — tạo/chọn khách hàng, thêm sản phẩm, tính VAT, phí ship, công nợ, chuyển khoản
+
+### Enterprise
+- **Toast notifications** — react-hot-toast (dark theme, bottom-center)
+- **In hóa đơn** — popup HTML/CSS với bảng chi tiết, trạng thái, tổng cộng
+- **Skeleton loading** — hiệu ứng pulse khi tải dữ liệu
+- **Đồng bộ tồn kho** — tự động hoàn kho khi hủy đơn hàng
+- **Cảnh báo tồn kho thấp** — đỏ (<5), vàng (<100) trên thanh tổng quan
+- **Tìm kiếm & lọc đa tiêu chí** — theo tên, SKU, danh mục, vị trí, ngày, trạng thái
+
+### Việt hóa
+- Toàn bộ labels, placeholders, buttons, validation, toast messages
+- Trạng thái: Mới, Đang xử lý, Hoàn thành, Đã hủy
+- Thanh toán: Tiền mặt, Chuyển khoản, Công nợ, Thanh toán khi nhận hàng
+- Định dạng tiền: VNĐ (vi-VN locale), ngày: DD/MM/YYYY
+- Dữ liệu mẫu: cửa hàng tạp hóa Việt Nam (gạo, mì, bia, nước mắm, dầu gội...)
 
 ## Architecture
 
-The codebase follows **Clean Architecture** principles with clear separation of concerns across layered modules. Each layer depends only on layers below it.
+Codebase tuân theo **Clean Architecture** với phân tách rõ ràng giữa các layer.
 
 ```
 src/
-├── constants/          # Shared constants (single source of truth)
+├── constants/          # Hằng số dùng chung (single source of truth)
 │   └── index.js        # PAGE_SIZE, VAT_RATE, STATUS_CONFIG, PAYMENT_METHODS, SHIPPING_UNITS
 │
-├── utils/              # Pure functions (no side effects, no state)
-│   ├── format.js       # fmt, fmtCurrency, fmtDate, fmtDateTime
-│   ├── generate.js     # generateOrderId
-│   └── rbacHelper.js   # PERMISSIONS map, hasPermission, hasAnyPermission
+├── utils/              # Pure functions (không side effects)
+│   ├── format.js       # fmt, fmtCurrency, fmtDate, fmtDateTime (vi-VN)
+│   ├── generate.js     # generateOrderId (ORD-YYYYMMDD-###)
+│   ├── rbacHelper.js   # hasPermission, canAccess, hasMinimumLevel, isAdmin
+│   └── printInvoice.js # In hóa đơn popup với HTML/CSS
 │
 ├── services/           # Data access layer (API abstraction)
 │   ├── api.js          # Axios instance (baseURL: localhost:8080)
-│   ├── authService.js  # login, getProfile
-│   ├── orderService.js # CRUD + order details + status management
+│   ├── authService.js  # login, logout, getCurrentUser, isAuthenticated
+│   ├── orderService.js # CRUD + order details + getAllOrderDetails
 │   ├── productService.js
 │   ├── customerService.js
-│   └── inventoryService.js
+│   └── inventoryService.js  # deductStock, restoreStock, updateStock
 │
 ├── contexts/           # React context (global state)
-│   └── AuthContext.jsx # AuthProvider, useAuth hook
+│   └── AuthContext.jsx # AuthProvider, useAuth, useAuthorization hooks
 │
 ├── hooks/              # Reusable custom hooks
-│   ├── useCrudPage.js  # Generic CRUD page state (data, filter, pagination, modal, delete)
-│   └── usePermissions.js # canCreate/canRead/canEdit/canDelete for a resource
+│   ├── useCrudPage.js  # Generic CRUD page state machine
+│   ├── usePermissions.js   # canCreate/canRead/canEdit/canDelete
+│   ├── useOrderStats.js    # Revenue, totals, low stock alerts
+│   └── useInventorySync.js # Hoàn kho khi hủy đơn
 │
-├── components/         # Shared UI components (presentation)
-│   ├── Layout.jsx      # App shell: sidebar + header + content
-│   ├── DataTable.jsx   # Generic data table with column config
-│   ├── Pagination.jsx  # Page navigation controls
-│   ├── Modal.jsx       # Modal + ConfirmModal
-│   ├── CrudFormModal.jsx # Form modal + FormField + FormInput
-│   ├── SearchFilter.jsx  # Search input + filter selects + result count
-│   ├── Allow.jsx       # Permission-gated rendering
-│   ├── ProtectedRoute.jsx # Route guard (auth + permission)
-│   ├── OrderForm.jsx   # Complex order create/edit form
-│   └── OrderList.jsx   # Orders table with status actions
+├── components/         # Shared UI components
+│   ├── Layout.jsx          # App shell: sidebar + header + profile modal
+│   ├── DataTable.jsx       # Generic table with column config
+│   ├── Pagination.jsx      # Page nav with smart ellipsis
+│   ├── Modal.jsx           # Base modal + ConfirmModal
+│   ├── CrudFormModal.jsx   # Form modal + FormField + FormInput
+│   ├── SearchFilter.jsx    # Search input + filter selects + date pickers
+│   ├── Allow.jsx           # Permission-gated rendering
+│   ├── ProtectedRoute.jsx  # Route guard (auth + permission)
+│   ├── OrderForm.jsx       # Form tạo/sửa đơn hàng
+│   ├── OrderList.jsx       # Bảng đơn hàng + status actions
+│   ├── OrderSummaryBar.jsx # Stat chips + low stock alerts
+│   └── CancelReasonModal.jsx # Nhập lý do hủy + hoàn kho
 │
 ├── pages/              # Route pages (composition layer)
 │   ├── LoginPage.jsx
-│   ├── DashboardPage.jsx   # Analytics: stat cards + recharts
-│   ├── OrdersPage.jsx      # Orders listing
-│   ├── OrderCreatePage.jsx  # /orders/create
-│   ├── OrderUpdatePage.jsx  # /orders/update?id=...
-│   ├── OrderDetailPage.jsx  # /orders/detail?id=...
-│   ├── ProductsPage.jsx    # Products CRUD (uses useCrudPage)
-│   ├── CustomersPage.jsx   # Customers CRUD (uses useCrudPage)
-│   └── InventoryPage.jsx   # Inventory management
+│   ├── DashboardPage.jsx       # Thống kê + biểu đồ + bộ lọc
+│   ├── OrdersPage.jsx          # Danh sách đơn hàng
+│   ├── OrderCreatePage.jsx     # Tạo đơn hàng mới
+│   ├── OrderUpdatePage.jsx     # Sửa đơn hàng
+│   ├── OrderDetailPage.jsx     # Chi tiết đơn hàng + in hóa đơn
+│   ├── ProductsPage.jsx        # CRUD sản phẩm (useCrudPage)
+│   ├── CustomersPage.jsx       # CRUD khách hàng
+│   └── InventoryPage.jsx       # Quản lý tồn kho
 │
 └── App.jsx             # Root: routing + lazy loading + permission gates
 ```
 
-## Design Principles
+## Data Model
 
-### Single Responsibility (SRP)
-- **Constants**: one module for all shared values (`PAGE_SIZE`, `STATUS_CONFIG`, etc.)
-- **Format utilities**: one module for all locale formatting (`fmt`, `fmtCurrency`, `fmtDate`)
-- **Services**: each service handles one API resource
-- **Components**: each UI component handles one presentation concern
-
-### Open/Closed (OCP)
-- `useCrudPage` hook is extensible via configuration callbacks (`loadData`, `filterFn`, `formFromItem`, `payloadFromForm`) without modifying the hook itself
-- `DataTable` renders any data shape via column config
-- `SearchFilter` supports arbitrary filter dropdowns via `filters` array
-
-### Dependency Inversion (DIP)
-- Pages depend on **service abstractions** (e.g. `orderService.getAll()`) not raw API calls
-- `DashboardPage` uses service layer instead of direct `axios` calls
-- `useCrudPage` receives service functions as config, not concrete implementations
-
-### DRY (Don't Repeat Yourself)
-- `fmt()` was duplicated in 5 files → centralized in `utils/format.js`
-- `STATUS_CONFIG`, `PAGE_SIZE`, `VAT_RATE` were duplicated → centralized in `constants/`
-- CRUD state pattern (10+ useState hooks) was duplicated in 3 pages → extracted into `useCrudPage` hook
-- Filter bar UI was duplicated in 4 pages → extracted into `SearchFilter` component
+```
+users          — id, username, password, name, role, permissions[], hierarchyLevel
+orders         — id (ORD-YYYYMMDD-###), customer_id, status, payment_method,
+                 delivery_date, shipping_unit, shipping_fee, has_vat, total_amount,
+                 prepaid_amount, bank_info, cancel_reason, note, created_at
+order_details  — id, order_id, product_id, quantity, unit_price
+products       — id, sku, name, base_price, category, unit
+customers      — id, full_name, phone, address, created_at
+inventory      — id, product_id, stock_quantity, location, last_updated
+```
 
 ## Routes
 
-| Path                  | Page              | Permission Required   |
-| --------------------- | ----------------- | --------------------- |
-| `/login`              | Login             | —                     |
-| `/`                   | Dashboard         | `dashboard:read`      |
-| `/orders`             | Orders list       | `orders:list`         |
-| `/orders/create`      | Create order      | `orders:create`       |
-| `/orders/update?id=`  | Edit order        | `orders:update`       |
-| `/orders/detail?id=`  | Order detail      | `orders:read`         |
-| `/products`           | Products CRUD     | `products:list`       |
-| `/customers`          | Customers CRUD    | `customers:list`      |
-| `/inventory`          | Inventory CRUD    | `inventory:list`      |
+| Path                  | Page              | Permission        | Mô tả                     |
+| --------------------- | ----------------- | ----------------- | -------------------------- |
+| `/login`              | LoginPage         | —                 | Đăng nhập                  |
+| `/`                   | DashboardPage     | `dashboard:read`  | Thống kê + biểu đồ + lọc  |
+| `/orders`             | OrdersPage        | `orders:list`     | Danh sách đơn hàng         |
+| `/orders/create`      | OrderCreatePage   | `orders:create`   | Tạo đơn hàng mới           |
+| `/orders/update?id=`  | OrderUpdatePage   | `orders:update`   | Sửa đơn hàng               |
+| `/orders/detail?id=`  | OrderDetailPage   | `orders:read`     | Chi tiết + in hóa đơn      |
+| `/products`           | ProductsPage      | `products:list`   | Quản lý sản phẩm           |
+| `/customers`          | CustomersPage     | `customers:list`  | Quản lý khách hàng         |
+| `/inventory`          | InventoryPage     | `inventory:list`  | Quản lý tồn kho            |
 
 ## RBAC System
 
-Permissions follow the `resource:action` pattern:
+Permissions theo mô hình `resource:action`:
 - **Resources**: `orders`, `products`, `inventory`, `customers`, `users`, `dashboard`
 - **Actions**: `create`, `read`, `update`, `delete`, `list`
 
-Components use `<Allow permission="orders:create">` for conditional rendering and `<ProtectedRoute>` for route-level guards. The `usePermissions(resource)` hook provides `canCreate`, `canRead`, `canEdit`, `canDelete` booleans.
+Sử dụng `<Allow permission="orders:create">` cho conditional rendering và `<ProtectedRoute>` cho route guard. Hook `usePermissions(resource)` cung cấp `canCreate`, `canRead`, `canEdit`, `canDelete`.
+
+## Design Principles
+
+### Single Responsibility (SRP)
+- **Constants**: một module cho tất cả hằng số (`PAGE_SIZE`, `STATUS_CONFIG`, etc.)
+- **Format utilities**: một module cho formatting (`fmt`, `fmtCurrency`, `fmtDate`)
+- **Services**: mỗi service quản lý một API resource
+- **Components**: mỗi component đảm nhiệm một presentation concern
+
+### Open/Closed (OCP)
+- `useCrudPage` hook mở rộng qua config callbacks mà không sửa hook
+- `DataTable` render mọi data shape qua column config
+- `SearchFilter` hỗ trợ filter tùy ý qua `filters` array (select, date)
+
+### Dependency Inversion (DIP)
+- Pages phụ thuộc vào service abstractions, không gọi trực tiếp API
+- `useCrudPage` nhận service functions qua config
+
+### DRY
+- `fmt()` tập trung trong `utils/format.js` (thay vì duplicate 5+ files)
+- CRUD state pattern trích xuất vào `useCrudPage` hook
+- Filter bar UI trích xuất vào `SearchFilter` component
 
 ## Scripts
 

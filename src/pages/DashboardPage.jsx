@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { orderService } from '../services/orderService';
 import { productService } from '../services/productService';
 import { inventoryService } from '../services/inventoryService';
 import { customerService } from '../services/customerService';
+import SearchFilter from '../components/SearchFilter';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend,
@@ -40,10 +41,17 @@ function StatCard({ icon, label, value, sub, color }) {
 
 export default function DashboardPage() {
     const [orders, setOrders] = useState([]);
+    const [orderDetails, setOrderDetails] = useState([]);
     const [products, setProducts] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // Filter state
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
+    const [productId, setProductId] = useState('');
+    const [status, setStatus] = useState('');
 
     useEffect(() => {
         Promise.all([
@@ -51,19 +59,57 @@ export default function DashboardPage() {
             productService.getAll(),
             inventoryService.getAll(),
             customerService.getAll(),
+            orderService.getAllOrderDetails(),
         ])
-            .then(([o, p, i, c]) => {
+            .then(([o, p, i, c, od]) => {
                 setOrders(o);
                 setProducts(p);
                 setInventory(i);
                 setCustomers(c);
+                setOrderDetails(od);
             })
             .finally(() => setLoading(false));
     }, []);
 
+    const handleClearFilters = useCallback(() => {
+        setDateFrom('');
+        setDateTo('');
+        setProductId('');
+        setStatus('');
+    }, []);
+
+    // Filtered orders
+    const filteredOrders = useMemo(() => {
+        let result = orders;
+
+        if (dateFrom) {
+            result = result.filter((o) => o.created_at >= dateFrom);
+        }
+        if (dateTo) {
+            const toEnd = dateTo + 'T23:59:59Z';
+            result = result.filter((o) => o.created_at <= toEnd);
+        }
+        if (status) {
+            result = result.filter((o) => o.status === status);
+        }
+        if (productId) {
+            const orderIdsWithProduct = new Set(
+                orderDetails
+                    .filter((d) => String(d.product_id) === productId)
+                    .map((d) => d.order_id),
+            );
+            result = result.filter((o) => orderIdsWithProduct.has(o.id));
+        }
+
+        return result;
+    }, [orders, orderDetails, dateFrom, dateTo, productId, status]);
+
+    const hasActiveFilter = dateFrom || dateTo || productId || status;
+
     const stats = useMemo(() => {
-        const totalOrders = orders.length;
-        const revenue = orders
+        const src = filteredOrders;
+        const totalOrders = src.length;
+        const revenue = src
             .filter((o) => o.status !== 'Cancel')
             .reduce((s, o) => s + (o.total_amount || 0), 0);
         const totalStock = inventory.reduce((s, i) => s + (i.stock_quantity || 0), 0);
@@ -72,7 +118,7 @@ export default function DashboardPage() {
 
         // Status breakdown
         const statusMap = {};
-        orders.forEach((o) => {
+        src.forEach((o) => {
             statusMap[o.status] = (statusMap[o.status] || 0) + 1;
         });
         const statusData = Object.entries(statusMap).map(([name, value]) => ({
@@ -82,7 +128,7 @@ export default function DashboardPage() {
 
         // Monthly revenue (last 6 months)
         const monthlyMap = {};
-        orders
+        src
             .filter((o) => o.status !== 'Cancel')
             .forEach((o) => {
                 const d = new Date(o.created_at);
@@ -103,7 +149,24 @@ export default function DashboardPage() {
             .sort((a, b) => b.stock - a.stock);
 
         return { totalOrders, revenue, totalStock, totalProducts, totalCustomers, statusData, monthlyRevenue, topInventory };
-    }, [orders, products, inventory, customers]);
+    }, [filteredOrders, products, inventory, customers]);
+
+    const productOptions = [
+        { value: '', label: '-- Tất cả sản phẩm --' },
+        ...products.map((p) => ({ value: String(p.id), label: p.name })),
+    ];
+
+    const statusOptions = [
+        { value: '', label: '-- Tất cả trạng thái --' },
+        ...Object.entries(STATUS_LABEL).map(([k, v]) => ({ value: k, label: v })),
+    ];
+
+    const filters = [
+        { value: productId, onChange: setProductId, options: productOptions },
+        { value: status, onChange: setStatus, options: statusOptions },
+        { type: 'date', label: 'Từ ngày', value: dateFrom, onChange: setDateFrom },
+        { type: 'date', label: 'Đến ngày', value: dateTo, onChange: setDateTo },
+    ];
 
     if (loading) {
         return (
@@ -121,6 +184,20 @@ export default function DashboardPage() {
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+
+            {/* ── Filter Bar ─────────────────────────────────── */}
+            <SearchFilter
+                filters={filters}
+                resultCount={filteredOrders.length}
+            />
+            {hasActiveFilter && (
+                <button
+                    onClick={handleClearFilters}
+                    className="text-xs text-blue-400 hover:text-blue-300 underline"
+                >
+                    Xóa bộ lọc
+                </button>
+            )}
 
             {/* ── Stat Cards ──────────────────────────────────── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

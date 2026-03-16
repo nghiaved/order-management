@@ -8,7 +8,7 @@ export const authService = {
             params: { username, password },
         });
         if (users.length === 0) {
-            throw new Error('Invalid username or password');
+            throw new Error('Tài khoản hoặc mật khẩu không đúng');
         }
         const user = users[0];
 
