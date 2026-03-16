@@ -63,7 +63,7 @@ export default function LoginPage() {
                         </div>
 
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-2.5 rounded-lg">{error}</div>
+                            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-1.5 rounded-lg">{error}</div>
                         )}
 
                         <div>
@@ -78,7 +78,7 @@ export default function LoginPage() {
                                     type="text"
                                     autoFocus
                                     placeholder="Enter your username"
-                                    className="w-full bg-[#1a2035] border border-gray-700 rounded-lg pl-10 pr-3 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                    className="w-full bg-[#1a2035] border border-gray-700 rounded-lg pl-10 pr-3 py-1.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
@@ -96,7 +96,7 @@ export default function LoginPage() {
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="Enter your password"
-                                    className="w-full bg-[#1a2035] border border-gray-700 rounded-lg pl-10 pr-10 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                    className="w-full bg-[#1a2035] border border-gray-700 rounded-lg pl-10 pr-10 py-1.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
@@ -122,7 +122,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-1.5 rounded-lg font-medium disabled:opacity-50 flex items-center justify-center gap-2 transition-colors"
                         >
                             {loading ? 'Signing in…' : (
                                 <>Sign in to dashboard <span className="text-lg">→</span></>

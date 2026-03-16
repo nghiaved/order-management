@@ -613,7 +613,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                 <button
                     type="submit"
                     disabled={saving}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium disabled:opacity-50"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-1.5 rounded-lg font-medium disabled:opacity-50"
                 >
                     {saving ? 'Saving…' : editingOrder ? 'Update Order' : 'Create Order'}
                 </button>
@@ -621,7 +621,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="border border-gray-600 text-gray-300 px-6 py-2 rounded-lg hover:bg-gray-700/50"
+                        className="border border-gray-600 text-gray-300 px-6 py-1.5 rounded-lg hover:bg-gray-700/50"
                     >
                         Cancel
                     </button>

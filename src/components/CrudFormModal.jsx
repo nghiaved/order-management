@@ -20,14 +20,14 @@ export default function CrudFormModal({ open, onClose, onSubmit, title, saving, 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2.5 border border-gray-600/50 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors"
+                        className="px-4 py-1.5 border border-gray-600/50 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors"
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
                         disabled={saving}
-                        className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium disabled:opacity-50 transition-colors"
+                        className="px-5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium disabled:opacity-50 transition-colors"
                     >
                         {saving ? 'Saving…' : 'Save'}
                     </button>
@@ -58,7 +58,7 @@ export function FormInput({ value, onChange, type = 'text', required = true, ...
             type={type}
             min={type === 'number' ? '0' : undefined}
             required={required}
-            className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-2.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
+            className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-1.5 text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
             value={value}
             onChange={onChange}
             {...props}

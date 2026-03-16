@@ -53,10 +53,10 @@ export function ConfirmModal({ open, onClose, onConfirm, title, message, confirm
         <Modal open={open} onClose={onClose} title={title} size="sm">
             <p className="text-gray-300 text-sm mb-6">{message}</p>
             <div className="flex justify-end gap-3">
-                <button onClick={onClose} className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700/50 text-sm font-medium">
+                <button onClick={onClose} className="px-4 py-1.5 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700/50 text-sm font-medium">
                     Cancel
                 </button>
-                <button onClick={onConfirm} className={`px-4 py-2 rounded-lg text-white text-sm font-medium ${colors}`}>
+                <button onClick={onConfirm} className={`px-4 py-1.5 rounded-lg text-white text-sm font-medium ${colors}`}>
                     {confirmText}
                 </button>
             </div>

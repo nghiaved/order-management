@@ -111,24 +111,24 @@ export default function OrderDetailPage() {
                         <>
                             <button
                                 onClick={() => navigate(`/orders/update?id=${order.id}`)}
-                                className="px-4 py-2 rounded-xl text-sm font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
+                                className="px-4 py-1.5 rounded-xl text-sm font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
                             >Edit Order</button>
                             <button
                                 onClick={() => setStatusTarget({ order, newStatus: 'Processing', title: 'Process Order', message: `Move order "${order.id}" to Processing?`, confirmText: 'Process' })}
-                                className="px-4 py-2 rounded-xl text-sm font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
+                                className="px-4 py-1.5 rounded-xl text-sm font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
                             >Process</button>
                         </>
                     )}
                     {order.status === 'Processing' && (
                         <button
                             onClick={() => setStatusTarget({ order, newStatus: 'Done', title: 'Complete Order', message: `Mark order "${order.id}" as complete?`, confirmText: 'Complete' })}
-                            className="px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/20 transition-colors"
+                            className="px-4 py-1.5 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/20 transition-colors"
                         >Complete</button>
                     )}
                     {(order.status === 'New' || order.status === 'Processing') && (
                         <button
                             onClick={() => setStatusTarget({ order, newStatus: 'Cancel', title: 'Cancel Order', message: `Cancel order "${order.id}"? This action cannot be undone.`, confirmText: 'Cancel Order', variant: 'danger' })}
-                            className="px-4 py-2 rounded-xl text-sm font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 border border-red-500/20 transition-colors"
+                            className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 border border-red-500/20 transition-colors"
                         >Cancel</button>
                     )}
                 </div>
@@ -300,7 +300,7 @@ export default function OrderDetailPage() {
                 <div className="pt-2 border-t border-gray-800/60">
                     <button
                         onClick={() => setDeleteTarget(order)}
-                        className="px-4 py-2 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
+                        className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
                     >
                         Delete Order
                     </button>

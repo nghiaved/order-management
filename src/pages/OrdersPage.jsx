@@ -13,7 +13,7 @@ export default function OrdersPage() {
                 <Allow permission={PERMISSIONS.ORDERS_CREATE}>
                     <button
                         onClick={() => navigate('/orders/create')}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors"
                     >
                         + New Order
                     </button>

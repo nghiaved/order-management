@@ -17,7 +17,7 @@ export default function SearchFilter({ search, onSearchChange, placeholder, filt
                 </svg>
                 <input
                     placeholder={placeholder}
-                    className="bg-[#111827] border border-gray-700/50 rounded-xl pl-10 pr-4 py-2.5 w-72 text-sm text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 outline-none transition-all"
+                    className="bg-[#111827] border border-gray-700/50 rounded-xl pl-10 pr-4 py-1.5 w-72 text-sm text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 outline-none transition-all"
                     value={search}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
@@ -25,7 +25,7 @@ export default function SearchFilter({ search, onSearchChange, placeholder, filt
             {filters.map((f) => (
                 <select
                     key={f.value}
-                    className="bg-[#111827] border border-gray-700/50 rounded-xl px-4 py-2.5 text-sm text-white focus:ring-2 focus:ring-blue-500/40 outline-none"
+                    className="bg-[#111827] border border-gray-700/50 rounded-xl px-4 py-1.5 text-sm text-white focus:ring-2 focus:ring-blue-500/40 outline-none"
                     value={f.value}
                     onChange={(e) => f.onChange(e.target.value)}
                 >

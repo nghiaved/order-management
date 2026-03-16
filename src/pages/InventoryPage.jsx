@@ -122,7 +122,7 @@ export default function InventoryPage() {
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-white">Inventory</h1>
                 {canCreate && (
-                    <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-medium transition-colors">
+                    <button onClick={() => setShowCreate(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-xl font-medium transition-colors">
                         + New Inventory
                     </button>
                 )}
@@ -146,7 +146,7 @@ export default function InventoryPage() {
             {/* ── Create Modal ────────────────────────────────── */}
             <CrudFormModal open={showCreate} onClose={() => { setShowCreate(false); setCreateForm(EMPTY); }} onSubmit={handleCreate} title="New Inventory" saving={saving}>
                 <FormField label="Product" colSpan={2}>
-                    <select required className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-2.5 text-white focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
+                    <select required className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-1.5 text-white focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
                         value={createForm.product_id} onChange={(e) => setCreateForm({ ...createForm, product_id: e.target.value })}>
                         <option value="">Select product…</option>
                         {products.map((p) => <option key={p.id} value={p.id}>{p.sku} — {p.name}</option>)}
