@@ -289,16 +289,16 @@ export default function DashboardPage() {
             <div className="bg-[#111827] border border-gray-700/50 rounded-xl p-5">
                 <h2 className="text-sm font-semibold text-white mb-4">Top sản phẩm theo tồn kho</h2>
                 {stats.topInventory.length > 0 ? (
-                    <ResponsiveContainer width="100%" height={800}>
+                    <ResponsiveContainer width="100%" height={660}>
                         <BarChart data={stats.topInventory} layout="vertical">
                             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                             <XAxis type="number" tick={{ fill: '#9ca3af', fontSize: 12 }} />
-                            <YAxis dataKey="name" type="category" width={100} tick={{ fill: '#9ca3af', fontSize: 12 }} />
+                            <YAxis dataKey="name" type="category" width={200} tick={{ fill: '#9ca3af', fontSize: 12 }} />
                             <Tooltip
                                 formatter={(v) => [fmt(v), 'Kho']}
                                 contentStyle={{ backgroundColor: '#1a2035', border: '1px solid #374151', borderRadius: 8, color: '#fff' }}
                             />
-                            <Bar dataKey="stock" fill="#f59e0b" radius={[0, 4, 4, 0]} />
+                            <Bar dataKey="stock" fill="#3b82f6" radius={[0, 4, 4, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 ) : (
