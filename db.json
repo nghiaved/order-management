@@ -125,11 +125,11 @@
       "created_at": "2026-03-15T12:51:13.180Z"
     },
     {
-      "id": "826e",
-      "full_name": "test",
-      "phone": "test",
-      "address": "test",
-      "created_at": "2026-03-15T12:52:51.813Z"
+      "id": "4d92",
+      "full_name": "zxc",
+      "phone": "0902 641 448",
+      "address": "zxc",
+      "created_at": "2026-03-16T03:14:58.977Z"
     }
   ],
   "products": [
@@ -173,16 +173,16 @@
     {
       "id": "1",
       "product_id": 1,
-      "stock_quantity": 200,
+      "stock_quantity": 191,
       "location": "Warehouse A",
-      "last_updated": "2026-03-15T14:06:20.947Z"
+      "last_updated": "2026-03-16T03:19:20.851Z"
     },
     {
       "id": "2",
       "product_id": 2,
-      "stock_quantity": 138,
+      "stock_quantity": 134,
       "location": "Warehouse A",
-      "last_updated": "2026-03-15T15:40:51.465Z"
+      "last_updated": "2026-03-16T03:17:04.294Z"
     },
     {
       "id": "4",
@@ -313,22 +313,6 @@
       "created_at": "2026-03-15T13:24:47.159Z"
     },
     {
-      "id": "ORD-20260315-004",
-      "customer_id": "2",
-      "delivery_date": "",
-      "shipping_unit": "",
-      "payment_method": "COD",
-      "debt_days": 0,
-      "bank_info": "",
-      "prepaid_amount": 0,
-      "shipping_fee": 0,
-      "has_vat": false,
-      "note": "",
-      "total_amount": 100,
-      "status": "Done",
-      "created_at": "2026-03-15T15:11:28.588Z"
-    },
-    {
       "id": "ORD-20260315-005",
       "customer_id": "1",
       "delivery_date": "",
@@ -341,8 +325,169 @@
       "has_vat": false,
       "note": "",
       "total_amount": 1000000,
-      "status": "New",
+      "status": "Cancel",
       "created_at": "2026-03-15T15:40:51.450Z"
+    },
+    {
+      "id": "ORD-20260316-001",
+      "customer_id": "2",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "tesst note",
+      "total_amount": 0,
+      "status": "Cancel",
+      "created_at": "2026-03-16T02:47:27.873Z",
+      "cancel_reason": "fail"
+    },
+    {
+      "id": "ORD-20260316-002",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:08.845Z"
+    },
+    {
+      "id": "ORD-20260316-003",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:14.064Z"
+    },
+    {
+      "id": "ORD-20260316-004",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:15.328Z"
+    },
+    {
+      "id": "ORD-20260316-005",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:15.995Z"
+    },
+    {
+      "id": "ORD-20260316-006",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:16.178Z"
+    },
+    {
+      "id": "ORD-20260316-007",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1650000,
+      "status": "New",
+      "created_at": "2026-03-16T02:59:16.396Z"
+    },
+    {
+      "id": "ORD-20260316-008",
+      "customer_id": "4d92",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 1980000,
+      "status": "New",
+      "created_at": "2026-03-16T03:14:58.993Z"
+    },
+    {
+      "id": "ORD-20260316-009",
+      "customer_id": "3",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Cash",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": true,
+      "note": "",
+      "total_amount": 990000,
+      "status": "New",
+      "created_at": "2026-03-16T03:17:04.273Z"
+    },
+    {
+      "id": "ORD-20260316-010",
+      "customer_id": "2",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "COD",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 0,
+      "has_vat": false,
+      "note": "",
+      "total_amount": 150000,
+      "status": "New",
+      "created_at": "2026-03-16T03:19:20.837Z"
     }
   ],
   "order_details": [
@@ -429,6 +574,181 @@
       "product_id": 5,
       "quantity": 1,
       "unit_price": 0
+    },
+    {
+      "id": "bc90",
+      "order_id": "ORD-20260316-001",
+      "product_id": 2,
+      "quantity": 2,
+      "unit_price": 0
+    },
+    {
+      "id": "b30e",
+      "order_id": "ORD-20260316-002",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "47aa",
+      "order_id": "ORD-20260316-002",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "45ef",
+      "order_id": "ORD-20260316-002",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "70fb",
+      "order_id": "ORD-20260316-003",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "07ef",
+      "order_id": "ORD-20260316-003",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "cc6d",
+      "order_id": "ORD-20260316-003",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "f4ba",
+      "order_id": "ORD-20260316-004",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "e1db",
+      "order_id": "ORD-20260316-004",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "f8fd",
+      "order_id": "ORD-20260316-004",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "280c",
+      "order_id": "ORD-20260316-005",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "9bff",
+      "order_id": "ORD-20260316-005",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "b252",
+      "order_id": "ORD-20260316-005",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "a729",
+      "order_id": "ORD-20260316-006",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "6963",
+      "order_id": "ORD-20260316-006",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "3e5f",
+      "order_id": "ORD-20260316-006",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "6a41",
+      "order_id": "ORD-20260316-007",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "693d",
+      "order_id": "ORD-20260316-007",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "b012",
+      "order_id": "ORD-20260316-007",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "571c",
+      "order_id": "ORD-20260316-008",
+      "product_id": 1,
+      "quantity": 7,
+      "unit_price": 150000
+    },
+    {
+      "id": "8378",
+      "order_id": "ORD-20260316-008",
+      "product_id": 2,
+      "quantity": 3,
+      "unit_price": 250000
+    },
+    {
+      "id": "bab7",
+      "order_id": "ORD-20260316-009",
+      "product_id": 1,
+      "quantity": 1,
+      "unit_price": 150000
+    },
+    {
+      "id": "5596",
+      "order_id": "ORD-20260316-009",
+      "product_id": 2,
+      "quantity": 1,
+      "unit_price": 250000
+    },
+    {
+      "id": "cdd7",
+      "order_id": "ORD-20260316-009",
+      "product_id": 3,
+      "quantity": 1,
+      "unit_price": 500000
+    },
+    {
+      "id": "7eca",
+      "order_id": "ORD-20260316-010",
+      "product_id": 1,
+      "quantity": 1,
+      "unit_price": 150000
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

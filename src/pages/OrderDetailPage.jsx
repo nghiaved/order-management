@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { orderService } from '../services/orderService';
 import { customerService } from '../services/customerService';
 import { productService } from '../services/productService';
+import { useInventorySync } from '../hooks/useInventorySync';
 import Allow from '../components/Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 import { ConfirmModal } from '../components/Modal';
+import CancelReasonModal from '../components/CancelReasonModal';
 import { STATUS_CONFIG, VAT_RATE } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
+import { printInvoice } from '../utils/printInvoice';
 
 export default function OrderDetailPage() {
     const [searchParams] = useSearchParams();
@@ -20,7 +24,9 @@ export default function OrderDetailPage() {
     const [productMap, setProductMap] = useState({});
     const [loading, setLoading] = useState(true);
     const [statusTarget, setStatusTarget] = useState(null);
+    const [cancelTarget, setCancelTarget] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const { restoreOrderInventory } = useInventorySync();
 
     useEffect(() => {
         if (!id) { navigate('/orders'); return; }
@@ -44,21 +50,62 @@ export default function OrderDetailPage() {
 
     const confirmStatusChange = async () => {
         if (!statusTarget) return;
-        await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
-        setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
-        setStatusTarget(null);
+        try {
+            await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
+            setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
+            toast.success(`Order moved to ${statusTarget.newStatus}.`);
+        } catch (err) {
+            toast.error(err.message || 'Failed to update status.');
+        } finally {
+            setStatusTarget(null);
+        }
+    };
+
+    const handleCancelConfirm = async (reason) => {
+        if (!cancelTarget) return;
+        try {
+            await restoreOrderInventory(cancelTarget.id);
+            await orderService.update(cancelTarget.id, {
+                status: 'Cancel',
+                ...(reason && { cancel_reason: reason }),
+            });
+            setOrder((prev) => ({ ...prev, status: 'Cancel' }));
+            toast.success('Order cancelled. Inventory restored.');
+        } catch (err) {
+            toast.error(err.message || 'Failed to cancel order.');
+        } finally {
+            setCancelTarget(null);
+        }
     };
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
-        await orderService.remove(deleteTarget.id);
-        navigate('/orders');
+        try {
+            await orderService.remove(deleteTarget.id);
+            toast.success('Order deleted.');
+            navigate('/orders');
+        } catch (err) {
+            toast.error(err.message || 'Failed to delete order.');
+            setDeleteTarget(null);
+        }
     };
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-48">
-                <p className="text-gray-500">Loading…</p>
+            <div className="space-y-6 max-w-5xl animate-pulse">
+                <div className="flex items-center gap-3">
+                    <div className="h-6 w-14 bg-[#111827] rounded border border-gray-700/50" />
+                    <div className="h-8 w-40 bg-[#111827] rounded-xl border border-gray-700/50" />
+                    <div className="h-7 w-32 bg-[#111827] rounded-xl border border-gray-700/50" />
+                    <div className="ml-auto h-7 w-20 bg-[#111827] rounded-full border border-gray-700/50" />
+                </div>
+                <div className="flex gap-2">
+                    {[...Array(3)].map((_, i) => <div key={i} className="h-9 w-24 bg-[#111827] rounded-xl border border-gray-700/50" />)}
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {[...Array(3)].map((_, i) => <div key={i} className="h-36 bg-[#111827] rounded-2xl border border-gray-700/50" />)}
+                </div>
+                <div className="h-48 bg-[#111827] rounded-2xl border border-gray-700/50" />
             </div>
         );
     }
@@ -127,10 +174,19 @@ export default function OrderDetailPage() {
                     )}
                     {(order.status === 'New' || order.status === 'Processing') && (
                         <button
-                            onClick={() => setStatusTarget({ order, newStatus: 'Cancel', title: 'Cancel Order', message: `Cancel order "${order.id}"? This action cannot be undone.`, confirmText: 'Cancel Order', variant: 'danger' })}
+                            onClick={() => setCancelTarget(order)}
                             className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 border border-red-500/20 transition-colors"
                         >Cancel</button>
                     )}
+                    <button
+                        onClick={() => printInvoice({ order, details, customer, productMap })}
+                        className="ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-medium bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border border-gray-600/30 transition-colors"
+                    >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                        </svg>
+                        Print Invoice
+                    </button>
                 </div>
             </Allow>
 
@@ -251,13 +307,22 @@ export default function OrderDetailPage() {
 
             {/* ── Summary & Note ───────────────────────────────── */}
             <div className="flex flex-wrap gap-4 items-start justify-between">
-                {/* Note */}
-                {order.note ? (
-                    <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
-                        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Note</h2>
-                        <p className="text-gray-300 text-sm leading-relaxed">{order.note}</p>
-                    </div>
-                ) : <div />}
+                <div className="flex flex-col gap-4 w-full lg:w-auto flex-1">
+                    {/* Note */}
+                    {order.note ? (
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Note</h2>
+                            <p className="text-gray-300 text-sm leading-relaxed">{order.note}</p>
+                        </div>
+                    ) : <div />}
+                    {/* Cancel Reason */}
+                    {order.cancel_reason ? (
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Cancel Reason</h2>
+                            <p className="text-gray-300 text-sm leading-relaxed">{order.cancel_reason}</p>
+                        </div>
+                    ) : <div />}
+                </div>
 
                 {/* Totals */}
                 <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 w-72 space-y-2 text-sm">
@@ -307,7 +372,7 @@ export default function OrderDetailPage() {
                 </div>
             </Allow>
 
-            {/* ── Status Confirm ───────────────────────────────── */}
+            {/* ── Status Confirm (Process / Complete) ── */}
             <ConfirmModal
                 open={!!statusTarget}
                 onClose={() => setStatusTarget(null)}
@@ -316,6 +381,14 @@ export default function OrderDetailPage() {
                 message={statusTarget?.message || ''}
                 confirmText={statusTarget?.confirmText || 'Confirm'}
                 variant={statusTarget?.variant || 'confirm'}
+            />
+
+            {/* ── Cancel with Reason ─────────────────── */}
+            <CancelReasonModal
+                open={!!cancelTarget}
+                onClose={() => setCancelTarget(null)}
+                onConfirm={handleCancelConfirm}
+                orderId={cancelTarget?.id}
             />
 
             {/* ── Delete Confirm ───────────────────────────────── */}

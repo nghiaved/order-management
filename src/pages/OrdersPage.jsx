@@ -1,10 +1,14 @@
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OrderList from '../components/OrderList';
+import OrderSummaryBar from '../components/OrderSummaryBar';
 import Allow from '../components/Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 
 export default function OrdersPage() {
     const navigate = useNavigate();
+    const [refreshKey, setRefreshKey] = useState(0);
+    const handleRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
     return (
         <div className="space-y-4">
@@ -19,7 +23,8 @@ export default function OrdersPage() {
                     </button>
                 </Allow>
             </div>
-            <OrderList />
+            <OrderSummaryBar refreshKey={refreshKey} />
+            <OrderList refreshKey={refreshKey} onRefresh={handleRefresh} />
         </div>
     );
 }

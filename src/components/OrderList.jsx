@@ -1,33 +1,41 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { orderService } from '../services/orderService';
 import { customerService } from '../services/customerService';
+import { useInventorySync } from '../hooks/useInventorySync';
 import Allow from './Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 import { ConfirmModal } from './Modal';
+import CancelReasonModal from './CancelReasonModal';
 import Pagination from './Pagination';
 import DataTable from './DataTable';
 import SearchFilter from './SearchFilter';
 import { STATUS_CONFIG, PAGE_SIZE } from '../constants';
-import { fmt, fmtDate } from '../utils/format';
+import { fmt, fmtDateTime } from '../utils/format';
 
-export default function OrderList({ refreshKey }) {
+export default function OrderList({ refreshKey, onRefresh }) {
     const navigate = useNavigate();
+    const { restoreOrderInventory } = useInventorySync();
     const [orders, setOrders] = useState([]);
     const [customers, setCustomers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const [dateFilter, setDateFilter] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [statusTarget, setStatusTarget] = useState(null);
+    const [cancelTarget, setCancelTarget] = useState(null);
 
     useEffect(() => {
+        setLoading(true);
         const load = async () => {
             const [o, c] = await Promise.all([orderService.getAll(), customerService.getAll()]);
             setOrders([...o].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
             setCustomers(c);
         };
-        load();
+        load().finally(() => setLoading(false));
     }, [refreshKey]);
 
     const customerMap = useMemo(() => {
@@ -43,12 +51,14 @@ export default function OrderList({ refreshKey }) {
             result = result.filter(
                 (o) =>
                     o.id.toLowerCase().includes(q) ||
-                    (customerMap[o.customer_id]?.full_name || '').toLowerCase().includes(q)
+                    (customerMap[o.customer_id]?.full_name || '').toLowerCase().includes(q) ||
+                    (customerMap[o.customer_id]?.phone || '').includes(q)
             );
         }
         if (statusFilter) result = result.filter((o) => o.status === statusFilter);
+        if (dateFilter) result = result.filter((o) => o.delivery_date === dateFilter);
         return result;
-    }, [orders, search, statusFilter, customerMap]);
+    }, [orders, search, statusFilter, dateFilter, customerMap]);
 
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -60,15 +70,49 @@ export default function OrderList({ refreshKey }) {
 
     const confirmStatusChange = async () => {
         if (!statusTarget) return;
-        await updateStatus(statusTarget.order, statusTarget.newStatus);
-        setStatusTarget(null);
+        try {
+            await updateStatus(statusTarget.order, statusTarget.newStatus);
+            toast.success(`Order moved to ${statusTarget.newStatus}.`);
+            onRefresh?.();
+        } catch (err) {
+            toast.error(err.message || 'Failed to update status.');
+        } finally {
+            setStatusTarget(null);
+        }
+    };
+
+    const handleCancelConfirm = async (reason) => {
+        if (!cancelTarget) return;
+        try {
+            await restoreOrderInventory(cancelTarget.id);
+            await orderService.update(cancelTarget.id, {
+                status: 'Cancel',
+                ...(reason && { cancel_reason: reason }),
+            });
+            setOrders((prev) =>
+                prev.map((o) => (o.id === cancelTarget.id ? { ...o, status: 'Cancel' } : o))
+            );
+            toast.success(`Order ${cancelTarget.id} cancelled. Inventory restored.`);
+            onRefresh?.();
+        } catch (err) {
+            toast.error(err.message || 'Failed to cancel order.');
+        } finally {
+            setCancelTarget(null);
+        }
     };
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
-        await orderService.remove(deleteTarget.id);
-        setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
-        setDeleteTarget(null);
+        try {
+            await orderService.remove(deleteTarget.id);
+            setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
+            toast.success('Order deleted.');
+            onRefresh?.();
+        } catch (err) {
+            toast.error(err.message || 'Failed to delete order.');
+        } finally {
+            setDeleteTarget(null);
+        }
     };
 
     const columns = [
@@ -97,7 +141,7 @@ export default function OrderList({ refreshKey }) {
         },
         {
             header: 'Date', key: 'created_at',
-            render: (o) => <span className="text-gray-500 text-xs">{fmtDate(o.created_at)}</span>,
+            render: (o) => <span className="text-gray-500 text-xs">{fmtDateTime(o.created_at)}</span>,
         },
         {
             header: 'Actions', key: 'actions',
@@ -124,7 +168,7 @@ export default function OrderList({ refreshKey }) {
                         )}
                         {(o.status === 'New' || o.status === 'Processing') && (
                             <button
-                                onClick={() => setStatusTarget({ order: o, newStatus: 'Cancel', title: 'Cancel Order', message: `Cancel order "${o.id}"? This action cannot be undone.`, confirmText: 'Cancel Order', variant: 'danger' })}
+                                onClick={() => setCancelTarget(o)}
                                 className="px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/15 text-red-400 hover:bg-red-500/25 transition-colors"
                             >Cancel</button>
                         )}
@@ -142,19 +186,45 @@ export default function OrderList({ refreshKey }) {
             <SearchFilter
                 search={search}
                 onSearchChange={(v) => { setSearch(v); setPage(1); }}
-                placeholder="Search orders…"
-                filters={[{
-                    value: statusFilter,
-                    onChange: (v) => { setStatusFilter(v); setPage(1); },
-                    options: [{ value: '', label: 'All Status' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ value: k, label: v.label }))],
-                }]}
+                placeholder="Search by order ID or customer…"
+                filters={[
+                    {
+                        value: statusFilter,
+                        onChange: (v) => { setStatusFilter(v); setPage(1); },
+                        options: [{ value: '', label: 'All Status' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ value: k, label: v.label }))],
+                    },
+                    {
+                        type: 'date',
+                        label: 'Filter by delivery date',
+                        value: dateFilter,
+                        onChange: (v) => { setDateFilter(v); setPage(1); },
+                    },
+                ]}
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="No orders found." />
-            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+            {loading ? (
+                <div className="bg-[#111827] border border-gray-700/50 rounded-xl overflow-hidden">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-4 px-4 py-3.5 border-b border-gray-800/50">
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-28" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-36" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-16" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-24" />
+                            <div className="h-5 bg-gray-700/50 rounded-full animate-pulse w-20 ml-2" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-20 ml-auto" />
+                            <div className="h-7 bg-gray-700/50 rounded-lg animate-pulse w-28" />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <>
+                    <DataTable columns={columns} data={paginated} emptyText="No orders found." />
+                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                </>
+            )}
 
-            {/* ── Status Change Confirm ────────────────────────── */}
+            {/* ── Status Change Confirm (Process / Complete only) ── */}
             <ConfirmModal
                 open={!!statusTarget}
                 onClose={() => setStatusTarget(null)}
@@ -163,6 +233,14 @@ export default function OrderList({ refreshKey }) {
                 message={statusTarget?.message || ''}
                 confirmText={statusTarget?.confirmText || 'Confirm'}
                 variant={statusTarget?.variant || 'confirm'}
+            />
+
+            {/* ── Cancel with Reason ──────────────────────────── */}
+            <CancelReasonModal
+                open={!!cancelTarget}
+                onClose={() => setCancelTarget(null)}
+                onConfirm={handleCancelConfirm}
+                orderId={cancelTarget?.id}
             />
 
             {/* ── Delete Confirm ───────────────────────────────── */}

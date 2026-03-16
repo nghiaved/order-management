@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination';
 import DataTable from '../components/DataTable';
 import SearchFilter from '../components/SearchFilter';
 import CrudFormModal, { FormField, FormInput } from '../components/CrudFormModal';
-import { fmtDate } from '../utils/format';
+import { fmtDateTime } from '../utils/format';
 
 const EMPTY = { full_name: '', phone: '', address: '' };
 
@@ -43,7 +43,7 @@ export default function CustomersPage() {
         { header: 'Full Name', key: 'full_name', render: (c) => <span className="font-medium text-gray-200">{c.full_name}</span> },
         { header: 'Phone', key: 'phone', render: (c) => <span className="text-gray-300">{c.phone}</span> },
         { header: 'Address', key: 'address', render: (c) => <span className="text-gray-400">{c.address}</span> },
-        { header: 'Created', key: 'created_at', render: (c) => <span className="text-gray-500 text-xs">{fmtDate(c.created_at)}</span> },
+        { header: 'Created', key: 'created_at', render: (c) => <span className="text-gray-500 text-xs">{fmtDateTime(c.created_at)}</span> },
         ...((canEdit || canDelete) ? [{
             header: 'Actions', key: 'actions', width: '140px',
             render: (c) => (

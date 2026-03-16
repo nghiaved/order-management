@@ -22,18 +22,29 @@ export default function SearchFilter({ search, onSearchChange, placeholder, filt
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
             </div>
-            {filters.map((f) => (
-                <select
-                    key={f.value}
-                    className="bg-[#111827] border border-gray-700/50 rounded-xl px-4 py-1.5 text-sm text-white focus:ring-2 focus:ring-blue-500/40 outline-none"
-                    value={f.value}
-                    onChange={(e) => f.onChange(e.target.value)}
-                >
-                    {f.options.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                </select>
-            ))}
+            {filters.map((f, i) =>
+                f.type === 'date' ? (
+                    <input
+                        key={i}
+                        type="date"
+                        title={f.label || 'Filter by date'}
+                        className="bg-[#111827] border border-gray-700/50 rounded-xl px-4 py-1.5 text-sm text-white focus:ring-2 focus:ring-blue-500/40 outline-none"
+                        value={f.value}
+                        onChange={(e) => f.onChange(e.target.value)}
+                    />
+                ) : (
+                    <select
+                        key={i}
+                        className="bg-[#111827] border border-gray-700/50 rounded-xl px-4 py-1.5 text-sm text-white focus:ring-2 focus:ring-blue-500/40 outline-none"
+                        value={f.value}
+                        onChange={(e) => f.onChange(e.target.value)}
+                    >
+                        {f.options.map((opt) => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                    </select>
+                )
+            )}
             <span className="text-xs text-gray-500 ml-auto">{resultCount} result{resultCount !== 1 && 's'}</span>
         </div>
     );

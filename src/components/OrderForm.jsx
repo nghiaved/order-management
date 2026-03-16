@@ -4,6 +4,7 @@ import { productService } from '../services/productService';
 import { inventoryService } from '../services/inventoryService';
 import { orderService } from '../services/orderService';
 import { generateOrderId } from '../utils/generate';
+import toast from 'react-hot-toast';
 import { PAYMENT_METHODS, SHIPPING_UNITS, VAT_RATE } from '../constants';
 import { fmt } from '../utils/format';
 
@@ -152,7 +153,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                 const copy = [...prev];
                 copy[idx] = { ...copy[idx], [field]: value };
                 if (field === 'product_id') {
-                    const prod = products.find((p) => p.id === Number(value));
+                    const prod = products.find((p) => String(p.id) === String(value));
                     if (prod) copy[idx].unit_price = prod.base_price;
                 }
                 return copy;
@@ -166,10 +167,20 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
         const errs = {};
         if (!form.customer_id && !isNewCustomer) errs.customer = 'Select or add a customer';
         if (isNewCustomer && !newCustomer.full_name) errs.customer = 'Customer name is required';
+        if (isNewCustomer && newCustomer.phone && !/^\d{10}$/.test(String(newCustomer.phone).replace(/\s/g, '')))
+            errs.phone = 'Phone must be exactly 10 digits';
         if (items.length === 0) errs.items = 'Add at least one product';
         items.forEach((item, i) => {
             if (!item.product_id) errs[`item_${i}`] = 'Select a product';
             if (!item.quantity || item.quantity < 1) errs[`qty_${i}`] = 'Qty must be >= 1';
+            // Inventory pre-check (new orders only)
+            if (!editingOrder && item.product_id && Number(item.quantity) >= 1) {
+                const inv = inventoryMap[item.product_id];
+                if (inv && Number(item.quantity) > inv.stock_quantity) {
+                    const prod = products.find((p) => String(p.id) === String(item.product_id));
+                    errs[`qty_${i}`] = `Insufficient stock — only ${inv.stock_quantity} available${prod ? ` for ${prod.name}` : ''}`;
+                }
+            }
         });
         if (form.payment_method === 'Credit' && !form.debt_days) errs.debt_days = 'Debt days required';
         if (form.payment_method === 'Transfer') {
@@ -254,9 +265,10 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
             setCustomerSearch('');
             setIsNewCustomer(false);
             setNewCustomer({ full_name: '', phone: '', address: '' });
+            toast.success(editingOrder ? 'Order updated successfully!' : 'Order created successfully!');
             onSaved?.();
         } catch (err) {
-            alert(err.message || 'Failed to save order');
+            toast.error(err.message || 'Failed to save order.');
         } finally {
             setSaving(false);
         }
@@ -320,12 +332,15 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                             value={newCustomer.full_name}
                             onChange={(e) => setNewCustomer((n) => ({ ...n, full_name: e.target.value }))}
                         />
-                        <input
-                            placeholder="Phone"
-                            className="bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500"
-                            value={newCustomer.phone}
-                            onChange={(e) => setNewCustomer((n) => ({ ...n, phone: e.target.value }))}
-                        />
+                        <div>
+                            <input
+                                placeholder="Phone (10 digits)"
+                                className={`w-full bg-[#1a2035] border rounded-lg px-3 py-2 text-white placeholder-gray-500 ${errors.phone ? 'border-red-500' : 'border-gray-700'}`}
+                                value={newCustomer.phone}
+                                onChange={(e) => setNewCustomer((n) => ({ ...n, phone: e.target.value }))}
+                            />
+                            {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
+                        </div>
                         <input
                             placeholder="Address"
                             className="bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500"
@@ -448,7 +463,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         <tbody>
                             {items.map((item, idx) => {
                                 const stock = inventoryMap[item.product_id];
-                                const baseProd = item.product_id ? products.find((p) => p.id === item.product_id) : null;
+                                const baseProd = item.product_id ? products.find((p) => String(p.id) === String(item.product_id)) : null;
 
                                 return (
                                     <tr key={idx} className="border-t border-gray-700/50">
@@ -459,11 +474,14 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                                 onChange={(e) => updateItem(idx, 'product_id', e.target.value)}
                                             >
                                                 <option value="">-- Select --</option>
-                                                {products.map((p) => (
-                                                    <option key={p.id} value={p.id}>
-                                                        {p.sku} – {p.name}
-                                                    </option>
-                                                ))}
+                                                {products.map((p) => {
+                                                    const stock = inventoryMap[p.id];
+                                                    return (
+                                                        <option disabled={!stock || !stock.stock_quantity} key={p.id} value={p.id}>
+                                                            {p.sku} – {p.name} - {fmt(p.base_price)} đ ({stock ? `${stock.stock_quantity} in stock` : 'Out of stock'})
+                                                        </option>
+                                                    )
+                                                })}
                                             </select>
                                             {errors[`item_${idx}`] && (
                                                 <p className="text-red-400 text-xs">{errors[`item_${idx}`]}</p>
@@ -483,7 +501,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                                 type="number"
                                                 min="0"
                                                 className="w-full bg-[#1a2035] border border-gray-700 rounded px-2 py-1 text-white"
-                                                value={item.unit_price || (baseProd ? baseProd.base_price : 0)}
+                                                value={item.unit_price}
                                                 onChange={(e) => updateItem(idx, 'unit_price', e.target.value)}
                                             />
                                             {baseProd && (

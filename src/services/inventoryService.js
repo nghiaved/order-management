@@ -48,6 +48,12 @@ export const inventoryService = {
         return this.updateStock(item.id, item.stock_quantity - quantity);
     },
 
+    async restoreStock(productId, quantity) {
+        const item = await this.getByProductId(productId);
+        if (!item) return null; // No inventory record — silently skip
+        return this.updateStock(item.id, item.stock_quantity + quantity);
+    },
+
     async remove(id) {
         await api.delete(`/inventory/${id}`);
     },
