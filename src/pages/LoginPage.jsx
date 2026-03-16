@@ -128,11 +128,6 @@ export default function LoginPage() {
                                 <>Sign in to dashboard <span className="text-lg">→</span></>
                             )}
                         </button>
-
-                        <div className="text-xs text-gray-500 text-center space-y-1 pt-2">
-                            <p><span className="text-gray-400 font-medium">admin</span> / admin123 — Full access (CRUD all modules)</p>
-                            <p><span className="text-gray-400 font-medium">staff</span> / staff123 — Orders CRUD (no delete), other tabs read-only</p>
-                        </div>
                     </form>
 
                     <p className="text-center text-gray-600 text-xs mt-6">&copy; 2026. All rights reserved.</p>

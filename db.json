@@ -130,6 +130,13 @@
       "phone": "0902 641 448",
       "address": "zxc",
       "created_at": "2026-03-16T03:14:58.977Z"
+    },
+    {
+      "id": "af60",
+      "full_name": "new",
+      "phone": "0987654321",
+      "address": "new",
+      "created_at": "2026-03-16T03:42:31.155Z"
     }
   ],
   "products": [
@@ -173,16 +180,16 @@
     {
       "id": "1",
       "product_id": 1,
-      "stock_quantity": 191,
+      "stock_quantity": 190,
       "location": "Warehouse A",
-      "last_updated": "2026-03-16T03:19:20.851Z"
+      "last_updated": "2026-03-16T03:46:10.993Z"
     },
     {
       "id": "2",
       "product_id": 2,
-      "stock_quantity": 133,
+      "stock_quantity": 130,
       "location": "Warehouse A",
-      "last_updated": "2026-03-16T03:28:25.487Z"
+      "last_updated": "2026-03-16T03:46:10.998Z"
     },
     {
       "id": "4",
@@ -504,6 +511,38 @@
       "total_amount": 250000,
       "status": "New",
       "created_at": "2026-03-16T03:28:25.470Z"
+    },
+    {
+      "id": "ORD-20260316-012",
+      "customer_id": "af60",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Transfer",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"zxc\",\"account_number\":\"zxc\"}",
+      "prepaid_amount": 100000,
+      "shipping_fee": 10000,
+      "has_vat": true,
+      "note": "note",
+      "total_amount": 285000,
+      "status": "New",
+      "created_at": "2026-03-16T03:42:31.169Z"
+    },
+    {
+      "id": "ORD-20260316-013",
+      "customer_id": "2",
+      "delivery_date": "2026-03-16",
+      "shipping_unit": "",
+      "payment_method": "Credit",
+      "debt_days": 10,
+      "bank_info": "",
+      "prepaid_amount": 35000,
+      "shipping_fee": 20000,
+      "has_vat": true,
+      "note": "note",
+      "total_amount": 735000,
+      "status": "New",
+      "created_at": "2026-03-16T03:46:10.976Z"
     }
   ],
   "order_details": [
@@ -771,6 +810,27 @@
       "order_id": "ORD-20260316-011",
       "product_id": 2,
       "quantity": 1,
+      "unit_price": 250000
+    },
+    {
+      "id": "557e",
+      "order_id": "ORD-20260316-012",
+      "product_id": 2,
+      "quantity": 1,
+      "unit_price": 250000
+    },
+    {
+      "id": "79da",
+      "order_id": "ORD-20260316-013",
+      "product_id": 1,
+      "quantity": 1,
+      "unit_price": 150000
+    },
+    {
+      "id": "ce59",
+      "order_id": "ORD-20260316-013",
+      "product_id": 2,
+      "quantity": 2,
       "unit_price": 250000
     }
   ],
