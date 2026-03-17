@@ -25,12 +25,18 @@ export default function InventoryPage() {
     const [locationFilter, setLocationFilter] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [loading, setLoading] = useState(true);
     const { canCreate, canEdit, canDelete } = usePermissions('inventory');
 
     const load = useCallback(async () => {
-        const [inv, prod] = await Promise.all([inventoryService.getAll(), productService.getAll()]);
-        setInventory(inv?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
-        setProducts(prod);
+        setLoading(true);
+        try {
+            const [inv, prod] = await Promise.all([inventoryService.getAll(), productService.getAll()]);
+            setInventory(inv?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
+            setProducts(prod);
+        } finally {
+            setLoading(false);
+        }
     }, []);
     useEffect(() => { load(); }, [load]);
 
@@ -141,8 +147,25 @@ export default function InventoryPage() {
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy tồn kho." />
-            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+            {loading ? (
+                <div className="bg-[#111827] border border-gray-700/50 rounded-xl overflow-hidden">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-4 px-4 py-3.5 border-b border-gray-800/50">
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-24" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-28" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-20" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-16" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-20" />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <>
+                    <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy tồn kho." />
+                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                </>
+            )}
 
             {/* ── Create Modal ────────────────────────────────── */}
             <CrudFormModal open={showCreate} onClose={() => { setShowCreate(false); setCreateForm(EMPTY); }} onSubmit={handleCreate} title="Thêm tồn kho" saving={saving}>

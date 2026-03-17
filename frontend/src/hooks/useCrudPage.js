@@ -31,6 +31,7 @@ export function useCrudPage({
     pageSize = PAGE_SIZE,
 }) {
     const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
     const [saving, setSaving] = useState(false);
@@ -39,7 +40,12 @@ export function useCrudPage({
     const [deleteTarget, setDeleteTarget] = useState(null);
 
     const load = useCallback(async () => {
-        setData(await loadData());
+        setLoading(true);
+        try {
+            setData(await loadData());
+        } finally {
+            setLoading(false);
+        }
     }, [loadData]);
 
     useEffect(() => { load(); }, [load]);
@@ -93,7 +99,7 @@ export function useCrudPage({
 
     return {
         // Data
-        data, setData, filtered, paginated, load,
+        data, setData, filtered, paginated, load, loading,
         // Pagination
         page, setPage, totalPages,
         // Search

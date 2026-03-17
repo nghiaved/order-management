@@ -33,7 +33,7 @@ export default function ProductsPage() {
     }, [categoryFilter]);
 
     const {
-        data, filtered, paginated, page, setPage, totalPages,
+        data, loading, filtered, paginated, page, setPage, totalPages,
         search, setSearch,
         editing, form, setForm, openNew, openEdit, close, handleSave, saving,
         deleteTarget, setDeleteTarget, confirmDelete,
@@ -93,8 +93,24 @@ export default function ProductsPage() {
                 resultCount={filtered.length}
             />
 
-            <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy sản phẩm." />
-            <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+            {loading ? (
+                <div className="bg-[#111827] border border-gray-700/50 rounded-xl overflow-hidden">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-4 px-4 py-3.5 border-b border-gray-800/50">
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-24" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-28" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-16" />
+                            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-24" />
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <>
+                    <DataTable columns={columns} data={paginated} emptyText="Không tìm thấy sản phẩm." />
+                    <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+                </>
+            )}
 
             <CrudFormModal open={!!editing} onClose={close} onSubmit={handleSave} title={editing?.id ? 'Sửa sản phẩm' : 'Thêm sản phẩm'} saving={saving}>
                 {formFields.map((f) => (
