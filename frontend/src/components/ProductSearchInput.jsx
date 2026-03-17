@@ -19,7 +19,7 @@ export default function ProductSearchInput({
     onChange,
     inputClassName = '',
     showPrice = true,
-    top,
+    top = 0,
 }) {
     const [search, setSearch] = useState('');
     const [open, setOpen] = useState(false);
@@ -54,7 +54,7 @@ export default function ProductSearchInput({
             const r = inputRef.current.getBoundingClientRect();
             setDropdownStyle({
                 position: 'fixed',
-                top: top !== undefined ? top : r.bottom + 2,
+                top: top > 0 ? top : r.bottom + 2,
                 left: r.left,
                 width: Math.max(r.width, 280),
                 zIndex: 9999,
