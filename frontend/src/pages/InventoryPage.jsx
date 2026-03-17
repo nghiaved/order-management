@@ -25,6 +25,7 @@ export default function InventoryPage() {
     const [locationFilter, setLocationFilter] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
     const [loading, setLoading] = useState(true);
     const { canCreate, canEdit, canDelete } = usePermissions('inventory');
 
@@ -98,9 +99,14 @@ export default function InventoryPage() {
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
-        await inventoryService.remove(deleteTarget.id);
-        setDeleteTarget(null);
-        load();
+        setDeleting(true);
+        try {
+            await inventoryService.remove(deleteTarget.id);
+            setDeleteTarget(null);
+            load();
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const stockColor = (qty) => qty < 20 ? 'text-red-400' : qty < 100 ? 'text-yellow-400' : 'text-green-400';
@@ -199,7 +205,7 @@ export default function InventoryPage() {
             </CrudFormModal>
 
             <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa tồn kho"
-                message={`Bạn có chắc chắn muốn xóa tồn kho của "${productMap[deleteTarget?.product_id]?.name || ''}"? Thao tác này không thể hoàn tác.`} />
+                message={`Bạn có chắc chắn muốn xóa tồn kho của "${productMap[deleteTarget?.product_id]?.name || ''}"? Thao tác này không thể hoàn tác.`} deleting={deleting} />
         </div>
     );
 }

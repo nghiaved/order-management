@@ -35,6 +35,7 @@ export function useCrudPage({
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState(emptyForm);
     const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
@@ -92,9 +93,14 @@ export function useCrudPage({
 
     const confirmDelete = useCallback(async () => {
         if (!deleteTarget) return;
-        await deleteItem(deleteTarget.id);
-        setDeleteTarget(null);
-        await load();
+        setDeleting(true);
+        try {
+            await deleteItem(deleteTarget.id);
+            setDeleteTarget(null);
+            await load();
+        } finally {
+            setDeleting(false);
+        }
     }, [deleteTarget, deleteItem, load]);
 
     return {
@@ -107,6 +113,6 @@ export function useCrudPage({
         // CRUD modal
         editing, form, setForm, openNew, openEdit, close, handleSave, saving,
         // Delete
-        deleteTarget, setDeleteTarget, confirmDelete,
+        deleteTarget, setDeleteTarget, confirmDelete, deleting,
     };
 }

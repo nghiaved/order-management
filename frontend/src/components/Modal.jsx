@@ -45,7 +45,7 @@ export default function Modal({ open, onClose, title, size = 'md', children }) {
     );
 }
 
-export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Xoá', variant = 'danger' }) {
+export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Xoá', variant = 'danger', deleting = false }) {
     const colors = variant === 'danger'
         ? 'bg-red-600 hover:bg-red-700'
         : 'bg-blue-600 hover:bg-blue-700';
@@ -54,11 +54,11 @@ export function ConfirmModal({ open, onClose, onConfirm, title, message, confirm
         <Modal open={open} onClose={onClose} title={title} size="sm">
             <p className="text-gray-300 text-sm mb-6">{message}</p>
             <div className="flex justify-end gap-3">
-                <button onClick={onClose} className="px-4 py-1.5 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700/50 text-sm font-medium">
+                <button onClick={onClose} disabled={deleting} className="px-4 py-1.5 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700/50 text-sm font-medium disabled:opacity-50">
                     Hủy
                 </button>
-                <button onClick={onConfirm} className={`px-4 py-1.5 rounded-lg text-white text-sm font-medium ${colors}`}>
-                    {confirmText}
+                <button onClick={onConfirm} disabled={deleting} className={`px-4 py-1.5 rounded-lg text-white text-sm font-medium disabled:opacity-50 ${colors}`}>
+                    {deleting ? 'Đang xoá…' : confirmText}
                 </button>
             </div>
         </Modal>

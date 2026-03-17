@@ -16,7 +16,7 @@ export function useInventorySync() {
         const details = await orderService.getOrderDetails(orderId);
         await Promise.all(
             details.map((d) =>
-                inventoryService.restoreStock(Number(d.product_id), Number(d.quantity))
+                inventoryService.restoreStock(d.product_id, Number(d.quantity))
             )
         );
     };

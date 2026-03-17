@@ -36,7 +36,7 @@ export default function ProductsPage() {
         data, loading, filtered, paginated, page, setPage, totalPages,
         search, setSearch,
         editing, form, setForm, openNew, openEdit, close, handleSave, saving,
-        deleteTarget, setDeleteTarget, confirmDelete,
+        deleteTarget, setDeleteTarget, confirmDelete, deleting,
     } = useCrudPage({
         loadData, emptyForm: EMPTY, formFromItem, payloadFromForm,
         createItem: productService.create, updateItem: productService.update,
@@ -121,7 +121,7 @@ export default function ProductsPage() {
             </CrudFormModal>
 
             <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa sản phẩm"
-                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.name}"? Thao tác này không thể hoàn tác.`} />
+                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.name}"? Thao tác này không thể hoàn tác.`} deleting={deleting} />
         </div>
     );
 }

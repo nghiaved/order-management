@@ -31,7 +31,7 @@ export default function CustomersPage() {
         loading, filtered, paginated, page, setPage, totalPages,
         search, setSearch,
         editing, form, setForm, openNew, openEdit, close, handleSave, saving,
-        deleteTarget, setDeleteTarget, confirmDelete,
+        deleteTarget, setDeleteTarget, confirmDelete, deleting,
     } = useCrudPage({
         loadData, emptyForm: EMPTY, formFromItem, payloadFromForm,
         createItem: (data) => customerService.create({ ...data, created_at: new Date().toISOString() }),
@@ -104,7 +104,7 @@ export default function CustomersPage() {
             </CrudFormModal>
 
             <ConfirmModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} title="Xóa khách hàng"
-                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.full_name}"? Thao tác này không thể hoàn tác.`} />
+                message={`Bạn có chắc chắn muốn xóa "${deleteTarget?.full_name}"? Thao tác này không thể hoàn tác.`} deleting={deleting} />
         </div>
     );
 }

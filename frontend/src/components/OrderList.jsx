@@ -25,6 +25,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
     const [dateFilter, setDateFilter] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [deleting, setDeleting] = useState(false);
     const [statusTarget, setStatusTarget] = useState(null);
     const [cancelTarget, setCancelTarget] = useState(null);
 
@@ -103,6 +104,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
+        setDeleting(true);
         try {
             // Restore inventory if order was not already cancelled
             if (deleteTarget.status !== 'Cancel') {
@@ -117,6 +119,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
             toast.error(err.message || 'Không thể xóa đơn hàng.');
         } finally {
             setDeleteTarget(null);
+            setDeleting(false);
         }
     };
 
@@ -255,6 +258,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 onConfirm={confirmDelete}
                 title="Xóa đơn hàng"
                 message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
+                deleting={deleting}
             />
         </div>
     );
