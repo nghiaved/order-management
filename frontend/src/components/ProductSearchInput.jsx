@@ -67,7 +67,7 @@ export default function ProductSearchInput({
             window.removeEventListener('scroll', update, true);
             window.removeEventListener('resize', update);
         };
-    }, [open]);
+    }, [open, top]);
 
     const filtered = useMemo(() => {
         if (!search) return products;
