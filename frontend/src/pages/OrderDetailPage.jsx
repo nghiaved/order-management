@@ -26,6 +26,8 @@ export default function OrderDetailPage() {
     const [statusTarget, setStatusTarget] = useState(null);
     const [cancelTarget, setCancelTarget] = useState(null);
     const [deleteTarget, setDeleteTarget] = useState(null);
+    const [confirmingStatus, setConfirmingStatus] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const { restoreOrderInventory } = useInventorySync();
 
     useEffect(() => {
@@ -50,6 +52,7 @@ export default function OrderDetailPage() {
 
     const confirmStatusChange = async () => {
         if (!statusTarget) return;
+        setConfirmingStatus(true);
         try {
             await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
             setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
@@ -58,6 +61,7 @@ export default function OrderDetailPage() {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
             setStatusTarget(null);
+            setConfirmingStatus(false);
         }
     };
 
@@ -80,6 +84,7 @@ export default function OrderDetailPage() {
 
     const confirmDelete = async () => {
         if (!deleteTarget) return;
+        setDeleting(true);
         try {
             if (deleteTarget.status !== 'Cancel') {
                 await restoreOrderInventory(deleteTarget.id);
@@ -90,7 +95,9 @@ export default function OrderDetailPage() {
             navigate('/orders');
         } catch (err) {
             toast.error(err.message || 'Không thể xóa đơn hàng.');
+        } finally {
             setDeleteTarget(null);
+            setDeleting(false);
         }
     };
 
@@ -384,8 +391,7 @@ export default function OrderDetailPage() {
                 title={statusTarget?.title || ''}
                 message={statusTarget?.message || ''}
                 confirmText={statusTarget?.confirmText || 'Xác nhận'}
-                variant={statusTarget?.variant || 'confirm'}
-            />
+                variant={statusTarget?.variant || 'confirm'} deleting={confirmingStatus} />
 
             {/* ── Cancel with Reason ─────────────────── */}
             <CancelReasonModal
@@ -403,8 +409,7 @@ export default function OrderDetailPage() {
                 title="Xóa đơn hàng"
                 message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
                 confirmText="Xóa"
-                variant="danger"
-            />
+                variant="danger" deleting={deleting} />
         </div>
     );
 }

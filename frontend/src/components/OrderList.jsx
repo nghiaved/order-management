@@ -26,6 +26,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [deleting, setDeleting] = useState(false);
+    const [confirmingStatus, setConfirmingStatus] = useState(false);
     const [statusTarget, setStatusTarget] = useState(null);
     const [cancelTarget, setCancelTarget] = useState(null);
 
@@ -71,6 +72,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
 
     const confirmStatusChange = async () => {
         if (!statusTarget) return;
+        setConfirmingStatus(true);
         try {
             await updateStatus(statusTarget.order, statusTarget.newStatus);
             toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Hoàn thành'}.`);
@@ -79,6 +81,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
             setStatusTarget(null);
+            setConfirmingStatus(false);
         }
     };
 
@@ -241,6 +244,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 message={statusTarget?.message || ''}
                 confirmText={statusTarget?.confirmText || 'Confirm'}
                 variant={statusTarget?.variant || 'confirm'}
+                deleting={confirmingStatus}
             />
 
             {/* ── Cancel with Reason ──────────────────────────── */}

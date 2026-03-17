@@ -21,6 +21,7 @@ export default function InventoryPage() {
     const [showCreate, setShowCreate] = useState(false);
     const [createForm, setCreateForm] = useState(EMPTY);
     const [saving, setSaving] = useState(false);
+    const [savingEdit, setSavingEdit] = useState(false);
     const [search, setSearch] = useState('');
     const [locationFilter, setLocationFilter] = useState('');
     const [page, setPage] = useState(1);
@@ -73,28 +74,36 @@ export default function InventoryPage() {
 
     const saveEdit = async (e) => {
         e.preventDefault();
-        await inventoryService.update(editing.id, {
-            ...editing,
-            stock_quantity: Number(editForm.stock_quantity),
-            location: editForm.location,
-            last_updated: new Date().toISOString(),
-        });
-        closeEdit();
-        load();
+        setSavingEdit(true);
+        try {
+            await inventoryService.update(editing.id, {
+                ...editing,
+                stock_quantity: Number(editForm.stock_quantity),
+                location: editForm.location,
+                last_updated: new Date().toISOString(),
+            });
+            closeEdit();
+            load();
+        } finally {
+            setSavingEdit(false);
+        }
     };
 
     const handleCreate = async (e) => {
         e.preventDefault();
         setSaving(true);
-        await inventoryService.create({
-            product_id: createForm.product_id,
-            stock_quantity: Number(createForm.stock_quantity),
-            location: createForm.location,
-        });
-        setSaving(false);
-        setShowCreate(false);
-        setCreateForm(EMPTY);
-        load();
+        try {
+            await inventoryService.create({
+                product_id: createForm.product_id,
+                stock_quantity: Number(createForm.stock_quantity),
+                location: createForm.location,
+            });
+            setShowCreate(false);
+            setCreateForm(EMPTY);
+            load();
+        } finally {
+            setSaving(false);
+        }
     };
 
     const confirmDelete = async () => {
@@ -195,7 +204,7 @@ export default function InventoryPage() {
             </CrudFormModal>
 
             {/* ── Edit Modal ──────────────────────────────────── */}
-            <CrudFormModal open={!!editing} onClose={closeEdit} onSubmit={saveEdit} title={`Sửa tồn kho — ${productMap[editing?.product_id]?.name || ''}`} saving={false}>
+            <CrudFormModal open={!!editing} onClose={closeEdit} onSubmit={saveEdit} title={`Sửa tồn kho — ${productMap[editing?.product_id]?.name || ''}`} saving={savingEdit}>
                 <FormField label="Số lượng tồn">
                     <FormInput type="number" value={editForm.stock_quantity} onChange={(e) => setEditForm({ ...editForm, stock_quantity: e.target.value })} />
                 </FormField>
