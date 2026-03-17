@@ -25,6 +25,7 @@ export default function Modal({ open, onClose, title, size = 'md', children }) {
 
     return (
         <div
+            style={{ marginTop: 0 }}
             ref={backdropRef}
             onClick={(e) => { if (e.target === backdropRef.current) onClose(); }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
@@ -44,7 +45,7 @@ export default function Modal({ open, onClose, title, size = 'md', children }) {
     );
 }
 
-export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Delete', variant = 'danger' }) {
+export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Xoá', variant = 'danger' }) {
     const colors = variant === 'danger'
         ? 'bg-red-600 hover:bg-red-700'
         : 'bg-blue-600 hover:bg-blue-700';

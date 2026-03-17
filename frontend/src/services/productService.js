@@ -12,7 +12,10 @@ export const productService = {
     },
 
     async create(product) {
-        const { data } = await api.post('/products', product);
+        const { data } = await api.post('/products', {
+            ...product,
+            created_at: new Date().toISOString(),
+        });
         return data;
     },
 

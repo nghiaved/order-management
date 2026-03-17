@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { inventoryService } from '../services/inventoryService';
 import { productService } from '../services/productService';
+import ProductSearchInput from '../components/ProductSearchInput';
 import { usePermissions } from '../hooks/usePermissions';
 import { ConfirmModal } from '../components/Modal';
 import Pagination from '../components/Pagination';
@@ -28,7 +29,7 @@ export default function InventoryPage() {
 
     const load = useCallback(async () => {
         const [inv, prod] = await Promise.all([inventoryService.getAll(), productService.getAll()]);
-        setInventory(inv);
+        setInventory(inv?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
         setProducts(prod);
     }, []);
     useEffect(() => { load(); }, [load]);
@@ -79,7 +80,7 @@ export default function InventoryPage() {
         e.preventDefault();
         setSaving(true);
         await inventoryService.create({
-            product_id: Number(createForm.product_id),
+            product_id: createForm.product_id,
             stock_quantity: Number(createForm.stock_quantity),
             location: createForm.location,
         });
@@ -146,11 +147,15 @@ export default function InventoryPage() {
             {/* ── Create Modal ────────────────────────────────── */}
             <CrudFormModal open={showCreate} onClose={() => { setShowCreate(false); setCreateForm(EMPTY); }} onSubmit={handleCreate} title="Thêm tồn kho" saving={saving}>
                 <FormField label="Sản phẩm" colSpan={2}>
-                    <select required className="w-full bg-[#0a0e1a] border border-gray-700/50 rounded-xl px-4 py-1.5 text-white focus:ring-2 focus:ring-blue-500/40 outline-none transition-all"
-                        value={createForm.product_id} onChange={(e) => setCreateForm({ ...createForm, product_id: e.target.value })}>
-                        <option value="">Chọn sản phẩm…</option>
-                        {products.map((p) => <option key={p.id} value={p.id}>{p.sku} — {p.name}</option>)}
-                    </select>
+                    <ProductSearchInput
+                        products={products}
+                        value={createForm.product_id}
+                        onChange={(id) => setCreateForm({ ...createForm, product_id: id })}
+                        inputClassName="bg-[#0a0e1a] border-gray-700/50 rounded-xl px-4 py-1.5 focus:ring-2 focus:ring-blue-500/40"
+                        showPrice={false}
+                        top={478}
+                    />
+                    {!createForm.product_id && <input required className="sr-only" tabIndex={-1} aria-hidden />}
                 </FormField>
                 <FormField label="Số lượng tồn">
                     <FormInput type="number" value={createForm.stock_quantity} onChange={(e) => setCreateForm({ ...createForm, stock_quantity: e.target.value })} />

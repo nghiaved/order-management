@@ -16,6 +16,7 @@ export const inventoryService = {
     async create(payload) {
         const { data } = await api.post('/inventory', {
             ...payload,
+            created_at: new Date().toISOString(),
             last_updated: new Date().toISOString(),
         });
         return data;

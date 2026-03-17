@@ -160,7 +160,8 @@
       "name": "Gạo ST25 Túi 5kg",
       "base_price": 320000,
       "category": "Gạo & Ngũ cốc",
-      "unit": "Túi"
+      "unit": "Túi",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "2",
@@ -168,7 +169,8 @@
       "name": "Mì Hảo Hảo Tôm Chua Cay (Thùng 30 gói)",
       "base_price": 85000,
       "category": "Thực phẩm khô",
-      "unit": "Thùng"
+      "unit": "Thùng",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "3",
@@ -176,7 +178,8 @@
       "name": "Nước mắm Nam Ngư Chai 500ml",
       "base_price": 32000,
       "category": "Gia vị",
-      "unit": "Chai"
+      "unit": "Chai",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "4",
@@ -184,7 +187,8 @@
       "name": "Sữa tươi Vinamilk Không Đường (Thùng 48 hộp)",
       "base_price": 290000,
       "category": "Sữa & Đồ uống",
-      "unit": "Thùng"
+      "unit": "Thùng",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "5",
@@ -192,7 +196,8 @@
       "name": "Bia Tiger Lon (Thùng 24 lon)",
       "base_price": 345000,
       "category": "Sữa & Đồ uống",
-      "unit": "Thùng"
+      "unit": "Thùng",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "6",
@@ -200,7 +205,8 @@
       "name": "Dầu ăn Tường An Chai 1L",
       "base_price": 62000,
       "category": "Gia vị",
-      "unit": "Chai"
+      "unit": "Chai",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "7",
@@ -208,7 +214,8 @@
       "name": "Nước giặt OMO Matic Túi 3.7kg",
       "base_price": 95000,
       "category": "Hóa phẩm",
-      "unit": "Túi"
+      "unit": "Túi",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "8",
@@ -216,7 +223,8 @@
       "name": "Bột giặt Aba Khử Mùi 4.5kg",
       "base_price": 45000,
       "category": "Hóa phẩm",
-      "unit": "Bịch"
+      "unit": "Bịch",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "9",
@@ -224,7 +232,8 @@
       "name": "Đường Biên Hòa Túi 1kg",
       "base_price": 22000,
       "category": "Gia vị",
-      "unit": "Túi"
+      "unit": "Túi",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "10",
@@ -232,7 +241,8 @@
       "name": "Cà phê G7 3in1 (Hộp 20 gói)",
       "base_price": 89000,
       "category": "Sữa & Đồ uống",
-      "unit": "Hộp"
+      "unit": "Hộp",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "11",
@@ -240,7 +250,8 @@
       "name": "Nước tương Maggi Chai 700ml",
       "base_price": 18000,
       "category": "Gia vị",
-      "unit": "Chai"
+      "unit": "Chai",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "12",
@@ -248,7 +259,8 @@
       "name": "Hạt nêm Knorr Từ Thịt Heo Gói 400g",
       "base_price": 28000,
       "category": "Gia vị",
-      "unit": "Gói"
+      "unit": "Gói",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "13",
@@ -256,7 +268,8 @@
       "name": "Dầu gội Clear Bạc Hà Chai 650ml",
       "base_price": 78000,
       "category": "Hóa phẩm",
-      "unit": "Chai"
+      "unit": "Chai",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "14",
@@ -264,7 +277,8 @@
       "name": "Nước ngọt Coca-Cola (Thùng 24 lon)",
       "base_price": 195000,
       "category": "Sữa & Đồ uống",
-      "unit": "Thùng"
+      "unit": "Thùng",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "15",
@@ -272,7 +286,8 @@
       "name": "Giấy vệ sinh Pulppy (Lốc 12 cuộn)",
       "base_price": 115000,
       "category": "Hóa phẩm",
-      "unit": "Lốc"
+      "unit": "Lốc",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "16",
@@ -280,7 +295,8 @@
       "name": "Bún gạo Safoco 500g",
       "base_price": 25000,
       "category": "Thực phẩm khô",
-      "unit": "Gói"
+      "unit": "Gói",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "17",
@@ -288,7 +304,8 @@
       "name": "Muối I-ốt Bạc Liêu 1kg",
       "base_price": 8000,
       "category": "Gia vị",
-      "unit": "Gói"
+      "unit": "Gói",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "18",
@@ -296,7 +313,8 @@
       "name": "Kem đánh răng P/S 180g",
       "base_price": 35000,
       "category": "Hóa phẩm",
-      "unit": "Tuýp"
+      "unit": "Tuýp",
+      "created_at": "2025-09-01T00:00:00.000Z"
     }
   ],
   "inventory": [
@@ -305,126 +323,144 @@
       "product_id": "1",
       "stock_quantity": 85,
       "location": "Kệ A1",
-      "last_updated": "2026-03-16T07:10:18.894Z"
+      "last_updated": "2026-03-16T07:10:18.894Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "2",
       "product_id": "2",
       "stock_quantity": 117,
       "location": "Kệ A2",
-      "last_updated": "2026-03-16T07:08:12.309Z"
+      "last_updated": "2026-03-16T07:08:12.309Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "3",
       "product_id": "3",
       "stock_quantity": 65,
       "location": "Kệ B1",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "4",
       "product_id": "4",
       "stock_quantity": 40,
       "location": "Tủ mát",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "5",
       "product_id": "5",
       "stock_quantity": 55,
       "location": "Kho chính",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "6",
       "product_id": "6",
       "stock_quantity": 90,
       "location": "Kệ B2",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "7",
       "product_id": "7",
       "stock_quantity": 35,
       "location": "Kệ C1",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "8",
       "product_id": "8",
       "stock_quantity": 4,
       "location": "Kệ C2",
-      "last_updated": "2026-03-16T05:07:01.889Z"
+      "last_updated": "2026-03-16T05:07:01.889Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "9",
       "product_id": "9",
       "stock_quantity": 3,
       "location": "Kệ B3",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "10",
       "product_id": "10",
       "stock_quantity": 70,
       "location": "Kệ D1",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "11",
       "product_id": "11",
       "stock_quantity": 110,
       "location": "Kệ B1",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "12",
       "product_id": "12",
       "stock_quantity": 150,
       "location": "Kệ B4",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "13",
       "product_id": "13",
       "stock_quantity": 45,
       "location": "Kệ C3",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "14",
       "product_id": "14",
       "stock_quantity": 60,
       "location": "Kho chính",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "15",
       "product_id": "15",
       "stock_quantity": 25,
       "location": "Kệ C4",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "16",
       "product_id": "16",
       "stock_quantity": 80,
       "location": "Kệ A3",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "17",
       "product_id": "17",
       "stock_quantity": 200,
       "location": "Kệ B5",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     },
     {
       "id": "18",
       "product_id": "18",
       "stock_quantity": 55,
       "location": "Kệ C5",
-      "last_updated": "2026-03-14T08:00:00Z"
+      "last_updated": "2026-03-14T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00.000Z"
     }
   ],
   "orders": [

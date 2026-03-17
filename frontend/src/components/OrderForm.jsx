@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import ProductSearchInput from './ProductSearchInput';
 import { customerService } from '../services/customerService';
 import { productService } from '../services/productService';
 import { inventoryService } from '../services/inventoryService';
@@ -489,21 +490,12 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                                 return (
                                     <tr key={idx} className="border-t border-gray-700/50">
                                         <td className="px-3 py-2">
-                                            <select
-                                                className="w-full bg-[#1a2035] border border-gray-700 rounded px-2 py-1 text-white"
+                                            <ProductSearchInput
+                                                products={products}
+                                                inventoryMap={inventoryMap}
                                                 value={item.product_id}
-                                                onChange={(e) => updateItem(idx, 'product_id', e.target.value)}
-                                            >
-                                                <option value="">-- Chọn --</option>
-                                                {products.map((p) => {
-                                                    const stock = inventoryMap[p.id];
-                                                    return (
-                                                        <option disabled={!stock || !stock.stock_quantity} key={p.id} value={p.id}>
-                                                            {p.sku} – {p.name} - {fmt(p.base_price)} đ ({stock ? `còn ${stock.stock_quantity}` : 'Hết hàng'})
-                                                        </option>
-                                                    )
-                                                })}
-                                            </select>
+                                                onChange={(id) => updateItem(idx, 'product_id', id)}
+                                            />
                                             {errors[`item_${idx}`] && (
                                                 <p className="text-red-400 text-xs">{errors[`item_${idx}`]}</p>
                                             )}

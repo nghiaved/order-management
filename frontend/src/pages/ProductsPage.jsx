@@ -11,7 +11,10 @@ import { fmt } from '../utils/format';
 
 const EMPTY = { sku: '', name: '', base_price: '', category: '', unit: '' };
 
-const loadData = () => productService.getAll();
+const loadData = async () => {
+    const data = await productService.getAll();
+    return [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+};
 const formFromItem = (p) => ({ sku: p.sku, name: p.name, base_price: p.base_price, category: p.category, unit: p.unit || '' });
 const payloadFromForm = (form) => ({ ...form, base_price: Number(form.base_price) });
 
