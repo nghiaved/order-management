@@ -1,42 +1,43 @@
 import { fmt } from './format';
 
 const STATUS_BADGE = {
-    New: 'background:#dbeafe;color:#1d4ed8',
-    Processing: 'background:#fef3c7;color:#b45309',
-    Done: 'background:#dcfce7;color:#166534',
-    Cancel: 'background:#fee2e2;color:#991b1b',
+  New: 'background:#dbeafe;color:#1d4ed8',
+  Processing: 'background:#fef3c7;color:#b45309',
+  Done: 'background:#dcfce7;color:#166534',
+  Cancel: 'background:#fee2e2;color:#991b1b',
 };
 
 const STATUS_LABEL = {
-    New: 'Mới',
-    Processing: 'Đang xử lý',
-    Done: 'Hoàn thành',
-    Cancel: 'Đã hủy',
+  New: 'Mới',
+  Processing: 'Đang xử lý',
+  Done: 'Hoàn thành',
+  Cancel: 'Đã hủy',
 };
 
 const PAYMENT_LABEL_MAP = {
-    COD: 'Thanh toán khi nhận hàng',
-    Cash: 'Tiền mặt',
-    'Tiền mặt': 'Tiền mặt',
-    Transfer: 'Chuyển khoản',
-    'Chuyển khoản': 'Chuyển khoản',
-    Credit: 'Công nợ',
-    'Công nợ': 'Công nợ',
+  COD: 'Thanh toán khi nhận hàng',
+  Cash: 'Tiền mặt',
+  'Tiền mặt': 'Tiền mặt',
+  Transfer: 'Chuyển khoản',
+  'Chuyển khoản': 'Chuyển khoản',
+  Credit: 'Công nợ',
+  'Công nợ': 'Công nợ',
 };
 
 /**
  * Opens a new browser window with a clean print-friendly invoice and triggers window.print().
  * No external dependencies — pure HTML/CSS rendered into a popup window.
  */
-export function printInvoice({ order, details, customer, productMap }) {
-    const subtotal = details.reduce((s, d) => s + Number(d.unit_price) * Number(d.quantity), 0);
-    const vatAmt = order.has_vat ? subtotal * 0.1 : 0;
-    const amountDue = Number(order.total_amount) - Number(order.prepaid_amount || 0);
+export function printInvoice({ order, details, customer, productMap, payments = [] }) {
+  const subtotal = details.reduce((s, d) => s + Number(d.unit_price) * Number(d.quantity), 0);
+  const vatAmt = order.has_vat ? subtotal * 0.1 : 0;
+  const paidSum = payments.reduce((s, p) => s + Number(p.amount_paid), 0);
+  const amountDue = Number(order.total_amount) - paidSum;
 
-    const rows = details
-        .map((d) => {
-            const prod = productMap[d.product_id];
-            return `
+  const rows = details
+    .map((d) => {
+      const prod = productMap[d.product_id];
+      return `
             <tr>
                 <td>${prod?.name || `SP #${d.product_id}`}</td>
                 <td style="color:#6b7280">${prod?.sku || '—'}</td>
@@ -44,12 +45,12 @@ export function printInvoice({ order, details, customer, productMap }) {
                 <td style="text-align:center">${d.quantity}</td>
                 <td style="text-align:right;font-weight:600">${fmt(Number(d.unit_price) * Number(d.quantity))} VNĐ</td>
             </tr>`;
-        })
-        .join('');
+    })
+    .join('');
 
-    const badgeStyle = STATUS_BADGE[order.status] || 'background:#f3f4f6;color:#374151';
+  const badgeStyle = STATUS_BADGE[order.status] || 'background:#f3f4f6;color:#374151';
 
-    const html = `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html lang="vi">
 <head><meta charset="UTF-8"/><title>Invoice — ${order.id}</title><style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -97,7 +98,7 @@ export function printInvoice({ order, details, customer, productMap }) {
       <div class="card-title">Thanh toán</div>
       <p>Phương thức: <strong>${PAYMENT_LABEL_MAP[order.payment_method] || order.payment_method}</strong></p>
       <p>VAT: ${order.has_vat ? 'Có (10%)' : 'Không'}</p>
-      ${Number(order.prepaid_amount) > 0 ? `<p>Trả trước: ${fmt(order.prepaid_amount)} VNĐ</p>` : ''}
+      <p>Đã thanh toán: <strong style="color:${paidSum >= Number(order.total_amount) ? '#166534' : paidSum > 0 ? '#b45309' : '#991b1b'}">${fmt(paidSum)} VNĐ</strong></p>
     </div>
   </div>
   <table>
@@ -110,24 +111,45 @@ export function printInvoice({ order, details, customer, productMap }) {
     <tbody>${rows}</tbody>
   </table>
   ${order.note ? `<div class="note-box"><strong>Ghi chú:</strong> ${order.note}</div>` : ''}
-  <div class="totals">
-    <table>
-      <tr><td>Tạm tính</td><td style="text-align:right">${fmt(subtotal)} VNĐ</td></tr>
-      ${order.has_vat ? `<tr><td>VAT (10%)</td><td style="text-align:right">+${fmt(vatAmt)} VNĐ</td></tr>` : ''}
-      <tr><td>Phí vận chuyển</td><td style="text-align:right">+${fmt(Number(order.shipping_fee || 0))} VNĐ</td></tr>
-      <tr class="grand"><td>Tổng cộng</td><td style="text-align:right">${fmt(Number(order.total_amount))} VNĐ</td></tr>
-      ${Number(order.prepaid_amount) > 0 ? `
-      <tr><td style="color:#3b82f6">Trả trước</td><td style="text-align:right;color:#3b82f6">−${fmt(Number(order.prepaid_amount))} VNĐ</td></tr>
-      <tr><td style="color:#f97316;font-weight:600">Còn lại</td><td style="text-align:right;color:#f97316;font-weight:600">${fmt(amountDue)} VNĐ</td></tr>` : ''}
-    </table>
+  ${order.cancel_reason ? `<div class="note-box" style="border-color:#fca5a5;background:#fff1f2"><strong style="color:#991b1b">Lý do hủy:</strong> <span style="color:#991b1b">${order.cancel_reason}</span></div>` : ''}
+  <div style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    ${payments.length > 0 ? `
+    <div style="flex:1">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#9ca3af;font-weight:600;margin-bottom:10px">Lịch sử thanh toán</div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:#f9fafb">
+          <th style="text-align:left;padding:6px 10px;font-size:11px;color:#6b7280;font-weight:600;border-bottom:1px solid #e5e7eb">Ngày</th>
+          <th style="text-align:left;padding:6px 10px;font-size:11px;color:#6b7280;font-weight:600;border-bottom:1px solid #e5e7eb">Ghi chú</th>
+          <th style="text-align:right;padding:6px 10px;font-size:11px;color:#6b7280;font-weight:600;border-bottom:1px solid #e5e7eb">Số tiền</th>
+        </tr></thead>
+        <tbody>${payments.map((p, i) => `
+          <tr style="border-bottom:1px solid #f3f4f6">
+            <td style="padding:6px 10px;font-size:12px;color:#374151">${new Date(p.date).toLocaleDateString('vi-VN')}</td>
+            <td style="padding:6px 10px;font-size:12px;color:#6b7280">${p.note || '—'}</td>
+            <td style="padding:6px 10px;font-size:12px;text-align:right;font-weight:600;color:#166534">${fmt(p.amount_paid)} VNĐ</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>` : ''}
+    <div class="totals" style="margin-top:20px">
+      <table>
+        <tr><td>Tạm tính</td><td style="text-align:right">${fmt(subtotal)} VNĐ</td></tr>
+        ${order.has_vat ? `<tr><td>VAT (10%)</td><td style="text-align:right">+${fmt(vatAmt)} VNĐ</td></tr>` : ''}
+        <tr><td>Phí vận chuyển</td><td style="text-align:right">+${fmt(Number(order.shipping_fee || 0))} VNĐ</td></tr>
+        <tr class="grand"><td>Tổng cộng</td><td style="text-align:right">${fmt(Number(order.total_amount))} VNĐ</td></tr>
+        ${paidSum > 0 ? `
+        <tr><td style="color:#3b82f6">Đã thanh toán</td><td style="text-align:right;color:#3b82f6">−${fmt(paidSum)} VNĐ</td></tr>
+        <tr><td style="color:${amountDue <= 0 ? '#166534' : '#f97316'};font-weight:600">${amountDue <= 0 ? 'Đã tất toán' : 'Còn lại'}</td><td style="text-align:right;color:${amountDue <= 0 ? '#166534' : '#f97316'};font-weight:600">${amountDue <= 0 ? '✓' : fmt(amountDue) + ' VNĐ'}</td></tr>` : ''}
+      </table>
+    </div>
   </div>
   <div class="footer">Cảm ơn quý khách · Quản lý đơn hàng</div>
 </body></html>`;
 
-    const win = window.open('', '_blank', 'width=920,height=720');
-    if (!win) { alert('Vui lòng cho phép popup để in hóa đơn.'); return; }
-    win.document.write(html);
-    win.document.close();
-    win.focus();
-    setTimeout(() => win.print(), 450);
+  const win = window.open('', '_blank', 'width=920,height=720');
+  if (!win) { alert('Vui lòng cho phép popup để in hóa đơn.'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(() => win.print(), 450);
 }

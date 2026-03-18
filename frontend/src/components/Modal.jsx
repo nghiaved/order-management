@@ -45,7 +45,7 @@ export default function Modal({ open, onClose, title, size = 'md', children }) {
     );
 }
 
-export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Xoá', variant = 'danger', deleting = false }) {
+export function ConfirmModal({ open, onClose, onConfirm, title, message, confirmText = 'Xoá', variant = 'danger', deleting = false, loadingText = 'Đang xoá…' }) {
     const colors = variant === 'danger'
         ? 'bg-red-600 hover:bg-red-700'
         : 'bg-blue-600 hover:bg-blue-700';
@@ -58,7 +58,7 @@ export function ConfirmModal({ open, onClose, onConfirm, title, message, confirm
                     Hủy
                 </button>
                 <button onClick={onConfirm} disabled={deleting} className={`px-4 py-1.5 rounded-lg text-white text-sm font-medium disabled:opacity-50 ${colors}`}>
-                    {deleting ? 'Đang xoá…' : confirmText}
+                    {deleting ? loadingText : confirmText}
                 </button>
             </div>
         </Modal>

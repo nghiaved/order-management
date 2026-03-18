@@ -43,6 +43,14 @@ npm start
 - **Dashboard filters** theo khoảng ngày, sản phẩm, trạng thái — tất cả thống kê và biểu đồ phản hồi theo bộ lọc
 - **Form đơn hàng phức tạp** — tạo/chọn khách hàng, thêm sản phẩm, tính VAT, phí ship, công nợ, chuyển khoản
 
+### Theo dõi thanh toán
+- **Ghi nhận nhiều lần thanh toán** cho mỗi đơn hàng (đặt cọc + tất toán, trả góp...)
+- **Thanh toán bar** hiển thị tiến độ thu tiền (progress bar màu + phần trăm)
+- **Badge trạng thái** trên danh sách đơn: Đã TT / Một phần / Chưa TT
+- **Lọc theo trạng thái thanh toán** trực tiếp trên trang Orders
+- **Chip "Đã thu"** trong thanh tổng hợp Dashboard (tính từ tổng payment_history)
+- **Xóa liên kết** — khi xóa đơn hàng, toàn bộ payment_history của đơn đó tự động bị xóa
+
 ### Enterprise
 - **Toast notifications** — react-hot-toast (dark theme, bottom-center)
 - **In hóa đơn** — popup HTML/CSS với bảng chi tiết, trạng thái, tổng cộng
@@ -77,6 +85,7 @@ src/
 │   ├── api.js          # Axios instance (baseURL: localhost:8080)
 │   ├── authService.js  # login, logout, getCurrentUser, isAuthenticated
 │   ├── orderService.js # CRUD + order details + getAllOrderDetails
+│   ├── paymentService.js   # getAll, getByOrderId, create, deleteByOrderId
 │   ├── productService.js
 │   ├── customerService.js
 │   └── inventoryService.js  # deductStock, restoreStock, updateStock
@@ -87,22 +96,24 @@ src/
 ├── hooks/              # Reusable custom hooks
 │   ├── useCrudPage.js  # Generic CRUD page state machine
 │   ├── usePermissions.js   # canCreate/canRead/canEdit/canDelete
-│   ├── useOrderStats.js    # Revenue, totals, low stock alerts
+│   ├── useOrderStats.js    # Revenue, totals, low stock alerts, totalReceived
 │   └── useInventorySync.js # Hoàn kho khi hủy đơn
 │
 ├── components/         # Shared UI components
 │   ├── Layout.jsx          # App shell: sidebar + header + profile modal
 │   ├── DataTable.jsx       # Generic table with column config
 │   ├── Pagination.jsx      # Page nav with smart ellipsis
-│   ├── Modal.jsx           # Base modal + ConfirmModal
+│   ├── Modal.jsx           # Base modal + ConfirmModal (loadingText prop)
 │   ├── CrudFormModal.jsx   # Form modal + FormField + FormInput
 │   ├── SearchFilter.jsx    # Search input + filter selects + date pickers
 │   ├── Allow.jsx           # Permission-gated rendering
 │   ├── ProtectedRoute.jsx  # Route guard (auth + permission)
 │   ├── OrderForm.jsx       # Form tạo/sửa đơn hàng
-│   ├── OrderList.jsx       # Bảng đơn hàng + status actions
-│   ├── OrderSummaryBar.jsx # Stat chips + low stock alerts
-│   └── CancelReasonModal.jsx # Nhập lý do hủy + hoàn kho
+│   ├── OrderList.jsx       # Bảng đơn hàng + status actions + payment badge
+│   ├── OrderSummaryBar.jsx # Stat chips (4 chips, bao gồm Đã thu) + low stock alerts
+│   ├── CancelReasonModal.jsx # Nhập lý do hủy + hoàn kho
+│   ├── PaymentHistory.jsx  # Timeline lịch sử thanh toán + progress bar
+│   └── AddPaymentModal.jsx # Form nhập lần thanh toán mới
 │
 ├── pages/              # Route pages (composition layer)
 │   ├── LoginPage.jsx
@@ -121,14 +132,15 @@ src/
 ## Data Model
 
 ```
-users          — id, username, password, name, role, permissions[], hierarchyLevel
-orders         — id (ORD-YYYYMMDD-###), customer_id, status, payment_method,
-                 delivery_date, shipping_unit, shipping_fee, has_vat, total_amount,
-                 prepaid_amount, bank_info, cancel_reason, note, created_at
-order_details  — id, order_id, product_id, quantity, unit_price
-products       — id, sku, name, base_price, category, unit
-customers      — id, full_name, phone, address, created_at
-inventory      — id, product_id, stock_quantity, location, last_updated
+users           — id, username, password, name, role, permissions[], hierarchyLevel
+orders          — id (ORD-YYYYMMDD-###), customer_id, status, payment_method,
+                  delivery_date, shipping_unit, shipping_fee, has_vat, total_amount,
+                  prepaid_amount, bank_info, cancel_reason, note, created_at
+order_details   — id, order_id, product_id, quantity, unit_price
+payment_history — id, order_id, amount_paid, date, note
+products        — id, sku, name, base_price, category, unit
+customers       — id, full_name, phone, address, created_at
+inventory       — id, product_id, stock_quantity, location, last_updated
 ```
 
 ## Routes

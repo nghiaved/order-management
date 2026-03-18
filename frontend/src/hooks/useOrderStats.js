@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { orderService } from '../services/orderService';
 import { inventoryService } from '../services/inventoryService';
 import { productService } from '../services/productService';
+import { paymentService } from '../services/paymentService';
 
 /**
  * Fetches and computes order + inventory summary stats.
@@ -17,14 +18,18 @@ export function useOrderStats(refreshKey) {
             orderService.getAll(),
             inventoryService.getAll(),
             productService.getAll(),
+            paymentService.getAll(),
         ])
-            .then(([orders, inventory, products]) => {
+            .then(([orders, inventory, products, payments]) => {
                 const productMap = {};
                 products.forEach((p) => (productMap[p.id] = p));
 
                 const revenue = orders
                     .filter((o) => o.status !== 'Cancel')
                     .reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+
+                const totalReceived = payments
+                    .reduce((sum, p) => sum + Number(p.amount_paid || 0), 0);
 
                 const statusCounts = {};
                 orders.forEach((o) => {
@@ -40,6 +45,7 @@ export function useOrderStats(refreshKey) {
 
                 setStats({
                     revenue,
+                    totalReceived,
                     total: orders.length,
                     active: (statusCounts.New || 0) + (statusCounts.Processing || 0),
                     statusCounts,

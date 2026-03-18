@@ -4,6 +4,7 @@ import { customerService } from '../services/customerService';
 import { productService } from '../services/productService';
 import { inventoryService } from '../services/inventoryService';
 import { orderService } from '../services/orderService';
+import { paymentService } from '../services/paymentService';
 import { generateOrderId } from '../utils/generate';
 import toast from 'react-hot-toast';
 import { PAYMENT_METHODS, SHIPPING_UNITS, VAT_RATE } from '../constants';
@@ -260,6 +261,18 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         unit_price: Number(item.unit_price),
                     });
                 }
+
+                // Update initial payment entry if prepaid
+                const prepaid = Number(form.prepaid_amount) || 0;
+                if (prepaid > 0) {
+                    await paymentService.deleteByOrderId(editingOrder.id);
+                    await paymentService.create({
+                        order_id: editingOrder.id,
+                        amount_paid: prepaid,
+                        date: new Date().toISOString(),
+                        note: 'Đặt cọc khi tạo đơn',
+                    });
+                }
             } else {
                 // Deduct inventory first — abort if insufficient stock
                 for (const item of currentItems) {
@@ -277,6 +290,17 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                         product_id: String(item.product_id),
                         quantity: Number(item.quantity),
                         unit_price: Number(item.unit_price),
+                    });
+                }
+
+                // Create initial payment entry if prepaid
+                const prepaid = Number(form.prepaid_amount) || 0;
+                if (prepaid > 0) {
+                    await paymentService.create({
+                        order_id: orderId,
+                        amount_paid: prepaid,
+                        date: new Date().toISOString(),
+                        note: 'Đặt cọc khi tạo đơn',
                     });
                 }
             }

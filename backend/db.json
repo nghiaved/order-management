@@ -4,7 +4,7 @@
       "id": "u1",
       "username": "admin",
       "password": "admin123",
-      "name": "Nhân viên quản trị",
+      "name": "Quản Trị Viên",
       "note": "Quyền truy cập toàn hệ thống",
       "role": "admin",
       "permissions": [
@@ -43,7 +43,7 @@
       "id": "u2",
       "username": "manager",
       "password": "manager123",
-      "name": "Nhân viên bán hàng",
+      "name": "Quản Lý",
       "note": "Quản lý đơn hàng và khách hàng",
       "role": "user",
       "permissions": [
@@ -69,7 +69,7 @@
       "id": "u3",
       "username": "viewer",
       "password": "viewer123",
-      "name": "Nhân viên mới",
+      "name": "Người Xem",
       "note": "Chỉ xem dữ liệu",
       "role": "readonly",
       "permissions": [
@@ -94,63 +94,84 @@
       "full_name": "Nguyễn Thị Lan",
       "phone": "0901234567",
       "address": "12 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM",
-      "created_at": "2025-11-05T08:00:00Z"
+      "created_at": "2025-10-05T08:00:00Z"
     },
     {
       "id": "2",
       "full_name": "Lê Văn Nam",
       "phone": "0912345678",
       "address": "45 Lê Lợi, P.4, Q. Gò Vấp, TP.HCM",
-      "created_at": "2025-11-20T10:30:00Z"
+      "created_at": "2025-10-20T10:30:00Z"
     },
     {
       "id": "3",
       "full_name": "Phạm Thị Hồng",
       "phone": "0933456789",
       "address": "78 Trần Hưng Đạo, P.7, Q.5, TP.HCM",
-      "created_at": "2025-12-10T14:15:00Z"
+      "created_at": "2025-11-10T14:15:00Z"
     },
     {
       "id": "4",
       "full_name": "Trần Văn Bình",
       "phone": "0974567890",
       "address": "156 Cách Mạng Tháng 8, P.10, Q.3, TP.HCM",
-      "created_at": "2026-01-05T09:00:00Z"
+      "created_at": "2025-11-25T09:00:00Z"
     },
     {
       "id": "5",
       "full_name": "Hoàng Minh Tuấn",
       "phone": "0865678901",
       "address": "23 Phan Xích Long, P.2, Q. Phú Nhuận, TP.HCM",
-      "created_at": "2026-01-25T11:45:00Z"
+      "created_at": "2025-12-01T11:45:00Z"
     },
     {
       "id": "6",
       "full_name": "Võ Thị Mai",
       "phone": "0796789012",
       "address": "89 Nguyễn Văn Cừ, P. An Hòa, Q. Ninh Kiều, TP. Cần Thơ",
-      "created_at": "2026-02-14T16:30:00Z"
+      "created_at": "2025-12-15T16:30:00Z"
     },
     {
       "id": "7",
       "full_name": "Đặng Quốc Huy",
       "phone": "0387890123",
       "address": "34 Hai Bà Trưng, P. Tân Định, Q.1, TP.HCM",
-      "created_at": "2026-03-01T07:20:00Z"
+      "created_at": "2026-01-05T07:20:00Z"
     },
     {
+      "id": "8",
       "full_name": "Nguyễn Thành Nghĩa",
       "phone": "0902641448",
-      "address": "Cần Thơ",
-      "created_at": "2026-03-16T06:39:50.603Z",
-      "id": "zXzH-ra"
+      "address": "102 Mậu Thân, P. Xuân Khánh, Q. Ninh Kiều, TP. Cần Thơ",
+      "created_at": "2026-01-12T08:00:00Z"
     },
     {
-      "full_name": "Nguyễn Thành Lộc",
-      "phone": "0987654321",
-      "address": "Hậu Giang",
-      "created_at": "2026-03-16T06:42:59.012Z",
-      "id": "Nrxxo7N"
+      "id": "9",
+      "full_name": "Bùi Thị Thanh Hà",
+      "phone": "0918765432",
+      "address": "55 Tây Sơn, P. Trung Liệt, Q. Đống Đa, Hà Nội",
+      "created_at": "2026-01-20T09:30:00Z"
+    },
+    {
+      "id": "10",
+      "full_name": "Ngô Văn Phúc",
+      "phone": "0345612789",
+      "address": "18 Trần Phú, P. Thạch Thang, Q. Hải Châu, TP. Đà Nẵng",
+      "created_at": "2026-02-03T13:00:00Z"
+    },
+    {
+      "id": "11",
+      "full_name": "Lý Thị Bích Ngọc",
+      "phone": "0768901234",
+      "address": "67 Đinh Tiên Hoàng, P. Đa Kao, Q.1, TP.HCM",
+      "created_at": "2026-02-10T10:15:00Z"
+    },
+    {
+      "id": "12",
+      "full_name": "Vũ Đức Thịnh",
+      "phone": "0856789345",
+      "address": "12 Lê Hồng Phong, P. Máy Tơ, Q. Ngô Quyền, TP. Hải Phòng",
+      "created_at": "2026-03-01T14:00:00Z"
     }
   ],
   "products": [
@@ -161,7 +182,7 @@
       "base_price": 320000,
       "category": "Gạo & Ngũ cốc",
       "unit": "Túi",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "2",
@@ -170,7 +191,7 @@
       "base_price": 85000,
       "category": "Thực phẩm khô",
       "unit": "Thùng",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "3",
@@ -179,7 +200,7 @@
       "base_price": 32000,
       "category": "Gia vị",
       "unit": "Chai",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "4",
@@ -188,7 +209,7 @@
       "base_price": 290000,
       "category": "Sữa & Đồ uống",
       "unit": "Thùng",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "5",
@@ -197,7 +218,7 @@
       "base_price": 345000,
       "category": "Sữa & Đồ uống",
       "unit": "Thùng",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "6",
@@ -206,7 +227,7 @@
       "base_price": 62000,
       "category": "Gia vị",
       "unit": "Chai",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "7",
@@ -215,7 +236,7 @@
       "base_price": 95000,
       "category": "Hóa phẩm",
       "unit": "Túi",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "8",
@@ -224,7 +245,7 @@
       "base_price": 45000,
       "category": "Hóa phẩm",
       "unit": "Bịch",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "9",
@@ -233,7 +254,7 @@
       "base_price": 22000,
       "category": "Gia vị",
       "unit": "Túi",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "10",
@@ -242,7 +263,7 @@
       "base_price": 89000,
       "category": "Sữa & Đồ uống",
       "unit": "Hộp",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "11",
@@ -251,7 +272,7 @@
       "base_price": 18000,
       "category": "Gia vị",
       "unit": "Chai",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "12",
@@ -260,7 +281,7 @@
       "base_price": 28000,
       "category": "Gia vị",
       "unit": "Gói",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "13",
@@ -269,7 +290,7 @@
       "base_price": 78000,
       "category": "Hóa phẩm",
       "unit": "Chai",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "14",
@@ -278,7 +299,7 @@
       "base_price": 195000,
       "category": "Sữa & Đồ uống",
       "unit": "Thùng",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "15",
@@ -287,7 +308,7 @@
       "base_price": 115000,
       "category": "Hóa phẩm",
       "unit": "Lốc",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "16",
@@ -296,7 +317,7 @@
       "base_price": 25000,
       "category": "Thực phẩm khô",
       "unit": "Gói",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "17",
@@ -305,414 +326,704 @@
       "base_price": 8000,
       "category": "Gia vị",
       "unit": "Gói",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "18",
-      "sku": "KD-DUTCH-180",
-      "name": "Kem đánh răng P/S 180g",
+      "sku": "KD-PS-180",
+      "name": "Kem đánh răng P/S Trà Xanh 180g",
       "base_price": 35000,
       "category": "Hóa phẩm",
       "unit": "Tuýp",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "created_at": "2025-09-01T00:00:00Z"
     }
   ],
   "inventory": [
     {
       "id": "1",
       "product_id": "1",
-      "stock_quantity": 85,
+      "stock_quantity": 80,
       "location": "Kệ A1",
-      "last_updated": "2026-03-16T07:10:18.894Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "2",
       "product_id": "2",
-      "stock_quantity": 117,
+      "stock_quantity": 95,
       "location": "Kệ A2",
-      "last_updated": "2026-03-16T07:08:12.309Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "3",
       "product_id": "3",
-      "stock_quantity": 65,
+      "stock_quantity": 60,
       "location": "Kệ B1",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "4",
       "product_id": "4",
-      "stock_quantity": 40,
+      "stock_quantity": 42,
       "location": "Tủ mát",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "5",
       "product_id": "5",
-      "stock_quantity": 55,
+      "stock_quantity": 50,
       "location": "Kho chính",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "6",
       "product_id": "6",
-      "stock_quantity": 90,
+      "stock_quantity": 75,
       "location": "Kệ B2",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "7",
       "product_id": "7",
-      "stock_quantity": 35,
+      "stock_quantity": 38,
       "location": "Kệ C1",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "8",
       "product_id": "8",
-      "stock_quantity": 4,
+      "stock_quantity": 3,
       "location": "Kệ C2",
-      "last_updated": "2026-03-16T05:07:01.889Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "9",
       "product_id": "9",
-      "stock_quantity": 3,
+      "stock_quantity": 85,
       "location": "Kệ B3",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "10",
       "product_id": "10",
-      "stock_quantity": 70,
+      "stock_quantity": 55,
       "location": "Kệ D1",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "11",
       "product_id": "11",
-      "stock_quantity": 110,
+      "stock_quantity": 100,
       "location": "Kệ B1",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "12",
       "product_id": "12",
-      "stock_quantity": 150,
+      "stock_quantity": 130,
       "location": "Kệ B4",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "13",
       "product_id": "13",
       "stock_quantity": 45,
       "location": "Kệ C3",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "14",
       "product_id": "14",
-      "stock_quantity": 60,
+      "stock_quantity": 55,
       "location": "Kho chính",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "15",
       "product_id": "15",
-      "stock_quantity": 25,
+      "stock_quantity": 28,
       "location": "Kệ C4",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "16",
       "product_id": "16",
-      "stock_quantity": 80,
+      "stock_quantity": 72,
       "location": "Kệ A3",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "17",
       "product_id": "17",
-      "stock_quantity": 200,
+      "stock_quantity": 190,
       "location": "Kệ B5",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     },
     {
       "id": "18",
       "product_id": "18",
-      "stock_quantity": 55,
+      "stock_quantity": 4,
       "location": "Kệ C5",
-      "last_updated": "2026-03-14T08:00:00Z",
-      "created_at": "2025-09-01T00:00:00.000Z"
+      "last_updated": "2026-03-10T08:00:00Z",
+      "created_at": "2025-09-01T00:00:00Z"
     }
   ],
   "orders": [
     {
-      "id": "ORD-20260210-001",
+      "id": "ORD-20251110-001",
       "customer_id": "1",
-      "delivery_date": "2026-02-14",
+      "delivery_date": "2025-11-14",
       "shipping_unit": "GHN",
       "payment_method": "Tiền mặt",
       "debt_days": 0,
       "bank_info": "",
       "prepaid_amount": 0,
-      "shipping_fee": 30000,
-      "has_vat": true,
-      "status": "Done",
-      "note": "Giao trước 12h trưa",
-      "total_amount": 1001300,
-      "created_at": "2026-02-10T09:15:00Z"
-    },
-    {
-      "id": "ORD-20260225-001",
-      "customer_id": "4",
-      "delivery_date": "2026-03-02",
-      "shipping_unit": "GHTK",
-      "payment_method": "Chuyển khoản",
-      "debt_days": 0,
-      "bank_info": "{\"bank_name\":\"Vietcombank\",\"account_number\":\"0071000123456\"}",
-      "prepaid_amount": 500000,
-      "shipping_fee": 35000,
-      "has_vat": false,
-      "status": "Processing",
-      "note": "Đơn sỉ — giao tận kho",
-      "total_amount": 1968000,
-      "created_at": "2026-02-25T14:30:00Z"
-    },
-    {
-      "id": "ORD-20260305-001",
-      "customer_id": "3",
-      "delivery_date": "2026-03-12",
-      "shipping_unit": "Ninja Van",
-      "payment_method": "Công nợ",
-      "debt_days": 15,
-      "bank_info": "",
-      "prepaid_amount": 0,
       "shipping_fee": 25000,
-      "has_vat": true,
-      "status": "New",
-      "note": "Khách quen — cho nợ 15 ngày",
-      "total_amount": 934700,
-      "created_at": "2026-03-05T16:00:00Z"
+      "has_vat": false,
+      "status": "Done",
+      "note": "Giao trước 12h trưa, gọi trước khi đến",
+      "total_amount": 1048000,
+      "created_at": "2025-11-10T08:30:00Z"
     },
     {
-      "id": "ORD-20260308-001",
-      "customer_id": "2",
-      "delivery_date": "2026-03-12",
-      "shipping_unit": "J&T",
+      "id": "ORD-20251125-001",
+      "customer_id": "3",
+      "delivery_date": "2025-11-28",
+      "shipping_unit": "VNPost",
       "payment_method": "Tiền mặt",
       "debt_days": 0,
       "bank_info": "",
       "prepaid_amount": 0,
       "shipping_fee": 20000,
       "has_vat": false,
+      "status": "Done",
+      "note": "",
+      "total_amount": 482000,
+      "created_at": "2025-11-25T14:00:00Z"
+    },
+    {
+      "id": "ORD-20251205-001",
+      "customer_id": "2",
+      "delivery_date": "2025-12-10",
+      "shipping_unit": "GHTK",
+      "payment_method": "Chuyển khoản",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"Vietcombank\",\"account_number\":\"0071000123456\"}",
+      "prepaid_amount": 1000000,
+      "shipping_fee": 30000,
+      "has_vat": false,
+      "status": "Done",
+      "note": "Đơn sỉ — ưu tiên giao sớm",
+      "total_amount": 1995000,
+      "created_at": "2025-12-05T10:15:00Z"
+    },
+    {
+      "id": "ORD-20251220-001",
+      "customer_id": "5",
+      "delivery_date": "2025-12-24",
+      "shipping_unit": "GHN",
+      "payment_method": "Tiền mặt",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 25000,
+      "has_vat": true,
+      "status": "Done",
+      "note": "Quà Giáng Sinh — đóng gói cẩn thận",
+      "total_amount": 1209700,
+      "created_at": "2025-12-20T09:00:00Z"
+    },
+    {
+      "id": "ORD-20260108-001",
+      "customer_id": "4",
+      "delivery_date": "2026-01-13",
+      "shipping_unit": "J&T Express",
+      "payment_method": "Chuyển khoản",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"Techcombank\",\"account_number\":\"19035678901234\"}",
+      "prepaid_amount": 3000000,
+      "shipping_fee": 50000,
+      "has_vat": false,
+      "status": "Done",
+      "note": "Đơn sỉ tháng 1 — giao tận kho, liên hệ trước 1 ngày",
+      "total_amount": 5739000,
+      "created_at": "2026-01-08T11:00:00Z"
+    },
+    {
+      "id": "ORD-20260118-001",
+      "customer_id": "6",
+      "delivery_date": "2026-01-22",
+      "shipping_unit": "Ninja Van",
+      "payment_method": "Tiền mặt",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 35000,
+      "has_vat": false,
       "status": "Cancel",
       "note": "",
-      "cancel_reason": "Khách đổi ý, không muốn mua nữa",
-      "total_amount": 920000,
-      "created_at": "2026-03-08T10:45:00Z"
+      "cancel_reason": "Hàng tạm hết, khách dời sang tháng sau",
+      "total_amount": 1070000,
+      "created_at": "2026-01-18T15:30:00Z"
+    },
+    {
+      "id": "ORD-20260203-001",
+      "customer_id": "7",
+      "delivery_date": "2026-02-07",
+      "shipping_unit": "GHN",
+      "payment_method": "Thanh toán khi nhận hàng",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 20000,
+      "has_vat": false,
+      "status": "Done",
+      "note": "Giao tận nhà, có thể giao buổi chiều",
+      "total_amount": 799000,
+      "created_at": "2026-02-03T09:45:00Z"
+    },
+    {
+      "id": "ORD-20260215-001",
+      "customer_id": "8",
+      "delivery_date": "2026-02-20",
+      "shipping_unit": "GHTK",
+      "payment_method": "Chuyển khoản",
+      "debt_days": 0,
+      "bank_info": "{\"bank_name\":\"ACB\",\"account_number\":\"0902641448\"}",
+      "prepaid_amount": 1500000,
+      "shipping_fee": 40000,
+      "has_vat": true,
+      "status": "Processing",
+      "note": "Giao buổi sáng trước 10h",
+      "total_amount": 2952800,
+      "created_at": "2026-02-15T13:20:00Z"
+    },
+    {
+      "id": "ORD-20260225-001",
+      "customer_id": "9",
+      "delivery_date": "2026-03-01",
+      "shipping_unit": "VNPost",
+      "payment_method": "Tiền mặt",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 45000,
+      "has_vat": false,
+      "status": "Done",
+      "note": "Ship ra Hà Nội, đóng gói chắc chắn",
+      "total_amount": 632000,
+      "created_at": "2026-02-25T08:00:00Z"
+    },
+    {
+      "id": "ORD-20260305-001",
+      "customer_id": "5",
+      "delivery_date": "2026-03-10",
+      "shipping_unit": "GHN",
+      "payment_method": "Thanh toán khi nhận hàng",
+      "debt_days": 0,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 20000,
+      "has_vat": false,
+      "status": "Done",
+      "note": "",
+      "total_amount": 912000,
+      "created_at": "2026-03-05T10:30:00Z"
     },
     {
       "id": "ORD-20260312-001",
-      "customer_id": "5",
-      "delivery_date": "2026-03-15",
-      "shipping_unit": "VNPost",
-      "payment_method": "Thanh toán khi nhận hàng",
+      "customer_id": "10",
+      "delivery_date": "2026-03-20",
+      "shipping_unit": "J&T Express",
+      "payment_method": "Công nợ",
+      "debt_days": 30,
+      "bank_info": "",
+      "prepaid_amount": 0,
+      "shipping_fee": 60000,
+      "has_vat": false,
+      "status": "Processing",
+      "note": "Đơn sỉ Đà Nẵng — cho nợ 30 ngày",
+      "total_amount": 3490000,
+      "created_at": "2026-03-12T09:00:00Z"
+    },
+    {
+      "id": "ORD-20260318-001",
+      "customer_id": "11",
+      "delivery_date": "2026-03-22",
+      "shipping_unit": "GHN",
+      "payment_method": "Tiền mặt",
       "debt_days": 0,
       "bank_info": "",
       "prepaid_amount": 0,
       "shipping_fee": 15000,
       "has_vat": false,
-      "status": "Done",
-      "note": "Giao tận nhà",
-      "total_amount": 232000,
-      "created_at": "2026-03-12T08:20:00Z"
-    },
-    {
-      "customer_id": "zXzH-ra",
-      "delivery_date": "2026-03-16",
-      "shipping_unit": "",
-      "payment_method": "Chuyển khoản",
-      "debt_days": 0,
-      "bank_info": "{\"bank_name\":\"MB Bank\",\"account_number\":\"0902641448\"}",
-      "prepaid_amount": 0,
-      "shipping_fee": 0,
-      "has_vat": true,
-      "note": "",
-      "total_amount": 352000,
-      "id": "ORD-20260316-001",
-      "status": "Cancel",
-      "created_at": "2026-03-16T06:39:50.647Z",
-      "cancel_reason": "Nợ dai, khó đòi"
-    },
-    {
-      "customer_id": "Nrxxo7N",
-      "delivery_date": "2026-03-16",
-      "shipping_unit": "",
-      "payment_method": "COD",
-      "debt_days": 0,
-      "bank_info": "",
-      "prepaid_amount": 0,
-      "shipping_fee": 0,
-      "has_vat": false,
-      "note": "",
-      "total_amount": 85000,
-      "id": "ORD-20260316-002",
       "status": "New",
-      "created_at": "2026-03-16T06:54:44.014Z"
+      "note": "Gọi trước khi giao",
+      "total_amount": 311000,
+      "created_at": "2026-03-18T07:45:00Z"
     }
   ],
   "order_details": [
     {
       "id": "1",
-      "order_id": "ORD-20260210-001",
+      "order_id": "ORD-20251110-001",
       "product_id": "1",
       "quantity": 2,
       "unit_price": 320000
     },
     {
       "id": "2",
-      "order_id": "ORD-20260210-001",
-      "product_id": "3",
-      "quantity": 3,
-      "unit_price": 32000
-    },
-    {
-      "id": "3",
-      "order_id": "ORD-20260210-001",
-      "product_id": "6",
-      "quantity": 1,
-      "unit_price": 62000
-    },
-    {
-      "id": "4",
-      "order_id": "ORD-20260210-001",
+      "order_id": "ORD-20251110-001",
       "product_id": "2",
-      "quantity": 1,
+      "quantity": 3,
       "unit_price": 85000
     },
     {
+      "id": "3",
+      "order_id": "ORD-20251110-001",
+      "product_id": "3",
+      "quantity": 4,
+      "unit_price": 32000
+    },
+    {
+      "id": "4",
+      "order_id": "ORD-20251125-001",
+      "product_id": "6",
+      "quantity": 3,
+      "unit_price": 62000
+    },
+    {
       "id": "5",
-      "order_id": "ORD-20260225-001",
-      "product_id": "5",
-      "quantity": 2,
-      "unit_price": 345000
+      "order_id": "ORD-20251125-001",
+      "product_id": "9",
+      "quantity": 5,
+      "unit_price": 22000
     },
     {
       "id": "6",
-      "order_id": "ORD-20260225-001",
+      "order_id": "ORD-20251125-001",
+      "product_id": "12",
+      "quantity": 4,
+      "unit_price": 28000
+    },
+    {
+      "id": "7",
+      "order_id": "ORD-20251125-001",
+      "product_id": "11",
+      "quantity": 3,
+      "unit_price": 18000
+    },
+    {
+      "id": "8",
+      "order_id": "ORD-20251205-001",
+      "product_id": "5",
+      "quantity": 4,
+      "unit_price": 345000
+    },
+    {
+      "id": "9",
+      "order_id": "ORD-20251205-001",
+      "product_id": "14",
+      "quantity": 3,
+      "unit_price": 195000
+    },
+    {
+      "id": "10",
+      "order_id": "ORD-20251220-001",
+      "product_id": "4",
+      "quantity": 2,
+      "unit_price": 290000
+    },
+    {
+      "id": "11",
+      "order_id": "ORD-20251220-001",
+      "product_id": "10",
+      "quantity": 3,
+      "unit_price": 89000
+    },
+    {
+      "id": "12",
+      "order_id": "ORD-20251220-001",
+      "product_id": "15",
+      "quantity": 2,
+      "unit_price": 115000
+    },
+    {
+      "id": "13",
+      "order_id": "ORD-20260108-001",
+      "product_id": "1",
+      "quantity": 10,
+      "unit_price": 310000
+    },
+    {
+      "id": "14",
+      "order_id": "ORD-20260108-001",
+      "product_id": "2",
+      "quantity": 15,
+      "unit_price": 83000
+    },
+    {
+      "id": "15",
+      "order_id": "ORD-20260108-001",
+      "product_id": "6",
+      "quantity": 10,
+      "unit_price": 60000
+    },
+    {
+      "id": "16",
+      "order_id": "ORD-20260108-001",
+      "product_id": "7",
+      "quantity": 8,
+      "unit_price": 93000
+    },
+    {
+      "id": "17",
+      "order_id": "ORD-20260118-001",
+      "product_id": "5",
+      "quantity": 3,
+      "unit_price": 345000
+    },
+    {
+      "id": "18",
+      "order_id": "ORD-20260203-001",
+      "product_id": "13",
+      "quantity": 3,
+      "unit_price": 78000
+    },
+    {
+      "id": "19",
+      "order_id": "ORD-20260203-001",
+      "product_id": "18",
+      "quantity": 5,
+      "unit_price": 35000
+    },
+    {
+      "id": "20",
+      "order_id": "ORD-20260203-001",
+      "product_id": "8",
+      "quantity": 4,
+      "unit_price": 45000
+    },
+    {
+      "id": "21",
+      "order_id": "ORD-20260203-001",
+      "product_id": "7",
+      "quantity": 2,
+      "unit_price": 95000
+    },
+    {
+      "id": "22",
+      "order_id": "ORD-20260215-001",
+      "product_id": "1",
+      "quantity": 5,
+      "unit_price": 320000
+    },
+    {
+      "id": "23",
+      "order_id": "ORD-20260215-001",
       "product_id": "4",
       "quantity": 3,
       "unit_price": 290000
     },
     {
-      "id": "7",
-      "order_id": "ORD-20260225-001",
-      "product_id": "14",
-      "quantity": 1,
-      "unit_price": 195000
-    },
-    {
-      "id": "8",
-      "order_id": "ORD-20260225-001",
+      "id": "24",
+      "order_id": "ORD-20260215-001",
       "product_id": "10",
       "quantity": 2,
       "unit_price": 89000
     },
     {
-      "id": "9",
-      "order_id": "ORD-20260305-001",
-      "product_id": "12",
+      "id": "25",
+      "order_id": "ORD-20260225-001",
+      "product_id": "2",
       "quantity": 5,
-      "unit_price": 28000
+      "unit_price": 85000
     },
     {
-      "id": "10",
-      "order_id": "ORD-20260305-001",
-      "product_id": "7",
+      "id": "26",
+      "order_id": "ORD-20260225-001",
+      "product_id": "3",
       "quantity": 3,
-      "unit_price": 95000
+      "unit_price": 32000
     },
     {
-      "id": "11",
-      "order_id": "ORD-20260305-001",
-      "product_id": "13",
-      "quantity": 4,
-      "unit_price": 78000
-    },
-    {
-      "id": "12",
-      "order_id": "ORD-20260305-001",
-      "product_id": "8",
-      "quantity": 2,
-      "unit_price": 45000
-    },
-    {
-      "id": "13",
-      "order_id": "ORD-20260308-001",
-      "product_id": "1",
-      "quantity": 1,
-      "unit_price": 320000
-    },
-    {
-      "id": "14",
-      "order_id": "ORD-20260308-001",
-      "product_id": "4",
-      "quantity": 2,
-      "unit_price": 290000
-    },
-    {
-      "id": "15",
-      "order_id": "ORD-20260312-001",
+      "id": "27",
+      "order_id": "ORD-20260225-001",
       "product_id": "9",
       "quantity": 3,
       "unit_price": 22000
     },
     {
-      "id": "16",
-      "order_id": "ORD-20260312-001",
-      "product_id": "11",
-      "quantity": 2,
-      "unit_price": 18000
-    },
-    {
-      "id": "17",
-      "order_id": "ORD-20260312-001",
+      "id": "28",
+      "order_id": "ORD-20260305-001",
       "product_id": "15",
-      "quantity": 1,
+      "quantity": 3,
       "unit_price": 115000
     },
     {
-      "order_id": "ORD-20260316-001",
-      "product_id": "1",
-      "quantity": 1,
-      "unit_price": 320000,
-      "id": "rYx4KgC"
+      "id": "29",
+      "order_id": "ORD-20260305-001",
+      "product_id": "14",
+      "quantity": 2,
+      "unit_price": 195000
     },
     {
-      "order_id": "ORD-20260316-002",
-      "product_id": "2",
-      "quantity": 1,
-      "unit_price": 85000,
-      "id": "eqMTgFD"
+      "id": "30",
+      "order_id": "ORD-20260305-001",
+      "product_id": "17",
+      "quantity": 4,
+      "unit_price": 8000
+    },
+    {
+      "id": "31",
+      "order_id": "ORD-20260305-001",
+      "product_id": "16",
+      "quantity": 5,
+      "unit_price": 25000
+    },
+    {
+      "id": "32",
+      "order_id": "ORD-20260312-001",
+      "product_id": "5",
+      "quantity": 6,
+      "unit_price": 345000
+    },
+    {
+      "id": "33",
+      "order_id": "ORD-20260312-001",
+      "product_id": "14",
+      "quantity": 4,
+      "unit_price": 195000
+    },
+    {
+      "id": "34",
+      "order_id": "ORD-20260312-001",
+      "product_id": "4",
+      "quantity": 2,
+      "unit_price": 290000
+    },
+    {
+      "id": "35",
+      "order_id": "ORD-20260318-001",
+      "product_id": "6",
+      "quantity": 2,
+      "unit_price": 62000
+    },
+    {
+      "id": "36",
+      "order_id": "ORD-20260318-001",
+      "product_id": "12",
+      "quantity": 3,
+      "unit_price": 28000
+    },
+    {
+      "id": "37",
+      "order_id": "ORD-20260318-001",
+      "product_id": "11",
+      "quantity": 4,
+      "unit_price": 18000
+    },
+    {
+      "id": "38",
+      "order_id": "ORD-20260318-001",
+      "product_id": "17",
+      "quantity": 2,
+      "unit_price": 8000
     }
   ],
-  "$schema": "./node_modules/json-server/schema.json"
+  "payment_history": [
+    {
+      "id": "ph-001",
+      "order_id": "ORD-20251110-001",
+      "amount_paid": 1048000,
+      "date": "2025-11-14T11:30:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    },
+    {
+      "id": "ph-002",
+      "order_id": "ORD-20251125-001",
+      "amount_paid": 482000,
+      "date": "2025-11-28T15:00:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    },
+    {
+      "id": "ph-003",
+      "order_id": "ORD-20251205-001",
+      "amount_paid": 1000000,
+      "date": "2025-12-05T10:15:00Z",
+      "note": "Đặt cọc khi tạo đơn"
+    },
+    {
+      "id": "ph-004",
+      "order_id": "ORD-20251205-001",
+      "amount_paid": 995000,
+      "date": "2025-12-10T14:00:00Z",
+      "note": "Thanh toán đợt 2 — tất toán"
+    },
+    {
+      "id": "ph-005",
+      "order_id": "ORD-20251220-001",
+      "amount_paid": 1209700,
+      "date": "2025-12-24T10:00:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    },
+    {
+      "id": "ph-006",
+      "order_id": "ORD-20260108-001",
+      "amount_paid": 3000000,
+      "date": "2026-01-08T11:00:00Z",
+      "note": "Đặt cọc khi tạo đơn"
+    },
+    {
+      "id": "ph-007",
+      "order_id": "ORD-20260108-001",
+      "amount_paid": 2739000,
+      "date": "2026-01-13T16:30:00Z",
+      "note": "Thanh toán phần còn lại — tất toán"
+    },
+    {
+      "id": "ph-008",
+      "order_id": "ORD-20260203-001",
+      "amount_paid": 799000,
+      "date": "2026-02-07T17:00:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    },
+    {
+      "id": "ph-009",
+      "order_id": "ORD-20260215-001",
+      "amount_paid": 1500000,
+      "date": "2026-02-15T13:20:00Z",
+      "note": "Đặt cọc khi tạo đơn"
+    },
+    {
+      "id": "ph-010",
+      "order_id": "ORD-20260225-001",
+      "amount_paid": 632000,
+      "date": "2026-03-01T10:00:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    },
+    {
+      "id": "ph-011",
+      "order_id": "ORD-20260305-001",
+      "amount_paid": 912000,
+      "date": "2026-03-10T11:00:00Z",
+      "note": "Thanh toán khi nhận hàng"
+    }
+  ]
 }

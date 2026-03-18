@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { orderService } from '../services/orderService';
 import { customerService } from '../services/customerService';
+import { paymentService } from '../services/paymentService';
 import { useInventorySync } from '../hooks/useInventorySync';
 import Allow from './Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
@@ -11,7 +12,7 @@ import CancelReasonModal from './CancelReasonModal';
 import Pagination from './Pagination';
 import DataTable from './DataTable';
 import SearchFilter from './SearchFilter';
-import { STATUS_CONFIG, PAGE_SIZE, PAYMENT_LABEL } from '../constants';
+import { STATUS_CONFIG, PAGE_SIZE } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
 
 export default function OrderList({ refreshKey, onRefresh }) {
@@ -22,6 +23,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
+    const [paymentFilter, setPaymentFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [page, setPage] = useState(1);
     const [deleteTarget, setDeleteTarget] = useState(null);
@@ -29,13 +31,23 @@ export default function OrderList({ refreshKey, onRefresh }) {
     const [confirmingStatus, setConfirmingStatus] = useState(false);
     const [statusTarget, setStatusTarget] = useState(null);
     const [cancelTarget, setCancelTarget] = useState(null);
+    const [paymentSums, setPaymentSums] = useState({});
 
     useEffect(() => {
         setLoading(true);
         const load = async () => {
-            const [o, c] = await Promise.all([orderService.getAll(), customerService.getAll()]);
+            const [o, c, ph] = await Promise.all([
+                orderService.getAll(),
+                customerService.getAll(),
+                paymentService.getAll(),
+            ]);
             setOrders([...o].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
             setCustomers(c);
+            const sums = {};
+            ph.forEach((p) => {
+                sums[p.order_id] = (sums[p.order_id] || 0) + Number(p.amount_paid);
+            });
+            setPaymentSums(sums);
         };
         load().finally(() => setLoading(false));
     }, [refreshKey]);
@@ -59,8 +71,18 @@ export default function OrderList({ refreshKey, onRefresh }) {
         }
         if (statusFilter) result = result.filter((o) => o.status === statusFilter);
         if (dateFilter) result = result.filter((o) => o.delivery_date === dateFilter);
+        if (paymentFilter) {
+            result = result.filter((o) => {
+                const paid = paymentSums[o.id] || 0;
+                const total = Number(o.total_amount);
+                if (paymentFilter === 'paid') return paid >= total && total > 0;
+                if (paymentFilter === 'partial') return paid > 0 && paid < total;
+                if (paymentFilter === 'unpaid') return paid <= 0;
+                return true;
+            });
+        }
         return result;
-    }, [orders, search, statusFilter, dateFilter, customerMap]);
+    }, [orders, search, statusFilter, dateFilter, paymentFilter, customerMap, paymentSums]);
 
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
     const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -114,6 +136,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 await restoreOrderInventory(deleteTarget.id);
             }
             await orderService.deleteOrderDetails(deleteTarget.id);
+            await paymentService.deleteByOrderId(deleteTarget.id);
             await orderService.remove(deleteTarget.id);
             setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
             toast.success('Đã xóa đơn hàng.');
@@ -136,8 +159,26 @@ export default function OrderList({ refreshKey, onRefresh }) {
             render: (o) => <span className="text-gray-300">{customerMap[o.customer_id]?.full_name || o.customer_id}</span>,
         },
         {
-            header: 'Thanh toán', key: 'payment_method',
-            render: (o) => <span className="text-gray-400">{PAYMENT_LABEL[o.payment_method] || o.payment_method}</span>,
+            header: 'Thanh toán', key: 'payment_status',
+            render: (o) => {
+                const paid = paymentSums[o.id] || 0;
+                const total = Number(o.total_amount);
+                const isPaid = paid >= total && total > 0;
+                const isPartial = paid > 0 && paid < total;
+                return (
+                    <div className="space-y-0.5">
+                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${isPaid ? 'bg-emerald-500/15 text-emerald-400'
+                            : isPartial ? 'bg-amber-500/15 text-amber-400'
+                                : 'bg-red-500/15 text-red-400'
+                            }`}>
+                            {isPaid ? 'Đã thanh toán' : isPartial ? 'Thanh toán một phần' : 'Chưa thanh toán'}
+                        </span>
+                        {paid > 0 && paid < total && (
+                            <p className="text-sm text-gray-500">{fmt(paid)} VNĐ</p>
+                        )}
+                    </div>
+                );
+            },
         },
         {
             header: 'Tổng tiền', key: 'total_amount',
@@ -205,6 +246,16 @@ export default function OrderList({ refreshKey, onRefresh }) {
                         options: [{ value: '', label: 'Tất cả trạng thái' }, ...Object.entries(STATUS_CONFIG).map(([k, v]) => ({ value: k, label: v.label }))],
                     },
                     {
+                        value: paymentFilter,
+                        onChange: (v) => { setPaymentFilter(v); setPage(1); },
+                        options: [
+                            { value: '', label: 'Tất cả thanh toán' },
+                            { value: 'unpaid', label: 'Chưa thanh toán' },
+                            { value: 'partial', label: 'Thanh toán một phần' },
+                            { value: 'paid', label: 'Đã thanh toán' },
+                        ],
+                    },
+                    {
                         type: 'date',
                         label: 'Lọc theo ngày giao',
                         value: dateFilter,
@@ -242,9 +293,10 @@ export default function OrderList({ refreshKey, onRefresh }) {
                 onConfirm={confirmStatusChange}
                 title={statusTarget?.title || ''}
                 message={statusTarget?.message || ''}
-                confirmText={statusTarget?.confirmText || 'Confirm'}
+                confirmText={statusTarget?.confirmText || 'Xác nhận'}
                 variant={statusTarget?.variant || 'confirm'}
                 deleting={confirmingStatus}
+                loadingText="Đang lưu…"
             />
 
             {/* ── Cancel with Reason ──────────────────────────── */}

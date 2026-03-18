@@ -4,11 +4,14 @@ import toast from 'react-hot-toast';
 import { orderService } from '../services/orderService';
 import { customerService } from '../services/customerService';
 import { productService } from '../services/productService';
+import { paymentService } from '../services/paymentService';
 import { useInventorySync } from '../hooks/useInventorySync';
 import Allow from '../components/Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 import { ConfirmModal } from '../components/Modal';
 import CancelReasonModal from '../components/CancelReasonModal';
+import PaymentHistory from '../components/PaymentHistory';
+import AddPaymentModal from '../components/AddPaymentModal';
 import { STATUS_CONFIG, VAT_RATE, PAYMENT_LABEL } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
 import { printInvoice } from '../utils/printInvoice';
@@ -28,6 +31,8 @@ export default function OrderDetailPage() {
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [confirmingStatus, setConfirmingStatus] = useState(false);
     const [deleting, setDeleting] = useState(false);
+    const [payments, setPayments] = useState([]);
+    const [showAddPayment, setShowAddPayment] = useState(false);
     const { restoreOrderInventory } = useInventorySync();
 
     useEffect(() => {
@@ -45,6 +50,8 @@ export default function OrderDetailPage() {
             const pMap = {};
             products.forEach((p) => (pMap[p.id] = p));
             setProductMap(pMap);
+            const ph = await paymentService.getByOrderId(id);
+            setPayments(ph);
             setLoading(false);
         };
         load().catch(() => setLoading(false));
@@ -90,6 +97,7 @@ export default function OrderDetailPage() {
                 await restoreOrderInventory(deleteTarget.id);
             }
             await orderService.deleteOrderDetails(deleteTarget.id);
+            await paymentService.deleteByOrderId(deleteTarget.id);
             await orderService.remove(deleteTarget.id);
             toast.success('Đã xóa đơn hàng.');
             navigate('/orders');
@@ -101,9 +109,16 @@ export default function OrderDetailPage() {
         }
     };
 
+    const handleAddPayment = async (entry) => {
+        const created = await paymentService.create({ ...entry, order_id: order.id });
+        setPayments((prev) => [...prev, created]);
+        setShowAddPayment(false);
+        toast.success('Đã thêm thanh toán.');
+    };
+
     if (loading) {
         return (
-            <div className="space-y-6 max-w-5xl animate-pulse">
+            <div className="space-y-6 animate-pulse">
                 <div className="flex items-center gap-3">
                     <div className="h-6 w-14 bg-[#111827] rounded border border-gray-700/50" />
                     <div className="h-8 w-40 bg-[#111827] rounded-xl border border-gray-700/50" />
@@ -134,7 +149,8 @@ export default function OrderDetailPage() {
 
     const subtotal = details.reduce((sum, d) => sum + Number(d.unit_price) * Number(d.quantity), 0);
     const vatAmount = order.has_vat ? subtotal * VAT_RATE : 0;
-    const amountDue = Number(order.total_amount) - Number(order.prepaid_amount || 0);
+    const paidSum = payments.reduce((s, p) => s + Number(p.amount_paid), 0);
+    const amountDue = Number(order.total_amount) - paidSum;
 
     let bankInfo = null;
     if (order.bank_info) {
@@ -142,8 +158,7 @@ export default function OrderDetailPage() {
     }
 
     return (
-        <div className="space-y-6 max-w-5xl">
-
+        <div className='space-y-6'>
             {/* ── Header ───────────────────────────────────────── */}
             <div className="flex flex-wrap items-center gap-3">
                 <button
@@ -190,7 +205,7 @@ export default function OrderDetailPage() {
                         >Hủy</button>
                     )}
                     <button
-                        onClick={() => printInvoice({ order, details, customer, productMap })}
+                        onClick={() => printInvoice({ order, details, customer, productMap, payments })}
                         className="ml-auto flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-sm font-medium bg-gray-700/50 text-gray-300 hover:bg-gray-600/50 border border-gray-600/30 transition-colors"
                     >
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -201,215 +216,238 @@ export default function OrderDetailPage() {
                 </div>
             </Allow>
 
-            {/* ── Info Cards ───────────────────────────────────── */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* ── Main Info ─────────────────────────────────────── */}
+            <div className="flex flex-wrap gap-6">
+                <div className="space-y-6 flex-3 w-[66%]">
+                    {/* ── Info Cards ───────────────────────────────────── */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-                {/* Customer */}
-                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 space-y-2">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Khách hàng</h2>
-                    {customer ? (
-                        <>
-                            <p className="text-white font-semibold">{customer.full_name}</p>
-                            <p className="text-sm text-gray-400">{customer.phone}</p>
-                            {customer.address && <p className="text-sm text-gray-500">{customer.address}</p>}
-                        </>
-                    ) : (
-                        <p className="text-gray-400 text-sm">{order.customer_id}</p>
-                    )}
-                </div>
+                        {/* Customer */}
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 space-y-2">
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Khách hàng</h2>
+                            {customer ? (
+                                <>
+                                    <p className="text-white font-semibold">{customer.full_name}</p>
+                                    <p className="text-sm text-gray-400">{customer.phone}</p>
+                                    {customer.address && <p className="text-sm text-gray-500">{customer.address}</p>}
+                                </>
+                            ) : (
+                                <p className="text-gray-400 text-sm">{order.customer_id}</p>
+                            )}
+                        </div>
 
-                {/* Shipping */}
-                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Vận chuyển</h2>
-                    <dl className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <dt className="text-gray-500">Đơn vị vận chuyển</dt>
-                            <dd className="text-gray-300">{order.shipping_unit || '—'}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                            <dt className="text-gray-500">Ngày giao hàng</dt>
-                            <dd className="text-gray-300">{order.delivery_date || '—'}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                            <dt className="text-gray-500">Ngày tạo</dt>
-                            <dd className="text-gray-300 text-xs">
-                                {fmtDateTime(order.created_at)}
-                            </dd>
-                        </div>
-                    </dl>
-                </div>
-
-                {/* Payment */}
-                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
-                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Thanh toán</h2>
-                    <dl className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <dt className="text-gray-500">Phương thức</dt>
-                            <dd className="text-gray-300 font-medium">{PAYMENT_LABEL[order.payment_method] || order.payment_method}</dd>
-                        </div>
-                        {(order.payment_method === 'Credit' || order.payment_method === 'Công nợ') && (
-                            <div className="flex justify-between">
-                                <dt className="text-gray-500">Số ngày nợ</dt>
-                                <dd className="text-gray-300">{order.debt_days} ngày</dd>
-                            </div>
-                        )}
-                        {(order.payment_method === 'Transfer' || order.payment_method === 'Chuyển khoản') && bankInfo && (
-                            <>
+                        {/* Shipping */}
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Vận chuyển</h2>
+                            <dl className="space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-500">Ngân hàng</dt>
-                                    <dd className="text-gray-300">{bankInfo.bank_name}</dd>
+                                    <dt className="text-gray-500">Đơn vị vận chuyển</dt>
+                                    <dd className="text-gray-300">{order.shipping_unit || '—'}</dd>
                                 </div>
                                 <div className="flex justify-between">
-                                    <dt className="text-gray-500">Số tài khoản</dt>
-                                    <dd className="text-gray-300 font-mono text-xs">{bankInfo.account_number}</dd>
+                                    <dt className="text-gray-500">Ngày giao hàng</dt>
+                                    <dd className="text-gray-300">{order.delivery_date || '—'}</dd>
                                 </div>
-                            </>
-                        )}
-                        <div className="flex justify-between">
-                            <dt className="text-gray-500">VAT</dt>
-                            <dd className={order.has_vat ? 'text-emerald-400' : 'text-gray-500'}>
-                                {order.has_vat ? 'Có (10%)' : 'Không'}
-                            </dd>
+                                <div className="flex justify-between">
+                                    <dt className="text-gray-500">Ngày tạo</dt>
+                                    <dd className="text-gray-300 text-xs">
+                                        {fmtDateTime(order.created_at)}
+                                    </dd>
+                                </div>
+                            </dl>
                         </div>
-                    </dl>
-                </div>
-            </div>
 
-            {/* ── Order Items ─────────────────────────────────── */}
-            <div className="bg-[#111827] rounded-2xl border border-gray-700/50 overflow-hidden">
-                <div className="px-5 py-4 border-b border-gray-700/50">
-                    <h2 className="text-sm font-semibold text-gray-300">
-                        Sản phẩm
-                        <span className="ml-2 text-xs text-gray-500 font-normal">({details.length} dòng)</span>
-                    </h2>
-                </div>
-                {details.length === 0 ? (
-                    <p className="text-gray-500 text-sm px-5 py-8 text-center">Không có sản phẩm nào.</p>
-                ) : (
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="bg-[#1a2035] text-xs text-gray-500 uppercase tracking-wider">
-                                <th className="text-left px-5 py-3">Sản phẩm</th>
-                                <th className="text-left px-5 py-3">SKU</th>
-                                <th className="text-right px-5 py-3">Đơn giá</th>
-                                <th className="text-right px-5 py-3">SL</th>
-                                <th className="text-right px-5 py-3">Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {details.map((d) => {
-                                const prod = productMap[d.product_id];
-                                return (
-                                    <tr key={d.id} className="border-t border-gray-800/50 hover:bg-white/[0.015] transition-colors">
-                                        <td className="px-5 py-3.5 text-gray-200">{prod?.name || `Product #${d.product_id}`}</td>
-                                        <td className="px-5 py-3.5 text-gray-500 font-mono text-xs">{prod?.sku || '—'}</td>
-                                        <td className="px-5 py-3.5 text-right text-gray-400">{fmt(d.unit_price)} VNĐ</td>
-                                        <td className="px-5 py-3.5 text-right text-gray-400">{d.quantity}</td>
-                                        <td className="px-5 py-3.5 text-right text-white font-medium">
-                                            {fmt(Number(d.unit_price) * Number(d.quantity))} VNĐ
-                                        </td>
+                        {/* Payment */}
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5">
+                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Thanh toán</h2>
+                            <dl className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <dt className="text-gray-500">Phương thức</dt>
+                                    <dd className="text-gray-300 font-medium">{PAYMENT_LABEL[order.payment_method] || order.payment_method}</dd>
+                                </div>
+                                {(order.payment_method === 'Credit' || order.payment_method === 'Công nợ') && (
+                                    <div className="flex justify-between">
+                                        <dt className="text-gray-500">Số ngày nợ</dt>
+                                        <dd className="text-gray-300">{order.debt_days} ngày</dd>
+                                    </div>
+                                )}
+                                {(order.payment_method === 'Transfer' || order.payment_method === 'Chuyển khoản') && bankInfo && (
+                                    <>
+                                        <div className="flex justify-between">
+                                            <dt className="text-gray-500">Ngân hàng</dt>
+                                            <dd className="text-gray-300">{bankInfo.bank_name}</dd>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <dt className="text-gray-500">Số tài khoản</dt>
+                                            <dd className="text-gray-300 font-mono text-xs">{bankInfo.account_number}</dd>
+                                        </div>
+                                    </>
+                                )}
+                                <div className="flex justify-between">
+                                    <dt className="text-gray-500">VAT</dt>
+                                    <dd className={order.has_vat ? 'text-emerald-400' : 'text-gray-500'}>
+                                        {order.has_vat ? 'Có (10%)' : 'Không'}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+                    {/* ── Order Items ─────────────────────────────────── */}
+                    <div className="bg-[#111827] rounded-2xl border border-gray-700/50 overflow-hidden">
+                        <div className="px-5 py-4 border-b border-gray-700/50">
+                            <h2 className="text-sm font-semibold text-gray-300">
+                                Sản phẩm
+                                <span className="ml-2 text-xs text-gray-500 font-normal">({details.length} dòng)</span>
+                            </h2>
+                        </div>
+                        {details.length === 0 ? (
+                            <p className="text-gray-500 text-sm px-5 py-8 text-center">Không có sản phẩm nào.</p>
+                        ) : (
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="bg-[#1a2035] text-xs text-gray-500 uppercase tracking-wider">
+                                        <th className="text-left px-5 py-3">Sản phẩm</th>
+                                        <th className="text-left px-5 py-3">SKU</th>
+                                        <th className="text-right px-5 py-3">Đơn giá</th>
+                                        <th className="text-right px-5 py-3">SL</th>
+                                        <th className="text-right px-5 py-3">Thành tiền</th>
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                )}
-            </div>
+                                </thead>
+                                <tbody>
+                                    {details.map((d) => {
+                                        const prod = productMap[d.product_id];
+                                        return (
+                                            <tr key={d.id} className="border-t border-gray-800/50 hover:bg-white/[0.015] transition-colors">
+                                                <td className="px-5 py-3.5 text-gray-200">{prod?.name || `Product #${d.product_id}`}</td>
+                                                <td className="px-5 py-3.5 text-gray-500 font-mono text-xs">{prod?.sku || '—'}</td>
+                                                <td className="px-5 py-3.5 text-right text-gray-400">{fmt(d.unit_price)} VNĐ</td>
+                                                <td className="px-5 py-3.5 text-right text-gray-400">{d.quantity}</td>
+                                                <td className="px-5 py-3.5 text-right text-white font-medium">
+                                                    {fmt(Number(d.unit_price) * Number(d.quantity))} VNĐ
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
 
-            {/* ── Summary & Note ───────────────────────────────── */}
-            <div className="flex flex-wrap gap-4 items-start justify-between">
-                <div className="flex flex-col gap-4 w-full lg:w-auto flex-1">
-                    {/* Note */}
-                    {order.note ? (
-                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
-                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Ghi chú</h2>
-                            <p className="text-gray-300 text-sm leading-relaxed">{order.note}</p>
+                    {/* ── Summary & Note ───────────────────────────────── */}
+                    <div className="flex flex-wrap gap-4 items-start justify-between">
+                        <div className="flex flex-col gap-4 w-full lg:w-auto flex-1">
+                            {/* Note */}
+                            {order.note ? (
+                                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
+                                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Ghi chú</h2>
+                                    <p className="text-gray-300 text-sm leading-relaxed">{order.note}</p>
+                                </div>
+                            ) : <div />}
+                            {/* Cancel Reason */}
+                            {order.cancel_reason ? (
+                                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
+                                    <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Lý do hủy</h2>
+                                    <p className="text-gray-300 text-sm leading-relaxed">{order.cancel_reason}</p>
+                                </div>
+                            ) : <div />}
                         </div>
-                    ) : <div />}
-                    {/* Cancel Reason */}
-                    {order.cancel_reason ? (
-                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 flex-1 min-w-48">
-                            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Lý do hủy</h2>
-                            <p className="text-gray-300 text-sm leading-relaxed">{order.cancel_reason}</p>
-                        </div>
-                    ) : <div />}
-                </div>
 
-                {/* Totals */}
-                <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 w-72 space-y-2 text-sm">
-                    <div className="flex justify-between text-gray-400">
-                        <span>Tạm tính</span>
-                        <span>{fmt(subtotal)} VNĐ</span>
-                    </div>
-                    {order.has_vat && (
-                        <div className="flex justify-between text-emerald-400">
-                            <span>VAT (10%)</span>
-                            <span>+{fmt(vatAmount)} VNĐ</span>
-                        </div>
-                    )}
-                    <div className="flex justify-between text-gray-400">
-                        <span>Phí vận chuyển</span>
-                        <span>+{fmt(order.shipping_fee || 0)} VNĐ</span>
-                    </div>
-                    <hr className="border-gray-700/50" />
-                    <div className="flex justify-between text-white font-semibold text-base">
-                        <span>Tổng cộng</span>
-                        <span>{fmt(order.total_amount)} VNĐ</span>
-                    </div>
-                    {Number(order.prepaid_amount) > 0 && (
-                        <>
-                            <div className="flex justify-between text-blue-400">
-                                <span>Trả trước</span>
-                                <span>−{fmt(order.prepaid_amount)} VNĐ</span>
+                        {/* Totals */}
+                        <div className="bg-[#111827] rounded-2xl border border-gray-700/50 p-5 w-72 space-y-2 text-sm">
+                            <div className="flex justify-between text-gray-400">
+                                <span>Tạm tính</span>
+                                <span>{fmt(subtotal)} VNĐ</span>
                             </div>
-                            <div className="flex justify-between text-orange-400 font-semibold">
-                                <span>Còn lại</span>
-                                <span>{fmt(amountDue)} VNĐ</span>
+                            {order.has_vat && (
+                                <div className="flex justify-between text-emerald-400">
+                                    <span>VAT (10%)</span>
+                                    <span>+{fmt(vatAmount)} VNĐ</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between text-gray-400">
+                                <span>Phí vận chuyển</span>
+                                <span>+{fmt(order.shipping_fee || 0)} VNĐ</span>
                             </div>
-                        </>
-                    )}
+                            <hr className="border-gray-700/50" />
+                            <div className="flex justify-between text-white font-semibold text-base">
+                                <span>Tổng cộng</span>
+                                <span>{fmt(order.total_amount)} VNĐ</span>
+                            </div>
+                            {paidSum > 0 && (
+                                <>
+                                    <div className="flex justify-between text-blue-400">
+                                        <span>Đã thanh toán</span>
+                                        <span>−{fmt(paidSum)} VNĐ</span>
+                                    </div>
+                                    <div className="flex justify-between text-orange-400 font-semibold">
+                                        <span>Còn lại</span>
+                                        <span>{fmt(Math.max(0, amountDue))} VNĐ</span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* ── Status Confirm (Process / Complete) ── */}
+                    <ConfirmModal
+                        open={!!statusTarget}
+                        onClose={() => setStatusTarget(null)}
+                        onConfirm={confirmStatusChange}
+                        title={statusTarget?.title || ''}
+                        message={statusTarget?.message || ''}
+                        confirmText={statusTarget?.confirmText || 'Xác nhận'}
+                        variant={statusTarget?.variant || 'confirm'} deleting={confirmingStatus} loadingText="Đang lưu…" />
+
+                    {/* ── Cancel with Reason ─────────────────── */}
+                    <CancelReasonModal
+                        open={!!cancelTarget}
+                        onClose={() => setCancelTarget(null)}
+                        onConfirm={handleCancelConfirm}
+                        orderId={cancelTarget?.id}
+                    />
+
+                    {/* ── Delete Confirm ───────────────────────────────── */}
+                    <ConfirmModal
+                        open={!!deleteTarget}
+                        onClose={() => setDeleteTarget(null)}
+                        onConfirm={confirmDelete}
+                        title="Xóa đơn hàng"
+                        message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
+                        confirmText="Xóa"
+                        variant="danger" deleting={deleting} />
+
+                    {/* ── Add Payment ──────────────────────────────────── */}
+                    <AddPaymentModal
+                        open={showAddPayment}
+                        onClose={() => setShowAddPayment(false)}
+                        onConfirm={handleAddPayment}
+                        remainingBalance={Math.max(0, Number(order.total_amount) - paidSum)}
+                    />
+                </div>
+
+                <div className="space-y-6 flex-1 w-[34%]">
+                    {/* ── Payment History ──────────────────────────────── */}
+                    <PaymentHistory
+                        payments={payments}
+                        totalAmount={Number(order.total_amount)}
+                        onAddPayment={() => setShowAddPayment(true)}
+                        canAdd={order.status !== 'Cancel'}
+                    />
+
+                    {/* ── Delete ───────────────────────────────────────── */}
+                    <Allow permission={PERMISSIONS.ORDERS_DELETE}>
+                        <div className="text-right">
+                            <button
+                                onClick={() => setDeleteTarget(order)}
+                                className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
+                            >
+                                Xoá đơn hàng
+                            </button>
+                        </div>
+                    </Allow>
                 </div>
             </div>
-
-            {/* ── Delete ───────────────────────────────────────── */}
-            <Allow permission={PERMISSIONS.ORDERS_DELETE}>
-                <div className="pt-2 border-t border-gray-800/60">
-                    <button
-                        onClick={() => setDeleteTarget(order)}
-                        className="px-4 py-1.5 rounded-xl text-sm font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
-                    >
-                        Xoá đơn hàng
-                    </button>
-                </div>
-            </Allow>
-
-            {/* ── Status Confirm (Process / Complete) ── */}
-            <ConfirmModal
-                open={!!statusTarget}
-                onClose={() => setStatusTarget(null)}
-                onConfirm={confirmStatusChange}
-                title={statusTarget?.title || ''}
-                message={statusTarget?.message || ''}
-                confirmText={statusTarget?.confirmText || 'Xác nhận'}
-                variant={statusTarget?.variant || 'confirm'} deleting={confirmingStatus} />
-
-            {/* ── Cancel with Reason ─────────────────── */}
-            <CancelReasonModal
-                open={!!cancelTarget}
-                onClose={() => setCancelTarget(null)}
-                onConfirm={handleCancelConfirm}
-                orderId={cancelTarget?.id}
-            />
-
-            {/* ── Delete Confirm ───────────────────────────────── */}
-            <ConfirmModal
-                open={!!deleteTarget}
-                onClose={() => setDeleteTarget(null)}
-                onConfirm={confirmDelete}
-                title="Xóa đơn hàng"
-                message={`Bạn có chắc chắn muốn xóa đơn "${deleteTarget?.id}"? Thao tác này không thể hoàn tác.`}
-                confirmText="Xóa"
-                variant="danger" deleting={deleting} />
         </div>
     );
 }

@@ -27,6 +27,7 @@ export default function OrderSummaryBar({ refreshKey }) {
                 <SkeletonChip />
                 <SkeletonChip />
                 <SkeletonChip />
+                <SkeletonChip />
             </div>
         );
     }
@@ -35,9 +36,10 @@ export default function OrderSummaryBar({ refreshKey }) {
 
     return (
         <div className="space-y-2.5">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <StatChip label="Doanh thu (trừ hủy)" value={fmtCurrency(stats.revenue)} accent="border-emerald-700/40" />
-                <StatChip label="Tổng đơn hàng" value={stats.total} accent="border-blue-700/40" />
+                <StatChip label="Đã thu" value={fmtCurrency(stats.totalReceived)} accent="border-blue-700/40" />
+                <StatChip label="Tổng đơn hàng" value={stats.total} accent="border-gray-700/40" />
                 <StatChip label="Đang hoạt động (Mới + Xử lý)" value={stats.active} accent="border-amber-700/40" />
             </div>
             {stats.lowStock.length > 0 && (
