@@ -191,12 +191,39 @@ export default function DashboardPage() {
                 resultCount={filteredOrders.length}
             />
             {hasActiveFilter && (
-                <button
-                    onClick={handleClearFilters}
-                    className="text-xs text-blue-400 hover:text-blue-300 underline"
-                >
-                    Xóa bộ lọc
-                </button>
+                <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs text-gray-500">Bộ lọc đang dùng:</span>
+                    {productId && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            {products.find((p) => String(p.id) === productId)?.name || productId}
+                            <button onClick={() => setProductId('')} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {status && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            {STATUS_LABEL[status] || status}
+                            <button onClick={() => setStatus('')} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {dateFrom && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            Từ {dateFrom}
+                            <button onClick={() => setDateFrom('')} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {dateTo && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            Đến {dateTo}
+                            <button onClick={() => setDateTo('')} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    <button
+                        onClick={handleClearFilters}
+                        className="ml-1 text-xs text-red-400 hover:text-red-300 transition-colors"
+                    >
+                        Xóa tất cả
+                    </button>
+                </div>
             )}
 
             {/* ── Stat Cards ──────────────────────────────────── */}

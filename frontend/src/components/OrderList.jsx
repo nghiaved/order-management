@@ -70,7 +70,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
             );
         }
         if (statusFilter) result = result.filter((o) => o.status === statusFilter);
-        if (dateFilter) result = result.filter((o) => o.delivery_date === dateFilter);
+        if (dateFilter) result = result.filter((o) => o.created_at?.slice(0, 10) === dateFilter);
         if (paymentFilter) {
             result = result.filter((o) => {
                 const paid = paymentSums[o.id] || 0;
@@ -257,13 +257,48 @@ export default function OrderList({ refreshKey, onRefresh }) {
                     },
                     {
                         type: 'date',
-                        label: 'Lọc theo ngày giao',
+                        label: 'Lọc theo ngày tạo',
                         value: dateFilter,
                         onChange: (v) => { setDateFilter(v); setPage(1); },
                     },
                 ]}
                 resultCount={filtered.length}
             />
+            {(search || statusFilter || paymentFilter || dateFilter) && (
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">Bộ lọc đang dùng:</span>
+                    {search && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            "{search}"
+                            <button onClick={() => { setSearch(''); setPage(1); }} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {statusFilter && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            {STATUS_CONFIG[statusFilter]?.label}
+                            <button onClick={() => { setStatusFilter(''); setPage(1); }} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {paymentFilter && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            {paymentFilter === 'paid' ? 'Đã thanh toán' : paymentFilter === 'partial' ? 'Một phần' : 'Chưa thanh toán'}
+                            <button onClick={() => { setPaymentFilter(''); setPage(1); }} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    {dateFilter && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gray-700/50 text-gray-300 border border-gray-600/30">
+                            {dateFilter}
+                            <button onClick={() => { setDateFilter(''); setPage(1); }} className="hover:text-white ml-0.5">×</button>
+                        </span>
+                    )}
+                    <button
+                        onClick={() => { setSearch(''); setStatusFilter(''); setPaymentFilter(''); setDateFilter(''); setPage(1); }}
+                        className="ml-1 text-xs text-red-400 hover:text-red-300 transition-colors"
+                    >
+                        Xóa tất cả
+                    </button>
+                </div>
+            )}
 
             {loading ? (
                 <div className="bg-[#111827] border border-gray-700/50 rounded-xl overflow-hidden">
