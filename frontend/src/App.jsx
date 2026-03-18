@@ -27,7 +27,11 @@ export default function App() {
                             </ProtectedRoute>
                         }
                     >
-                        <Route index element={<DashboardPage />} />
+                        <Route index element={
+                            <ProtectedRoute permission={PERMISSIONS.DASHBOARD_READ}>
+                                <DashboardPage />
+                            </ProtectedRoute>
+                        } />
                         <Route
                             path="orders"
                             element={

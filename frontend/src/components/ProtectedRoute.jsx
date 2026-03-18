@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth, useAuthorization } from '../contexts/AuthContext';
+import { PERMISSIONS } from '../utils/rbacHelper';
 
 /**
  * Route guard — redirects to /login when unauthenticated.
@@ -19,6 +20,9 @@ export default function ProtectedRoute({ children, permission }) {
 
     if (!user) return <Navigate to="/login" replace />;
 
+    if (permission && permission === PERMISSIONS.DASHBOARD_READ && !hasPermission(permission))
+        return <Navigate to="/orders" replace />;
+
     if (permission && !hasPermission(permission)) {
         return (
             <div className="flex flex-col items-center justify-center h-64 text-center">
@@ -28,8 +32,8 @@ export default function ProtectedRoute({ children, permission }) {
                             d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636" />
                     </svg>
                 </div>
-                <h2 className="text-xl font-semibold mb-1 text-white">Access Denied</h2>
-                <p className="text-gray-400">You don't have permission to access this page.</p>
+                <h2 className="text-xl font-semibold mb-1 text-white">Không có quyền truy cập</h2>
+                <p className="text-gray-400">Bạn không có quyền truy cập trang này.</p>
             </div>
         );
     }

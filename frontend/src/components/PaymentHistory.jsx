@@ -1,4 +1,6 @@
 import { fmt, fmtDateTime } from '../utils/format';
+import Allow from '../components/Allow';
+import { PERMISSIONS } from '../utils/rbacHelper';
 
 const STATUS_MAP = {
     unpaid: { label: 'Chưa thanh toán', color: 'text-red-400', bg: 'bg-red-500/15 text-red-400', dot: 'bg-red-400' },
@@ -29,17 +31,19 @@ export default function PaymentHistory({ payments, totalAmount, onAddPayment, ca
                         {cfg.label}
                     </span>
                 </div>
-                {canAdd && remaining > 0 && (
-                    <button
-                        onClick={onAddPayment}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
-                    >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Thêm thanh toán
-                    </button>
-                )}
+                <Allow permission={PERMISSIONS.PAYMENTS_CREATE}>
+                    {canAdd && remaining > 0 && (
+                        <button
+                            onClick={onAddPayment}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Thêm thanh toán
+                        </button>
+                    )}
+                </Allow>
             </div>
 
             {/* Progress bar + summary */}

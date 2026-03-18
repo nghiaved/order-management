@@ -1,5 +1,7 @@
 import { useOrderStats } from '../hooks/useOrderStats';
 import { fmtCurrency } from '../utils/format';
+import Allow from '../components/Allow';
+import { PERMISSIONS } from '../utils/rbacHelper';
 
 function StatChip({ label, value, accent }) {
     return (
@@ -24,8 +26,10 @@ export default function OrderSummaryBar({ refreshKey }) {
     if (loading) {
         return (
             <div className="flex gap-3">
-                <SkeletonChip />
-                <SkeletonChip />
+                <Allow permission={PERMISSIONS.DASHBOARD_READ}>
+                    <SkeletonChip />
+                    <SkeletonChip />
+                </Allow>
                 <SkeletonChip />
                 <SkeletonChip />
             </div>
@@ -37,8 +41,10 @@ export default function OrderSummaryBar({ refreshKey }) {
     return (
         <div className="space-y-2.5">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <StatChip label="Doanh thu (trừ hủy)" value={fmtCurrency(stats.revenue)} accent="border-emerald-700/40" />
-                <StatChip label="Đã thu" value={fmtCurrency(stats.totalReceived)} accent="border-blue-700/40" />
+                <Allow permission={PERMISSIONS.DASHBOARD_READ}>
+                    <StatChip label="Doanh thu (trừ hủy)" value={fmtCurrency(stats.revenue)} accent="border-emerald-700/40" />
+                    <StatChip label="Đã thu" value={fmtCurrency(stats.totalReceived)} accent="border-blue-700/40" />
+                </Allow>
                 <StatChip label="Tổng đơn hàng" value={stats.total} accent="border-gray-700/40" />
                 <StatChip label="Đang hoạt động (Mới + Xử lý)" value={stats.active} accent="border-amber-700/40" />
             </div>

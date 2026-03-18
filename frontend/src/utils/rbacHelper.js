@@ -36,6 +36,9 @@ export const PERMISSIONS = {
     USERS_LIST: 'users:list',
 
     DASHBOARD_READ: 'dashboard:read',
+
+    PAYMENTS_CREATE: 'payments:create',
+    PAYMENTS_READ: 'payments:read',
 };
 
 // ── Role hierarchy (mirrors the SQL hierarchy_level) ───────────────

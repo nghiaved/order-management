@@ -33,7 +33,9 @@
         "users:update",
         "users:delete",
         "users:list",
-        "dashboard:read"
+        "dashboard:read",
+        "payments:create",
+        "payments:read"
       ],
       "hierarchyLevel": 75,
       "roleDisplayName": "Quản trị viên",
@@ -59,7 +61,8 @@
         "customers:read",
         "customers:update",
         "customers:list",
-        "dashboard:read"
+        "payments:create",
+        "payments:read"
       ],
       "hierarchyLevel": 50,
       "roleDisplayName": "Quản lý",
@@ -81,7 +84,7 @@
         "inventory:list",
         "customers:read",
         "customers:list",
-        "dashboard:read"
+        "payments:read"
       ],
       "hierarchyLevel": 25,
       "roleDisplayName": "Xem",
