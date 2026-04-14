@@ -1,5 +1,5 @@
 /**
- * RBAC Helper — ported from Next.js/Postgres/Redis RBAC system.
+ * RBAC Helper - Role-Based Access Control utilities for frontend
  * Provides permission constants and a hasPermission checker for client-side use.
  */
 

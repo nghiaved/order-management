@@ -63,7 +63,7 @@ export default function OrderDetailPage() {
         try {
             await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
             setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
-            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Hoàn thành'}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Đã giao'}.`);
         } catch (err) {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
@@ -194,9 +194,9 @@ export default function OrderDetailPage() {
                     )}
                     {order.status === 'Processing' && (
                         <button
-                            onClick={() => setStatusTarget({ order, newStatus: 'Done', title: 'Hoàn thành đơn', message: `Đánh dấu đơn "${order.id}" là Hoàn thành?`, confirmText: 'Hoàn thành' })}
+                            onClick={() => setStatusTarget({ order, newStatus: 'Done', title: 'Đã giao đơn', message: `Đánh dấu đơn "${order.id}" là Đã giao?`, confirmText: 'Đã giao' })}
                             className="px-4 py-1.5 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 border border-emerald-500/20 transition-colors"
-                        >Hoàn thành</button>
+                        >Đã giao</button>
                     )}
                     {(order.status === 'New' || order.status === 'Processing') && (
                         <button

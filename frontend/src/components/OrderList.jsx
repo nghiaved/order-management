@@ -97,7 +97,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
         setConfirmingStatus(true);
         try {
             await updateStatus(statusTarget.order, statusTarget.newStatus);
-            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Hoàn thành'}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Đã giao'}.`);
             onRefresh?.();
         } catch (err) {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
@@ -214,9 +214,9 @@ export default function OrderList({ refreshKey, onRefresh }) {
                         )}
                         {o.status === 'Processing' && (
                             <button
-                                onClick={() => setStatusTarget({ order: o, newStatus: 'Done', title: 'Hoàn thành đơn', message: `Đánh dấu đơn "${o.id}" là Hoàn thành?`, confirmText: 'Hoàn thành' })}
+                                onClick={() => setStatusTarget({ order: o, newStatus: 'Done', title: 'Đã giao đơn', message: `Đánh dấu đơn "${o.id}" là Đã giao?`, confirmText: 'Đã giao' })}
                                 className="px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-400 hover:bg-emerald-500/25 transition-colors"
-                            >Hoàn thành</button>
+                            >Đã giao</button>
                         )}
                         {(o.status === 'New' || o.status === 'Processing') && (
                             <button

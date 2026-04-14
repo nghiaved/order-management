@@ -20,7 +20,7 @@ const STATUS_COLORS = {
 const STATUS_LABEL = {
     New: 'Mới',
     Processing: 'Đang xử lý',
-    Done: 'Hoàn thành',
+    Done: 'Đã giao',
     Cancel: 'Đã hủy',
 };
 

@@ -41,7 +41,7 @@ export function useAuth() {
 }
 
 /**
- * Authorization hook — mirrors the Next.js useAuthorization() hook.
+ * Authorization hook that provides user info and permission checks
  */
 export function useAuthorization() {
     const { user } = useAuth();

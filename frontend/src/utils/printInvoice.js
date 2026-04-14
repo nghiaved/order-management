@@ -10,7 +10,7 @@ const STATUS_BADGE = {
 const STATUS_LABEL = {
   New: 'Mới',
   Processing: 'Đang xử lý',
-  Done: 'Hoàn thành',
+  Done: 'Đã giao',
   Cancel: 'Đã hủy',
 };
 

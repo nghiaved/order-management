@@ -61,7 +61,7 @@ npm start
 
 ### Việt hóa
 - Toàn bộ labels, placeholders, buttons, validation, toast messages
-- Trạng thái: Mới, Đang xử lý, Hoàn thành, Đã hủy
+- Trạng thái: Mới, Đang xử lý, Đã giao, Đã hủy
 - Thanh toán: Tiền mặt, Chuyển khoản, Công nợ, Thanh toán khi nhận hàng
 - Định dạng tiền: VNĐ (vi-VN locale), ngày: DD/MM/YYYY
 - Dữ liệu mẫu: cửa hàng tạp hóa Việt Nam (gạo, mì, bia, nước mắm, dầu gội...)
