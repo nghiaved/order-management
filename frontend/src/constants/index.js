@@ -7,7 +7,7 @@ export const VAT_RATE = 0.1;
 
 export const STATUS_CONFIG = {
     New: { bg: 'bg-blue-500/20 text-blue-400', label: 'Mới' },
-    Processing: { bg: 'bg-amber-500/20 text-amber-400', label: 'Đang xử lý' },
+    Processing: { bg: 'bg-amber-500/20 text-amber-400', label: 'Đang giao hàng' },
     Done: { bg: 'bg-emerald-500/20 text-emerald-400', label: 'Đã giao' },
     Cancel: { bg: 'bg-red-500/20 text-red-400', label: 'Đã hủy' },
 };

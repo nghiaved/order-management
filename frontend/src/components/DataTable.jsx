@@ -1,4 +1,4 @@
-export default function DataTable({ columns, data, emptyText = 'No data found.', expandedRow }) {
+export default function DataTable({ columns, data, emptyText = 'Không có dữ liệu.', expandedRow }) {
     const colCount = columns.length;
 
     return (

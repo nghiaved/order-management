@@ -7,7 +7,7 @@ import Pagination from '../components/Pagination';
 import DataTable from '../components/DataTable';
 import SearchFilter from '../components/SearchFilter';
 import CrudFormModal, { FormField, FormInput } from '../components/CrudFormModal';
-import { fmt } from '../utils/format';
+import { fmt, fmtDateTime } from '../utils/format';
 
 const EMPTY = { sku: '', name: '', base_price: '', category: '', unit: '' };
 
@@ -51,6 +51,7 @@ export default function ProductsPage() {
         { header: 'Danh mục', key: 'category', render: (p) => <span className="text-gray-400">{p.category}</span> },
         { header: 'ĐVT', key: 'unit', render: (p) => <span className="text-gray-400">{p.unit}</span> },
         { header: 'Giá gốc', key: 'base_price', render: (p) => <span className="text-gray-200 font-semibold">{fmt(p.base_price)} VNĐ</span> },
+        { header: 'Ngày tạo', key: 'created_at', render: (item) => <span className="text-gray-500 text-xs">{fmtDateTime(item.created_at)}</span> },
         ...((canEdit || canDelete) ? [{
             header: 'Thao tác', key: 'actions', width: '140px',
             render: (p) => (

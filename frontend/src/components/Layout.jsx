@@ -74,7 +74,7 @@ export default function Layout() {
             <aside className="w-64 bg-[#111827] border-r border-gray-700/50 flex flex-col">
                 <Link to="/" className='hover:opacity-80 transition-opacity'>
                     <div className="p-5 border-b border-gray-700/50 flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
+                        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center bg-white border-4 border-blue-600">
                             <img src="/logo192.png" alt="Logo" className="rounded-full" />
                         </div>
                         <div>

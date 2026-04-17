@@ -63,7 +63,7 @@ export default function OrderDetailPage() {
         try {
             await orderService.update(statusTarget.order.id, { status: statusTarget.newStatus });
             setOrder((prev) => ({ ...prev, status: statusTarget.newStatus }));
-            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Đã giao'}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang giao hàng' : 'Đã giao'}.`);
         } catch (err) {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
         } finally {
@@ -187,7 +187,7 @@ export default function OrderDetailPage() {
                                 className="px-4 py-1.5 rounded-xl text-sm font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 border border-blue-500/20 transition-colors"
                             >Sửa đơn</button>
                             <button
-                                onClick={() => setStatusTarget({ order, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${order.id}" sang Đang xử lý?`, confirmText: 'Xử lý' })}
+                                onClick={() => setStatusTarget({ order, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${order.id}" sang Đang giao hàng?`, confirmText: 'Xử lý' })}
                                 className="px-4 py-1.5 rounded-xl text-sm font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/20 transition-colors"
                             >Xử lý</button>
                         </>

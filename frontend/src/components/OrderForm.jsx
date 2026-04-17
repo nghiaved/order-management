@@ -414,7 +414,7 @@ export default function OrderForm({ editingOrder, onSaved, onCancel }) {
                     <label className="block text-sm font-medium text-gray-300 mb-1">Ngày giao hàng</label>
                     <input
                         type="date"
-                        className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-2 text-white"
+                        className="w-full bg-[#1a2035] border border-gray-700 rounded-lg px-3 py-1.5 text-white"
                         value={form.delivery_date}
                         onChange={(e) => setForm((f) => ({ ...f, delivery_date: e.target.value }))}
                     />

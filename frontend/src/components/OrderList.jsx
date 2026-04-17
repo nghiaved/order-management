@@ -97,7 +97,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
         setConfirmingStatus(true);
         try {
             await updateStatus(statusTarget.order, statusTarget.newStatus);
-            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang xử lý' : 'Đã giao'}.`);
+            toast.success(`Đơn hàng đã chuyển sang ${statusTarget.newStatus === 'Processing' ? 'Đang giao hàng' : 'Đã giao'}.`);
             onRefresh?.();
         } catch (err) {
             toast.error(err.message || 'Không thể cập nhật trạng thái.');
@@ -159,6 +159,14 @@ export default function OrderList({ refreshKey, onRefresh }) {
             render: (o) => <span className="text-gray-300">{customerMap[o.customer_id]?.full_name || o.customer_id}</span>,
         },
         {
+            header: 'Tổng tiền', key: 'total_amount',
+            render: (o) => <span className="font-semibold text-gray-200">{fmt(o.total_amount)} VNĐ</span>,
+        },
+        {
+            header: 'Ngày tạo', key: 'created_at',
+            render: (o) => <span className="text-gray-500 text-xs">{fmtDateTime(o.created_at)}</span>,
+        },
+        {
             header: 'Thanh toán', key: 'payment_status',
             render: (o) => {
                 const paid = paymentSums[o.id] || 0;
@@ -181,19 +189,11 @@ export default function OrderList({ refreshKey, onRefresh }) {
             },
         },
         {
-            header: 'Tổng tiền', key: 'total_amount',
-            render: (o) => <span className="font-semibold text-gray-200">{fmt(o.total_amount)} VNĐ</span>,
-        },
-        {
             header: 'Trạng thái', key: 'status',
             render: (o) => {
                 const cfg = STATUS_CONFIG[o.status] || STATUS_CONFIG.New;
                 return <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.bg}`}>{cfg.label}</span>;
             },
-        },
-        {
-            header: 'Ngày tạo', key: 'created_at',
-            render: (o) => <span className="text-gray-500 text-xs">{fmtDateTime(o.created_at)}</span>,
         },
         {
             header: '', key: 'actions',
@@ -207,7 +207,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
                             <>
                                 <button onClick={() => navigate(`/orders/update?id=${o.id}`)} className="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-500/15 text-blue-400 hover:bg-blue-500/25 transition-colors">Sửa</button>
                                 <button
-                                    onClick={() => setStatusTarget({ order: o, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${o.id}" sang Đang xử lý?`, confirmText: 'Xử lý' })}
+                                    onClick={() => setStatusTarget({ order: o, newStatus: 'Processing', title: 'Xử lý đơn', message: `Chuyển đơn "${o.id}" sang Đang giao hàng?`, confirmText: 'Xử lý' })}
                                     className="px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors"
                                 >Xử lý</button>
                             </>

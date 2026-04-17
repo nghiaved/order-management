@@ -130,7 +130,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <p className="text-center text-gray-600 text-xs mt-6">&copy; 2026. Bản quyền thuộc về hệ thống quản lý đơn hàng.</p>
+                    <p className="text-center text-gray-600 text-xs mt-6">&copy; 2026. Bản quyền thuộc về <b>nghiaved</b>.</p>
                 </div>
             </div>
         </div>
