@@ -1,4 +1,5 @@
 import { fmt, fmtDateTime } from '../utils/format';
+import { getPaymentStatus, sumPayments } from '../utils/orderUtils';
 import Allow from '../components/Allow';
 import { PERMISSIONS } from '../utils/rbacHelper';
 
@@ -8,14 +9,8 @@ const STATUS_MAP = {
     paid: { label: 'Đã thanh toán', color: 'text-emerald-400', bg: 'bg-emerald-500/15 text-emerald-400', dot: 'bg-emerald-400' },
 };
 
-function getPaymentStatus(paidSum, totalAmount) {
-    if (paidSum <= 0) return 'unpaid';
-    if (paidSum >= totalAmount) return 'paid';
-    return 'partial';
-}
-
 export default function PaymentHistory({ payments, totalAmount, onAddPayment, canAdd }) {
-    const paidSum = payments.reduce((s, p) => s + Number(p.amount_paid), 0);
+    const paidSum = sumPayments(payments);
     const remaining = Math.max(0, Number(totalAmount) - paidSum);
     const pct = totalAmount > 0 ? Math.min(100, (paidSum / totalAmount) * 100) : 0;
     const status = getPaymentStatus(paidSum, totalAmount);

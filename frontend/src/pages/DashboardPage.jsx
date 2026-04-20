@@ -8,21 +8,8 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     PieChart, Pie, Cell, Legend,
 } from 'recharts';
-import { fmtCurrency, fmt } from '../utils/format';
-
-const STATUS_COLORS = {
-    New: '#3b82f6',
-    Processing: '#f59e0b',
-    Done: '#22c55e',
-    Cancel: '#ef4444',
-};
-
-const STATUS_LABEL = {
-    New: 'Mới',
-    Processing: 'Đang giao hàng',
-    Done: 'Đã giao',
-    Cancel: 'Đã hủy',
-};
+import { fmtCurrency, fmt, fmtMonth } from '../utils/format';
+import { STATUS_LABEL, STATUS_COLORS } from '../constants';
 
 function StatCard({ icon, label, value, sub, color }) {
     return (
@@ -131,8 +118,7 @@ export default function DashboardPage() {
         src
             .filter((o) => o.status !== 'Cancel')
             .forEach((o) => {
-                const d = new Date(o.created_at);
-                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                const key = fmtMonth(o.created_at);
                 monthlyMap[key] = (monthlyMap[key] || 0) + (o.total_amount || 0);
             });
         const monthlyRevenue = Object.entries(monthlyMap)

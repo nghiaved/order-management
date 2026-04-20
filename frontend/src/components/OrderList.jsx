@@ -14,6 +14,7 @@ import DataTable from './DataTable';
 import SearchFilter from './SearchFilter';
 import { STATUS_CONFIG, PAGE_SIZE } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
+import { getPaymentStatus } from '../utils/orderUtils';
 
 export default function OrderList({ refreshKey, onRefresh }) {
     const navigate = useNavigate();
@@ -135,9 +136,7 @@ export default function OrderList({ refreshKey, onRefresh }) {
             if (deleteTarget.status !== 'Cancel') {
                 await restoreOrderInventory(deleteTarget.id);
             }
-            await orderService.deleteOrderDetails(deleteTarget.id);
-            await paymentService.deleteByOrderId(deleteTarget.id);
-            await orderService.remove(deleteTarget.id);
+            await orderService.deleteOrder(deleteTarget.id);
             setOrders((prev) => prev.filter((o) => o.id !== deleteTarget.id));
             toast.success('Đã xóa đơn hàng.');
             onRefresh?.();
@@ -171,8 +170,9 @@ export default function OrderList({ refreshKey, onRefresh }) {
             render: (o) => {
                 const paid = paymentSums[o.id] || 0;
                 const total = Number(o.total_amount);
-                const isPaid = paid >= total && total > 0;
-                const isPartial = paid > 0 && paid < total;
+                const status = getPaymentStatus(paid, total);
+                const isPaid = status === 'paid';
+                const isPartial = status === 'partial';
                 return (
                     <div className="space-y-0.5">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${isPaid ? 'bg-emerald-500/15 text-emerald-400'

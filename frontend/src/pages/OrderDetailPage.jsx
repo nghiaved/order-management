@@ -15,6 +15,7 @@ import AddPaymentModal from '../components/AddPaymentModal';
 import { STATUS_CONFIG, VAT_RATE, PAYMENT_LABEL } from '../constants';
 import { fmt, fmtDateTime } from '../utils/format';
 import { printInvoice } from '../utils/printInvoice';
+import { calcSubtotal, sumPayments } from '../utils/orderUtils';
 
 export default function OrderDetailPage() {
     const [searchParams] = useSearchParams();
@@ -96,9 +97,7 @@ export default function OrderDetailPage() {
             if (deleteTarget.status !== 'Cancel') {
                 await restoreOrderInventory(deleteTarget.id);
             }
-            await orderService.deleteOrderDetails(deleteTarget.id);
-            await paymentService.deleteByOrderId(deleteTarget.id);
-            await orderService.remove(deleteTarget.id);
+            await orderService.deleteOrder(deleteTarget.id);
             toast.success('Đã xóa đơn hàng.');
             navigate('/orders');
         } catch (err) {
@@ -147,9 +146,9 @@ export default function OrderDetailPage() {
 
     const statusCfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.New;
 
-    const subtotal = details.reduce((sum, d) => sum + Number(d.unit_price) * Number(d.quantity), 0);
+    const subtotal = calcSubtotal(details);
     const vatAmount = order.has_vat ? subtotal * VAT_RATE : 0;
-    const paidSum = payments.reduce((s, p) => s + Number(p.amount_paid), 0);
+    const paidSum = sumPayments(payments);
     const amountDue = Number(order.total_amount) - paidSum;
 
     let bankInfo = null;

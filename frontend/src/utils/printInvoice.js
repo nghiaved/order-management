@@ -1,37 +1,15 @@
 import { fmt } from './format';
-
-const STATUS_BADGE = {
-  New: 'background:#dbeafe;color:#1d4ed8',
-  Processing: 'background:#fef3c7;color:#b45309',
-  Done: 'background:#dcfce7;color:#166534',
-  Cancel: 'background:#fee2e2;color:#991b1b',
-};
-
-const STATUS_LABEL = {
-  New: 'Mới',
-  Processing: 'Đang giao hàng',
-  Done: 'Đã giao',
-  Cancel: 'Đã hủy',
-};
-
-const PAYMENT_LABEL_MAP = {
-  COD: 'Thanh toán khi nhận hàng',
-  Cash: 'Tiền mặt',
-  'Tiền mặt': 'Tiền mặt',
-  Transfer: 'Chuyển khoản',
-  'Chuyển khoản': 'Chuyển khoản',
-  Credit: 'Công nợ',
-  'Công nợ': 'Công nợ',
-};
+import { STATUS_BADGE_INLINE, STATUS_LABEL, PAYMENT_LABEL, VAT_RATE } from '../constants';
+import { calcSubtotal, sumPayments } from './orderUtils';
 
 /**
  * Opens a new browser window with a clean print-friendly invoice and triggers window.print().
  * No external dependencies — pure HTML/CSS rendered into a popup window.
  */
 export function printInvoice({ order, details, customer, productMap, payments = [] }) {
-  const subtotal = details.reduce((s, d) => s + Number(d.unit_price) * Number(d.quantity), 0);
-  const vatAmt = order.has_vat ? subtotal * 0.1 : 0;
-  const paidSum = payments.reduce((s, p) => s + Number(p.amount_paid), 0);
+  const subtotal = calcSubtotal(details);
+  const vatAmt = order.has_vat ? subtotal * VAT_RATE : 0;
+  const paidSum = sumPayments(payments);
   const amountDue = Number(order.total_amount) - paidSum;
 
   const rows = details
@@ -48,7 +26,7 @@ export function printInvoice({ order, details, customer, productMap, payments = 
     })
     .join('');
 
-  const badgeStyle = STATUS_BADGE[order.status] || 'background:#f3f4f6;color:#374151';
+  const badgeStyle = STATUS_BADGE_INLINE[order.status] || 'background:#f3f4f6;color:#374151';
 
   const html = `<!DOCTYPE html>
 <html lang="vi">
@@ -96,7 +74,7 @@ export function printInvoice({ order, details, customer, productMap, payments = 
     </div>
     <div class="card">
       <div class="card-title">Thanh toán</div>
-      <p>Phương thức: <strong>${PAYMENT_LABEL_MAP[order.payment_method] || order.payment_method}</strong></p>
+      <p>Phương thức: <strong>${PAYMENT_LABEL[order.payment_method] || order.payment_method}</strong></p>
       <p>VAT: ${order.has_vat ? 'Có (10%)' : 'Không'}</p>
       <p>Đã thanh toán: <strong style="color:${paidSum >= Number(order.total_amount) ? '#166534' : paidSum > 0 ? '#b45309' : '#991b1b'}">${fmt(paidSum)} VNĐ</strong></p>
     </div>

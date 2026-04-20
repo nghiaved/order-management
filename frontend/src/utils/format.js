@@ -21,3 +21,10 @@ export const fmtDateTime = (dateStr) => {
     const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
     return `${date} ${time}`;
 };
+
+/** YYYY-MM key used for monthly grouping in charts. */
+export const fmtMonth = (dateStr) => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};

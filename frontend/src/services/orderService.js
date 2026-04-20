@@ -1,4 +1,5 @@
 import api from './api';
+import { paymentService } from './paymentService';
 
 export const orderService = {
     async getAll() {
@@ -52,5 +53,15 @@ export const orderService = {
         for (const d of details) {
             await api.delete(`/order_details/${d.id}`);
         }
+    },
+
+    /**
+     * Cascade-delete an order: removes order_details, payment_history, then the order itself.
+     * Callers do NOT need to coordinate across multiple services.
+     */
+    async deleteOrder(id) {
+        await this.deleteOrderDetails(id);
+        await paymentService.deleteByOrderId(id);
+        await this.remove(id);
     },
 };

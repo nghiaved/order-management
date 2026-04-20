@@ -15,6 +15,27 @@ export const STATUS_CONFIG = {
 export const PAYMENT_METHODS = ['Thanh toán khi nhận hàng', 'Tiền mặt', 'Chuyển khoản', 'Công nợ'];
 export const SHIPPING_UNITS = ['GHN', 'GHTK', 'Ninja Van', 'J&T', 'VNPost'];
 
+/** Derived from STATUS_CONFIG — single source of truth for status labels. */
+export const STATUS_LABEL = Object.fromEntries(
+    Object.entries(STATUS_CONFIG).map(([k, v]) => [k, v.label])
+);
+
+/** Hex colours for Recharts charts — co-located with STATUS_CONFIG. */
+export const STATUS_COLORS = {
+    New: '#3b82f6',
+    Processing: '#f59e0b',
+    Done: '#22c55e',
+    Cancel: '#ef4444',
+};
+
+/** Inline CSS badge strings for non-Tailwind contexts (e.g. printInvoice popup). */
+export const STATUS_BADGE_INLINE = {
+    New: 'background:#dbeafe;color:#1d4ed8',
+    Processing: 'background:#fef3c7;color:#b45309',
+    Done: 'background:#dcfce7;color:#166534',
+    Cancel: 'background:#fee2e2;color:#991b1b',
+};
+
 /** Map English payment method keys stored in DB to Vietnamese display labels */
 export const PAYMENT_LABEL = {
     COD: 'Thanh toán khi nhận hàng',
